@@ -1,7 +1,10 @@
 'use strict';
-const atrix = require('atrix');
-const accountingSvc = require('./accounting/service');
-const reportingSvc = require('./reporting/service');
+const atrix = require('@trigo/atrix');
 
-accountingSvc.start();
-reportingSvc.start();
+atrix.addService(require('./upstream-svc/service'));
+atrix.addService(require('./downstream-svc/service'));
+atrix.addService(require('./broken-upstream-svc/service'));
+
+atrix.services.upstream.start();
+atrix.services.downstream.start();
+atrix.services.brokenupstream.start();
