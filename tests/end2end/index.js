@@ -8,7 +8,7 @@ const expect = require('chai').expect;
 setTimeout(() => {
 	describe('every service instance', () => {
 		describe('/alive', () => {
-			it('should have alive endpoint returning 200 if everything is ok', done => { 
+			it('should have alive endpoint returning 200 if everything is ok', done => {
 				svc.downstream.get('/alive').expect(200, done);
 			});
 
