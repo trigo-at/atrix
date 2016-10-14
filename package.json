@@ -1,6 +1,6 @@
 {
   "name": "@trigo/atrix",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "bluebird": "^3.4.1",
     "bluebird-retry": "^0.8.0",
     "btoa": "^1.1.2",
+    "bylog": "^0.3.5",
     "chai": "^3.5.0",
     "fetch": "^1.1.0",
     "hapi": "^14.1.0",
