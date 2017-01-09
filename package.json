@@ -19,6 +19,7 @@
     "hapi-auth-jwt": "^4.0.0",
     "inert": "^4.0.1",
     "mocha": "^3.0.2",
+    "ramda": "^0.23.0",
     "supertest": "^2.0.0"
   }
 }
