@@ -1,3 +1,7 @@
+
+clean:
+	rm -rf node_modules/
+
 setup-dev:
 	@cd lib && npm link
 	@cd examples && npm link @trigo/atrix
