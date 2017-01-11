@@ -10,5 +10,4 @@ for (let i in atrix.services) {
 	}
 }
 
-
 module.exports = svcs;

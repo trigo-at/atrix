@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --delay tests/**"
+    "test": "mocha $(find . -name '*.specs.js' -not -path './node_modules/*')"
   },
   "author": "",
   "license": "ISC",
