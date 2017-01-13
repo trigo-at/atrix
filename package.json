@@ -31,7 +31,5 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.8.0"
   },
-  {
-    "engines": ">=7.4.0"
-  }
+  "engines": ">=7.4.0"
 }
