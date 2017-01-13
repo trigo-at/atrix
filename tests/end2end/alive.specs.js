@@ -1,20 +1,22 @@
 'use strict';
-const atrix = require('../..');
-const testServices = require('../../examples/');
+
+/* eslint-env node, mocha */
+/* eslint prefer-arrow-callback: 0, func-names: 0, space-before-function-paren: 0 */
+
 const svc = require('./services');
 const expect = require('chai').expect;
 
 describe('every service instance', () => {
 	describe('/alive', () => {
-		it('should have alive endpoint returning 200 if everything is ok', done => {
+		it('should have alive endpoint returning 200 if everything is ok', (done) => {
 			svc.downstream.get('/alive').expect(200, done);
 		});
 
-		it('should return 207 if some upstream service are not available', done => {
+		it('should return 207 if some upstream service are not available', (done) => {
 			svc.brokenupstream.get('/alive').expect(207, done);
 		});
 
-		it('should reflect upstream service status in response', done => {
+		it('should reflect upstream service status in response', (done) => {
 			svc.brokenupstream.get('/alive').expect(207).end((err, res) => {
 				expect(res.body.upstreams[0].result).to.have.property('error');
 				done();

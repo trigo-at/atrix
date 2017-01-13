@@ -3,7 +3,10 @@ clean:
 	rm -rf node_modules/
 
 test:
-	npm test
+	yarn test
+
+lint:
+	yarn run lint
 
 setup-dev:
 	@cd lib && npm link

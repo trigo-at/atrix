@@ -1,5 +1,6 @@
 'use strict';
 const atrix = require('../..');
+const testServices = require('../../examples/');
 const supertest = require('supertest');
 
 var svcs = {};

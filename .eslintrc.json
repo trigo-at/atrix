@@ -4,7 +4,7 @@
 			"strict": [0, "global"],
 			"indent": [1, "tab", { "SwitchCase": 1, "VariableDeclarator": 1 }],
 			"no-tabs": 0,
-			"arrow-body-style": [2, "always"],
+			"arrow-body-style": [2, "as-needed"],
 			"no-console": [1, { "allow": ["warn"] }],
 			"max-len": [2, 160, 2, {
 				"ignoreUrls": true,
