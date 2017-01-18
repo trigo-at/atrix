@@ -3,5 +3,5 @@ module.exports = (mongoose, connection) => {
 		name: String,
 	});
 
-	connection.model('TestModel', TestModel);
+	return { TestModel: connection.model('TestModel', TestModel) };
 };

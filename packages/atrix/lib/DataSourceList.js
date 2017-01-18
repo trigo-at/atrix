@@ -3,8 +3,10 @@
 const loadPlugin = require('./load-plugin');
 
 class DataSourceList {
-	constructor(config) {
+	constructor(service, config) {
+		this.service = service;
 		this.dataSources = config;
+		this.connections = {};
 	}
 
 	setAtrix(atrix) {
@@ -12,12 +14,17 @@ class DataSourceList {
 	}
 
 	async start() {
-		Object.keys(this.dataSources).forEach(async key => {
-			console.log(`Loading Datasource: ${JSON.stringify(this.dataSources[key], null, 2)}`);
+		const tasks = Object.keys(this.dataSources).map(key => {
+			// console.log(`Loading Datasource: ${JSON.stringify(this.dataSources[key], null, 2)}`);
 			const plugin = loadPlugin(this.atrix, this.dataSources[key].type);
-			const instance = plugin.factory(this.atrix, this.dataSources[key].config);
-			await instance.start();
+			const instance = plugin.factory(this.atrix, this.service, this.dataSources[key].config);
+			return instance.start()
+				.then(connection => {
+					this.connections[key] = connection;
+				});
 		});
+
+		await Promise.all(tasks);
 	}
 }
 

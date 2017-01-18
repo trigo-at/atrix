@@ -20,12 +20,15 @@ function loadPlugin(atrix, name) {
 	let plugin;
 	console.log(atrix.config.pluginSearchPaths)
 	for (let i = 0; i < atrix.config.pluginSearchPaths.length && !plugin; i++) {
+		let modulePath;
 		try {
-			const module = path.join(atrix.config.pluginSearchPaths[i], `atrix-${name}`);
-			console.log(module)
-			const p = require(module); // eslint-disable-line
+			modulePath = path.join(atrix.config.pluginSearchPaths[i], `atrix-${name}`);
+			console.log(modulePath);
+			const p = require(modulePath); // eslint-disable-line
 			plugin = p;
-		} catch (e) {} // eslint-disable-line
+		} catch (e) {
+			console.error(`Failed to load ${modulePath}`, e);
+		} // eslint-disable-line
 	}
 
 	if (plugin) {

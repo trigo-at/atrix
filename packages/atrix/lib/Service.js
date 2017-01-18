@@ -29,7 +29,7 @@ class Service {
 		this.events = new ServiceEventEmitter();
 		this.handlers = new HandlerList(this.endpoints);
 		this.upstream = new UpstreamList(this.config.config.upstream);
-		this.dataSourcesList = new DataSourceList(this.config.config.dataSource);
+		this.dataSourcesList = new DataSourceList(this, this.config.config.dataSource);
 
 		this.events.on('starting', () => {
 			this.log.info(`Settings: ${this.config}` || {});
@@ -51,6 +51,10 @@ class Service {
 
 	get dataSources() {
 		return this.dataSourcesList.dataSources;
+	}
+
+	get dataConnections() {
+		return this.dataSourcesList.connections;
 	}
 
 	async start() {
