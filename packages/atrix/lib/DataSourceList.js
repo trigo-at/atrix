@@ -14,6 +14,7 @@ class DataSourceList {
 	}
 
 	async start() {
+		if (!this.dataSources) { return; }
 		const tasks = Object.keys(this.dataSources).map(key => {
 			// console.log(`Loading Datasource: ${JSON.stringify(this.dataSources[key], null, 2)}`);
 			const plugin = loadPlugin(this.atrix, this.dataSources[key].type);
@@ -23,6 +24,7 @@ class DataSourceList {
 					this.connections[key] = connection;
 				});
 		});
+		if (!tasks.length) { return; }
 
 		await Promise.all(tasks);
 	}

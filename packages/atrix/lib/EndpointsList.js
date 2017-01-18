@@ -18,8 +18,6 @@ class EndpointsList {
 		return this.endpoints.find(x => x.type === endpointType);
 	}
 
-
-
 	registerHandler(method, path, handler, config) {
 		this.endpoints.forEach((e) => {
 			e.instance.registerHandler(method, path, handler, config);

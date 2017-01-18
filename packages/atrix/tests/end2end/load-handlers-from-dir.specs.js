@@ -6,14 +6,17 @@
 const svc = require('./services').loadFromDir;
 const expect = require('chai').expect;
 
-
 describe('loading handlers from fs', () => {
 	it('loaded GET /', async() => {
 		const res = await svc.get('/');
 		expect(res.statusCode).to.equal(200);
-		expect(res.body).to.eql({
-			res: 'GET /',
-		});
+		expect(res.body.res).to.eql('GET /');
+	});
+
+	it('service is passed to hanlder funciton', async() => {
+		const res = await svc.get('/');
+		expect(res.statusCode).to.equal(200);
+		expect(res.body.serviceName).to.eql('loadFromDir');
 	});
 
 	it('loaded POST /{id}', async() => {
