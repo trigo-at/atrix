@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 function installPlugin(atrix, plugin) {
 	if (!plugin.name || typeof plugin.name !== 'string') {
 		throw new Error('Required property "name" missing');
@@ -16,9 +18,11 @@ function installPlugin(atrix, plugin) {
 
 function loadPlugin(atrix, name) {
 	let plugin;
+	console.log(atrix.config.pluginSearchPaths)
 	for (let i = 0; i < atrix.config.pluginSearchPaths.length && !plugin; i++) {
 		try {
-			const module = `${atrix.config.pluginSearchPaths[i]}/atrix-${name}`;
+			const module = path.join(atrix.config.pluginSearchPaths[i], `atrix-${name}`);
+			console.log(module)
 			const p = require(module); // eslint-disable-line
 			plugin = p;
 		} catch (e) {} // eslint-disable-line
