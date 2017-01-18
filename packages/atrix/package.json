@@ -1,0 +1,37 @@
+{
+  "name": "@trigo/atrix",
+  "version": "0.1.2",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha --harmony-async-await $(find . -name '*.specs.js' -not -path './node_modules/*')",
+    "lint": "eslint lib tests",
+    "yarn": "yarn install"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "bluebird-retry": "^0.8.0",
+    "boom": "^4.2.0",
+    "btoa": "^1.1.2",
+    "bunyan": "^1.8.5",
+    "bylog": "^0.3.5",
+    "chai": "^3.5.0",
+    "fetch": "^1.1.0",
+    "hapi": "^16.1.0",
+    "hapi-auth-jwt": "^4.0.0",
+    "inert": "^4.1.0",
+    "joi": "^10.2.0",
+    "mocha": "^3.0.2",
+    "ramda": "^0.23.0",
+    "supertest": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.12.2",
+    "eslint-config-airbnb-base": "^11.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-mocha": "^4.8.0"
+  },
+  "engines": ">=7.4.0"
+}
