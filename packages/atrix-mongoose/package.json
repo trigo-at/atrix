@@ -1,6 +1,6 @@
 {
   "name": "atrix-mongoose",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "description": "mongoosse plugin as atrix data source",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "Christian Hubinger <christian@trigo.at>",
   "license": "ISC",
   "dependencies": {
-    "@trigo/atrix": "^0.1.2",
+    "@trigo/atrix": "^0.2.0",
     "bluebird": "^3.4.7",
     "mongoose": "^4.7.7"
   },
