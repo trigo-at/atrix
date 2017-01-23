@@ -1,9 +1,9 @@
 'use strict';
 
-let atrixConfig;
+// let atrixConfig;
 
 module.exports = (configObj) => {
-	atrixConfig = configObj;
+	const atrixConfig = configObj;
 	return (cfg) => {
 		console.log('Merge config', cfg, ' into', atrixConfig);
 		Object.keys(cfg).forEach(key => {
