@@ -48,4 +48,19 @@ describe('load-plugin', () => {
 		const p = loadPlugin(atrix, 'test-plugin');
 		expect(p.atrix).to.equal(atrix);
 	});
+
+	it('can resolve plugin from "atrix.config.pluginMap"', () => {
+		atrix.config.pluginMap['test-plugin2'] = path.join(__dirname, '../tests/atrix-test-plugin2');
+
+		const p = loadPlugin(atrix, 'test-plugin2');
+		expect(p).to.exist;
+	});
+
+	it('searches atrix.config.pluginMap, and then atrix.config.pluginSearchPaths', () => {
+		atrix.config.pluginSearchPaths.push(path.join(__dirname, '../tests'));
+		atrix.config.pluginMap['test-plugin2'] = path.join(__dirname, '../tests/pd/atrix-test-plugin2');
+
+		const p = loadPlugin(atrix, 'test-plugin2');
+		expect(p.name).equal('test-plugin2-pd').exist;
+	});
 });

@@ -8,6 +8,10 @@ const { expect } = require('chai');
 const path = require('path');
 
 describe('global-config', () => {
+	beforeEach(() => {
+		globalConfig.reset();
+	});
+
 	it('defaults to empty object', () => {
 		expect(globalConfig.pluginSearchPaths).to.eql([]);
 		expect(globalConfig).to.exist;

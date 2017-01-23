@@ -5,6 +5,7 @@ const ServiceEventEmitter = require('./ServiceEventEmitter');
 const Logger = require('./Logger');
 const HandlerList = require('./HandlerList');
 const UpstreamList = require('./UpstreamList');
+const DataSourceList = require('./DataSourceList');
 const Config = require('./Config');
 const R = require('ramda');
 
@@ -28,7 +29,7 @@ class Service {
 		this.events = new ServiceEventEmitter();
 		this.handlers = new HandlerList(this.endpoints);
 		this.upstream = new UpstreamList(this.config.config.upstream);
-
+		this.dataSourcesList = new DataSourceList(this, this.config.config.dataSource);
 
 		this.events.on('starting', () => {
 			this.log.info(`Settings: ${this.config}` || {});
@@ -43,8 +44,23 @@ class Service {
 		});
 	}
 
-	start() {
+	setAtrix(atrix) {
+		this.atrix = atrix;
+		this.dataSourcesList.setAtrix(atrix);
+	}
+
+	get dataSources() {
+		return this.dataSourcesList.dataSources;
+	}
+
+	get dataConnections() {
+		return this.dataSourcesList.connections;
+	}
+
+	async start() {
 		this.events.emit('starting');
+
+		await this.dataSourcesList.start();
 
 		this.handlers.add('GET', '/alive', (req, reply) => {
 			const upstreamAliveRequests = [];

@@ -8,7 +8,7 @@ test:
 lint:
 	yarn run lint
 
-build: .
+build:
 	docker-compose -f docker-compose.test.yml build
 
 ci-test: build
@@ -22,7 +22,6 @@ publish: build
 		test_exit=$$?; \
 		docker-compose -f docker-compose.test.yml down; \
 		exit $$test_exit
-
 
 setup-dev:
 	@cd lib && npm link

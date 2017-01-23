@@ -72,7 +72,7 @@ class HttpEndpoint {
 			path,
 			handler: async (req, reply) => {
 				try {
-					await handler(req, reply);
+					await handler(req, reply, this.service);
 				} catch (e) {
 					reply(Boom.wrap(e));
 				}
@@ -83,7 +83,7 @@ class HttpEndpoint {
 
 	async start() {
 		if (!this.configured) {
-			await  this.setupServer();
+			await this.setupServer();
 		}
 
 		await this.server.start();
