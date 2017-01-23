@@ -16,9 +16,32 @@ function installPlugin(atrix, plugin) {
 	plugin.register(atrix);
 }
 
-function loadPlugin(atrix, name) {
+function tryLoadFromPluginMap(atrix, name) {
 	let plugin;
-	console.log(atrix.config.pluginSearchPaths)
+	let modulePath;
+	console.log(atrix.config)
+	if (!atrix.config.pluginMap[name]) {
+		return null;
+	}
+	try {
+		modulePath = atrix.config.pluginMap[name];
+		console.log(modulePath);
+		const p = require(modulePath); // eslint-disable-line
+		plugin = p;
+	} catch (e) {
+		console.error(`Failed to load ${modulePath}`, e);
+	} // eslint-disable-line
+
+	if (plugin) {
+		installPlugin(atrix, plugin);
+		return plugin;
+	}
+
+	return null;
+}
+
+function tryLoadFromSearchPath(atrix, name) {
+	let plugin;
 	for (let i = 0; i < atrix.config.pluginSearchPaths.length && !plugin; i++) {
 		let modulePath;
 		try {
@@ -36,9 +59,26 @@ function loadPlugin(atrix, name) {
 		return plugin;
 	}
 
-	plugin = require(`@trigo/atrix-${name}`); // eslint-disable-line
+	return null;
+}
+
+function loadFromNodeModules(atrix, name) {
+	let plugin = require(`@trigo/atrix-${name}`); // eslint-disable-line
 	installPlugin(atrix, plugin);
 	return plugin;
+}
+
+function loadPlugin(atrix, name) {
+	let plugin;
+
+	plugin = tryLoadFromPluginMap(atrix, name);
+	if (plugin) return plugin;
+
+	plugin = tryLoadFromSearchPath(atrix, name);
+	if (plugin) return plugin;
+
+
+	return loadFromNodeModules(atrix, name);
 }
 
 module.exports = loadPlugin;
