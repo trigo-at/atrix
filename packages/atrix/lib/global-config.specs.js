@@ -3,7 +3,7 @@
 /* eslint-env node, mocha */
 /* eslint no-unused-expressions: 0, arrow-body-style: 0 */
 
-const globalConfig = require('./global-config');
+const globalConfig = require('./global-config')();
 const { expect } = require('chai');
 const path = require('path');
 

@@ -6,8 +6,6 @@
 const { expect } = require('chai');
 const index = require('./index');
 const pkg = require('../package.json');
-// const atrix = require('@trigo/atrix');
-
 
 describe('index.js', () => {
 	it('exposes "name"', () => {
@@ -20,9 +18,5 @@ describe('index.js', () => {
 
 	it('exposes "register"', () => {
 		expect(index.register).to.be.a('function');
-	});
-
-	it('exposes "loadOnStart"', () => {
-		expect(index.loadOnStart).to.be.true;
 	});
 });
