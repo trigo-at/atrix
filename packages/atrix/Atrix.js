@@ -13,7 +13,18 @@ class Atrix {
 		this.UpsteamConstructor = Upstream;
 		this.servicesList = new ServicesList(this);
 		this.globalConfig = globalConfig();
+
+		process.on('SIGINT', async () => {
+			await this.servicesList.stop();
+			process.exit(1);
+		});
+
+		process.on('SIGTERM', async () => {
+			await this.servicesList.stop();
+			process.exit(1);
+		});
 	}
+
 	get Service() {
 		return this.ServiceConstructor;
 	}

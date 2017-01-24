@@ -10,6 +10,10 @@ class ServicesList {
 		this.services[service.name] = service;
 		service.setAtrix(this.atrix); // eslint-disable-line
 	}
+
+	stop() {
+		return Promise.all(this.services.map(e => e.instance.stop()));
+	}
 }
 
 module.exports = ServicesList;
