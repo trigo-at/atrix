@@ -17,8 +17,12 @@
   "author": "Christian Hubinger <christian@trigo.at>",
   "license": "ISC",
   "dependencies": {
-    "@trigo/atrix": "*",
-    "bluebird": "^3.4.7"
+    "@trigo/atrix": "^0.3.3",
+    "bluebird": "^3.4.7",
+    "joi": "^10.2.0",
+    "joi-date-extensions": "^1.0.1",
+    "ramda": "^0.23.0",
+    "swagger-parser": "^3.4.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",

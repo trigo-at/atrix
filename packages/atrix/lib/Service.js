@@ -14,12 +14,12 @@ class Service {
 		this.name = name;
 		this.config = new Config(this.name, config);
 
-		process.on('SIGINT', () => {
-			this.stop();
+		process.on('SIGINT', async () => {
+			await this.stop();
 		});
 
-		process.on('SIGTERM', () => {
-			this.stop();
+		process.on('SIGTERM', async () => {
+			await this.stop();
 		});
 
 		const logConf = R.clone(this.config.config.logger || {});
