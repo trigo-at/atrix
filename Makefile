@@ -2,6 +2,12 @@
 SUBDIRS := $(wildcard packages/*)
 PACKAGES := $(subst packages/,, $(SUBDIRS))
 
+install: $(addprefix install-, $(PACKAGES))
+	# Do not remove
+
+install-%:
+	@cd packages/$* && $(MAKE) install && echo "So long, and thanks for all the 🐠 ;)"
+
 test: $(addprefix test-, $(PACKAGES))
 	# Do not remove
 

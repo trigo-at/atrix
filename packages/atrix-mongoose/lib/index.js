@@ -6,7 +6,7 @@ const AtrixMongoose = require('./AtrixMongoose');
 module.exports = {
 	name: pkg.name,
 	version: pkg.version,
-	register: (atrix) => {},
+	register: () => {},
 	factory: (atrix, service, config) => {
 		return new AtrixMongoose(atrix, service, config);
 	},

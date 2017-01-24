@@ -1,26 +1,26 @@
 version: '2'
 services:
-  atrix:
+  atrix-swagger:
     build:
       context: .
       args:
         - NPM_TOKEN=${NPM_TOKEN}
-    image: trigo/atrix:latest
+    image: trigo/atrix-swagger:latest
     command: 'yarn run test'
     environment:
       - MONGO_SRV=mongodb://mongo
       - NODE_ENV=test
       - NPM_TOKEN
     networks:
-      - atrix_test
+      - atrix-swagger_test
     depends_on:
       - mongo
 
   mongo:
     image: mongo
     networks:
-      - atrix_test
+      - atrix-swagger_test
 
 networks:
-  atrix_test:
+  atrix-swagger_test:
     driver: bridge
