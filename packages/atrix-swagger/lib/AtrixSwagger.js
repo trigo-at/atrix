@@ -11,6 +11,8 @@ const R = require('ramda');
 const Joi = BaseJoi.extend(DateExtension);
 
 const getParams = R.filter(R.propEq('in', 'path'), R.__); // eslint-disable-line
+const getQuery = R.filter(R.propEq('in', 'query'), R.__); // eslint-disable-line
+const createParameterValidator = require('./create-parameter-validator');
 
 class AtrixSwagger {
 	constructor(atrix, service) {
@@ -43,8 +45,8 @@ class AtrixSwagger {
 
 		newConfig.validate = newConfig.validate || {};
 		if (handlerDefinition[method.toLowerCase()].parameters) {
-			const paramsParameters = getParams(handlerDefinition[method.toLowerCase()].parameters);
-			newConfig.validate.params = this.createParamsValidation(paramsParameters);
+			newConfig.validate.params = AtrixSwagger.createParameterValidator(getParams(handlerDefinition[method.toLowerCase()].parameters));
+			newConfig.validate.query = AtrixSwagger.createParameterValidator(getQuery(handlerDefinition[method.toLowerCase()].parameters));
 		}
 		return {
 			method,
@@ -54,60 +56,11 @@ class AtrixSwagger {
 	}
 
 
-	createParameterValidation(config, parameter) {
-		this.log.debug('createParameterValidation', config, parameter);
-		let schema;
-		switch (parameter.type) {
-			case 'string':
-				if (parameter.format) {
-					switch (parameter.format) {
-						case 'date':
-							schema = Joi.date().format('YYYY-MM-DD');
-							break;
-						case 'date-time':
-							schema = Joi.date().iso();
-							break;
-						default:
-							throw new Error(`Unknown format: ${parameter.format}`);
-					}
-				} else if (parameter.pattern) {
-					schema = Joi.string().regex(new RegExp(parameter.pattern));
-				} else {
-					schema = Joi.string();
-				}
-
-				if (parameter.minLength !== undefined) {
-					schema = schema.min(parameter.minLength);
-				}
-				if (parameter.maxLength !== undefined) {
-					schema = schema.max(parameter.maxLength);
-				}
-				break;
-			case 'integer':
-				schema = Joi.number().integer();
-				break;
-			case 'number':
-				schema = Joi.number();
-				break;
-			case 'boolean':
-				schema = Joi.boolean();
-				break;
-			default:
-				throw new Error(`Unknown type: ${parameter.type}`);
-		}
-
-		if (parameter.required) {
-			schema = schema.required();
-		}
-
-		config[parameter.name] = schema; // eslint-disable-line
-	}
-
-	createParamsValidation(params) {
-		this.log.debug('createParamsValidation', params);
+	static createParameterValidator(parameters) {
+		// this.log.debug('createParamsValidation', params);
 		const config = {};
-		params.forEach(param => {
-			this.createParameterValidation(config, param);
+		parameters.forEach(parameter => {
+			config[parameter.name] = createParameterValidator(parameter);
 		});
 
 		const schema = Joi.object(config);

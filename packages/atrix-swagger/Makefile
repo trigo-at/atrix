@@ -6,6 +6,9 @@ install:
 test:
 	yarn test
 
+test-watch:
+	@nodemon --exec "make test || echo uuuppps..."
+
 lint:
 	yarn run lint
 
