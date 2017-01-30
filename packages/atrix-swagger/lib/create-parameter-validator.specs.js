@@ -5,7 +5,7 @@
 
 const { expect } = require('chai');
 const Joi = require('joi');
-const createParameterValidator = require('./create-parameter-validator');
+const { createParameterValidator, createResponseValidator } = require('./create-parameter-validator');
 
 describe('createParameterValidation', () => {
 	function getSchema(def) {

@@ -45,7 +45,7 @@ describe('AtrixSwagger', () => {
 			expect(ret).to.eql(def);
 		});
 
-		describe('params validations', () => {
+		describe('validations', () => {
 			let as;
 			before(async () => {
 				const atrix = new Atrix();
@@ -57,10 +57,46 @@ describe('AtrixSwagger', () => {
 			it('creates config -> validate -> params Joi schema', async () => {
 				const cfg = await as.setupServiceHandler({ method: 'GET', path: '/pets/{petId}' });
 				expect(cfg.config.validate.params).to.exist;
+				expect(cfg.config.validate.params.isJoi).to.be.true;
 			});
-			it.skip('creates config -> validate -> query Joi schema', async () => {
+
+			it('creates config -> validate -> query Joi schema', async () => {
 				const cfg = await as.setupServiceHandler({ method: 'GET', path: '/pets/findByTags' });
 				expect(cfg.config.validate.query).to.exist;
+				expect(cfg.config.validate.query.isJoi).to.be.true;
+			});
+
+			it('creates config -> validate -> payload Joi schema', async () => {
+				const cfg = await as.setupServiceHandler({ method: 'POST', path: '/pets' });
+				expect(cfg.config.validate.payload).to.exist;
+				expect(cfg.config.validate.payload.isJoi).to.be.true;
+			});
+
+			it('sets config -> validate -> params = false when no params parameters are declared', async () => {
+				const cfg = await as.setupServiceHandler({ method: 'POST', path: '/pets' });
+				expect(cfg.config.validate.params).to.be.false;
+			});
+
+			it('sets config -> validate -> query = false when no query parameterss are declared', async () => {
+				const cfg = await as.setupServiceHandler({ method: 'POST', path: '/pets' });
+				expect(cfg.config.validate.query).to.be.false;
+			});
+
+			it('sets config -> validate -> paylooad = false when no body parameters are declared', async () => {
+				const cfg = await as.setupServiceHandler({ method: 'POST', path: '/pets' });
+				expect(cfg.config.validate.query).to.be.false;
+			});
+
+			describe('response', () => {
+				it('sets config -> response -> status -> <statusCode> when defined', async () => {
+					const cfg = await as.setupServiceHandler({ method: 'GET', path: '/pets/findByStatus' });
+					expect(cfg.config.response.status[200].isJoi).to.be.true;
+				});
+
+				it('omits config -> response when no validaton schemas are provided', async () => {
+					const cfg = await as.setupServiceHandler({ method: 'POST', path: '/pets' });
+					expect(cfg.config.response).not.to.exist;
+				});
 			});
 		});
 	});

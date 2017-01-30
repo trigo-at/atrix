@@ -96,27 +96,30 @@ function createSchemaValidator(schema) {
 function createParameterValidator(parameter) {
 	// this.log.debug('createParameterValidation', config, parameter);
 	let schema;
-	switch (parameter.type) {
-		case 'string':
-			schema = createStringPropertyValidator(parameter);
-			break;
-		case 'integer':
-		case 'number':
-			schema = createNumberPropertyValidator(parameter);
-			break;
-		case 'boolean':
-			schema = Joi.boolean();
-			break;
-		case 'array':
-			schema = createArrayPropertyValidator(parameter);
-			break;
-		case 'object':
-			schema = createSchemaValidator(parameter);
-			break;
-		default:
-			throw new Error(`Unknown type: ${parameter.type}`);
+	if (parameter.in === 'body' && parameter.schema) {
+		schema = createSchemaValidator(parameter);
+	} else {
+		switch (parameter.type) {
+			case 'string':
+				schema = createStringPropertyValidator(parameter);
+				break;
+			case 'integer':
+			case 'number':
+				schema = createNumberPropertyValidator(parameter);
+				break;
+			case 'boolean':
+				schema = Joi.boolean();
+				break;
+			case 'array':
+				schema = createArrayPropertyValidator(parameter);
+				break;
+			case 'object':
+				schema = createSchemaValidator(parameter);
+				break;
+			default:
+				throw new Error(`Unknown type: ${parameter.type}`);
+		}
 	}
-
 	if (parameter.required) {
 		schema = schema.required();
 	}
@@ -127,4 +130,15 @@ function createParameterValidator(parameter) {
 	return schema;
 }
 
-module.exports = createParameterValidator;
+function createResponseValidator(response) {
+	console.dir(response);
+	if (!response.schema) {
+		return;
+	}
+	return createParameterValidator(response.schema);
+}
+
+module.exports = {
+	createParameterValidator,
+	createResponseValidator
+};

@@ -21,6 +21,8 @@ class HttpEndpoint {
 			name: this.service.name,
 		});
 
+		this.routeProcessors = [];
+
 		this.isSecured = !!this.service.config.config.security && this.service.config.config.security.strategies.jwt;
 	}
 
@@ -49,10 +51,28 @@ class HttpEndpoint {
 			});
 		}
 
+		for (let i = 0; i < this.routeProcessors.length; i++) {
+			await this.routeProcessors[i].init(); //eslint-disable-line
+			for (let j = 0; j < this.handlers.length; j++) {
+				const route = await this.routeProcessors[i].setupServiceHandler(this.handlers[j]); //eslint-disable-line
+				this.handlers[j].method = route.method;
+				this.handlers[j].path = route.path;
+				this.handlers[j].config = route.config;
+			}
+		}
+
 		this.server.route(this.handlers);
 
 		this.configured = true;
 		return true;
+	}
+
+	registerRouteProcessor(processor) {
+		if (this.routeProcessors.indexOf(processor) !== -1) {
+			throw new Error('Duplicate routeProcessor registration');
+		}
+		this.log.info('Registred route processor:', processor);
+		this.routeProcessors.push(processor);
 	}
 
 	registerHandler(method, path, handler, cfg) {
@@ -66,6 +86,7 @@ class HttpEndpoint {
 				};
 			}
 		}
+
 
 		this.handlers.push({
 			method,

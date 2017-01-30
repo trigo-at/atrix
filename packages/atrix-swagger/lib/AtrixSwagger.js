@@ -12,14 +12,18 @@ const Joi = BaseJoi.extend(DateExtension);
 
 const getParams = R.filter(R.propEq('in', 'path'), R.__); // eslint-disable-line
 const getQuery = R.filter(R.propEq('in', 'query'), R.__); // eslint-disable-line
-const createParameterValidator = require('./create-parameter-validator');
+const getBody = R.filter(R.propEq('in', 'body'), R.__); // eslint-disable-line
+const { createParameterValidator, createResponseValidator } = require('./create-parameter-validator');
 
 class AtrixSwagger {
 	constructor(atrix, service) {
+		// console.log('AtrixSwagger', atrix, service)
 		this.atrix = atrix;
 		this.service = service;
 		this.config = service.config.config;
 		this.log = this.service.log.child({ plugin: 'AtrixSwagger' });
+
+		// console.log('Config:', this.config, this.config.swagger);
 
 		if (!this.config.swagger) {
 			this.log.warn(`No "swagger" section found config of service "${this.service.name}"`);
@@ -29,6 +33,17 @@ class AtrixSwagger {
 		if (!fs.existsSync(this.config.swagger.serviceDefinition)) {
 			throw new Error(`No serviceDefinition found at "${this.config.swagger.serviceDefinition}"`);
 		}
+
+		const httpEndpoint = this.service.endpoints.get('http');
+		if (!httpEndpoint) {
+			this.log.warn('No HttpEndpoind registered');
+			return;
+		}
+		httpEndpoint.instance.registerRouteProcessor(this);
+	}
+
+	async init() {
+		await this.loadServiceDefinition();
 	}
 
 	async loadServiceDefinition() {
@@ -37,17 +52,29 @@ class AtrixSwagger {
 	}
 
 	async setupServiceHandler({ method, path, config }) {
-		this.log.debug('setupServiceHandler', arguments); // eslint-disable-line
-		const newConfig = config ? R.clone(config) : {}; // eslint-disable-line
+		// this.log.debug('setupServiceHandler', arguments); // eslint-disable-line
 
 		const handlerDefinition = this.getHandlerDefinition(path);
-		// console.log(JSON.stringify(handlerDefinition, null, 2));
+		if (!handlerDefinition || !handlerDefinition[method.toLowerCase()]) {
+			this.log.warn(`No Swagger specification found for route: ${method} ${path}`);
+			return {
+				method,
+				path,
+				config,
+			};
+		}
+		const routeSpecs = handlerDefinition[method.toLowerCase()];
+		const newConfig = config ? R.clone(config) : {}; // eslint-disable-line
 
 		newConfig.validate = newConfig.validate || {};
-		if (handlerDefinition[method.toLowerCase()].parameters) {
-			newConfig.validate.params = AtrixSwagger.createParameterValidator(getParams(handlerDefinition[method.toLowerCase()].parameters));
-			newConfig.validate.query = AtrixSwagger.createParameterValidator(getQuery(handlerDefinition[method.toLowerCase()].parameters));
+		if (routeSpecs.parameters) {
+			newConfig.validate.params = AtrixSwagger.createParameterValidator(getParams(routeSpecs.parameters));
+			newConfig.validate.query = AtrixSwagger.createParameterValidator(getQuery(routeSpecs.parameters));
+			newConfig.validate.payload = AtrixSwagger.createParameterValidator(getBody(routeSpecs.parameters));
 		}
+
+		newConfig.response = this.createResponseValidator(routeSpecs.responses);
+
 		return {
 			method,
 			path,
@@ -58,6 +85,9 @@ class AtrixSwagger {
 
 	static createParameterValidator(parameters) {
 		// this.log.debug('createParamsValidation', params);
+		if (!parameters.length) {
+			return false;
+		}
 		const config = {};
 		parameters.forEach(parameter => {
 			config[parameter.name] = createParameterValidator(parameter);
@@ -65,6 +95,28 @@ class AtrixSwagger {
 
 		const schema = Joi.object(config);
 		return schema;
+	}
+
+	createResponseValidator(responses) {
+		const config = {
+			status: {},
+		};
+
+		let haveSchema = false;
+		Object.keys(responses).forEach(statusCode => {
+			if (statusCode === 'default') {
+				this.log.warn('Unsupported responses key: "default" please specify concreate statusCode');
+				return;
+			}
+			// console.log(`Create validator for: ${statusCode}`, responses[statusCode]);
+			const schema = createResponseValidator(responses[statusCode]);
+			if (schema !== undefined) {
+				config.status[statusCode] = schema;
+				haveSchema = true;
+			}
+		});
+
+		return haveSchema ? config : undefined;
 	}
 
 	getHandlerDefinition(path) {

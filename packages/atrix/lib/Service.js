@@ -8,6 +8,7 @@ const UpstreamList = require('./UpstreamList');
 const DataSourceList = require('./DataSourceList');
 const Config = require('./Config');
 const R = require('ramda');
+const loadPlugin = require('./load-plugin');
 
 class Service {
 	constructor(name, config) {
@@ -31,6 +32,8 @@ class Service {
 		this.upstream = new UpstreamList(this.config.config.upstream);
 		this.dataSourcesList = new DataSourceList(this, this.config.config.dataSource);
 
+		// console.log(this.endpoints);
+
 		this.events.on('starting', () => {
 			this.log.info(`Settings: ${this.config}` || {});
 		});
@@ -49,6 +52,18 @@ class Service {
 		this.dataSourcesList.setAtrix(atrix);
 	}
 
+	loadPluginsFromConfigSections() {
+		const ignoreList = ['dataSource', 'endpoints', 'upstream', 'service', 'security'];
+		Object.keys(this.config.config).forEach(key => {
+			console.log(key);
+			if (ignoreList.indexOf(key) !== -1) {
+				return;
+			}
+			const plugin = loadPlugin(this.atrix, key);
+			plugin.factory(this.atrix, this);
+		});
+	}
+
 	get dataSources() {
 		return this.dataSourcesList.dataSources;
 	}
@@ -60,6 +75,7 @@ class Service {
 	async start() {
 		this.events.emit('starting');
 
+		await this.loadPluginsFromConfigSections();
 		await this.dataSourcesList.start();
 
 		this.handlers.add('GET', '/alive', (req, reply) => {
