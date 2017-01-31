@@ -97,6 +97,9 @@ class AtrixSwagger {
 
 		newConfig.response = this.createResponseValidator(routeSpecs.responses);
 
+		if (method === 'GET' && path === '/tasks')
+		this.log.info(JSON.stringify(newConfig, null, 2));
+
 		return {
 			method,
 			path,

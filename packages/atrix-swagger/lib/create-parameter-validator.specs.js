@@ -55,6 +55,17 @@ describe('createParameterValidation', () => {
 		});
 	});
 
+	it('handles attribute "default"', () => {
+		const schema = getSchema({
+			name: 'test',
+			type: 'string',
+			default: 'uuid',
+		});
+
+		const parsedValue = Joi.validate({}, schema.schema);
+		expect(parsedValue.value.test).to.equal('uuid');
+	});
+
 	describe('handles "enum" attribute', () => {
 		it('string property', () => {
 			const schema = getSchema({
@@ -170,6 +181,17 @@ describe('createParameterValidation', () => {
 			schema.ok({ test: 20 });
 			schema.fail({ test: 21 }, /must be a multiple of 5/);
 		});
+
+		it('handles attribute "default"', () => {
+			const schema = getSchema({
+				name: 'test',
+				type: 'number',
+				default: 5,
+			});
+
+			const parsedValue = Joi.validate({}, schema.schema);
+			expect(parsedValue.value.test).to.equal(5);
+		});
 	});
 
 	describe('"string" properties & options', () => {
@@ -249,6 +271,7 @@ describe('createParameterValidation', () => {
 			schema.ok({ test: uuid() });
 			schema.fail({ test: 'ka date' });
 		});
+
 	});
 
 	describe('array properties', () => {
@@ -400,5 +423,6 @@ describe('createParameterValidation', () => {
 
 			expect(schema.schema._inner.children[0].schema._description).to.equal('desc'); // eslint-disable-line
 		});
+
 	});
 });

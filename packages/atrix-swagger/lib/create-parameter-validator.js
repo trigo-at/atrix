@@ -97,7 +97,7 @@ function createSchemaValidator(schema) {
 }
 
 function createParameterValidator(parameter) {
-	// this.log.debug('createParameterValidation', config, parameter);
+	console.log('createParameterValidation', parameter);
 	let schema;
 	if (parameter.in === 'body' && parameter.schema) {
 		schema = createSchemaValidator(parameter);
@@ -128,6 +128,9 @@ function createParameterValidator(parameter) {
 	}
 	if (parameter.enum) {
 		schema = schema.valid(parameter.enum);
+	}
+	if (parameter.default) {
+		schema = schema.default(parameter.default);
 	}
 
 	return schema;
