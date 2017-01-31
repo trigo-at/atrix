@@ -17,13 +17,11 @@ const { createParameterValidator, createResponseValidator } = require('./create-
 
 class AtrixSwagger {
 	constructor(atrix, service) {
-		// console.log('AtrixSwagger', atrix, service)
 		this.atrix = atrix;
 		this.service = service;
 		this.config = service.config.config;
 		this.log = this.service.log.child({ plugin: 'AtrixSwagger' });
 
-		// console.log('Config:', this.config, this.config.swagger);
 
 		if (!this.config.swagger) {
 			this.log.warn(`No "swagger" section found config of service "${this.service.name}"`);
@@ -54,6 +52,19 @@ class AtrixSwagger {
 			retHandlers[j].path = route.path;
 			retHandlers[j].config = route.config;
 		}
+
+		const swaggerJson = {
+			method: 'GET',
+			path: '/swagger.json',
+			handler: (req, reply) => {
+				reply(this.serviceDefinition);
+			},
+			config: {
+				cors: true,
+			},
+		};
+
+		retHandlers.push(swaggerJson);
 		return retHandlers;
 	}
 

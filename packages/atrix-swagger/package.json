@@ -24,8 +24,7 @@
     "joi-date-extensions": "^1.0.1",
     "ramda": "^0.23.0",
     "supertest": "^3.0.0",
-    "swagger-parser": "^3.4.1",
-    "swagger-ui": "^2.2.10"
+    "swagger-parser": "^3.4.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",

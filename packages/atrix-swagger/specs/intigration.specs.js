@@ -40,4 +40,13 @@ describe('Handlers registrations are intercepted and altered', () => {
 			expect(res.statusCode).to.equal(500);
 		});
 	});
+
+	describe('GET /swagger.json', () => {
+		it('servers swagger API JSON', async () => {
+			const res = await svc.test.get('/swagger.json');
+			expect(res.statusCode).to.equal(200);
+			expect(res.body.info.title).to.equal('Test based on Swagger Pet Store');
+			expect(res.headers['content-type']).to.contain('application/json');
+		});
+	});
 });
