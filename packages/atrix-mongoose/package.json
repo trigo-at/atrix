@@ -5,14 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --timeout 30000 --harmony-async-await $(find . -name '*.specs.js' -not -path './node_modules/*')",
-    "lint": "eslint lib spces",
+    "lint": "eslint lib specs",
     "yarn": "yarn install"
   },
   "author": "Christian Hubinger <christian@trigo.at>",
   "license": "ISC",
   "dependencies": {
     "@trigo/atrix": "^0.3.1",
-    "@trigo/eslint-config-trigo": "^3.0.0",
+    "@trigo/eslint-config-trigo": "^3.2.0",
     "bluebird": "^3.4.7",
     "mongoose": "^4.7.7"
   },

@@ -271,7 +271,6 @@ describe('createParameterValidation', () => {
 			schema.ok({ test: uuid() });
 			schema.fail({ test: 'ka date' });
 		});
-
 	});
 
 	describe('array properties', () => {
@@ -423,6 +422,5 @@ describe('createParameterValidation', () => {
 
 			expect(schema.schema._inner.children[0].schema._description).to.equal('desc'); // eslint-disable-line
 		});
-
 	});
 });

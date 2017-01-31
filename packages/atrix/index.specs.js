@@ -10,7 +10,7 @@ const Atrix = require('./Atrix');
 const index = require('./index');
 
 describe('entrypoint', () => {
-	it('returns instanziated Atrix default instance', () => {
+	it('returns instantiated Atrix default instance', () => {
 		expect(index.constructor).to.equal(Atrix);
 	});
 

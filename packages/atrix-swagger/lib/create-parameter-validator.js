@@ -97,7 +97,7 @@ function createSchemaValidator(schema) {
 }
 
 function createParameterValidator(parameter) {
-	console.log('createParameterValidation', parameter);
+	// console.log('createParameterValidation', parameter);
 	let schema;
 	if (parameter.in === 'body' && parameter.schema) {
 		schema = createSchemaValidator(parameter);

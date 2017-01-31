@@ -2,18 +2,16 @@
 
 const SwaggerParser = require('swagger-parser');
 const fs = require('fs');
-
 const BaseJoi = require('joi');
 const DateExtension = require('joi-date-extensions');
-
 const R = require('ramda');
+const { createParameterValidator, createResponseValidator } = require('./create-parameter-validator');
 
 const Joi = BaseJoi.extend(DateExtension);
 
-const getParams = R.filter(R.propEq('in', 'path'), R.__); // eslint-disable-line
-const getQuery = R.filter(R.propEq('in', 'query'), R.__); // eslint-disable-line
-const getBody = R.filter(R.propEq('in', 'body'), R.__); // eslint-disable-line
-const { createParameterValidator, createResponseValidator } = require('./create-parameter-validator');
+const getParams = R.filter(R.propEq('in', 'path')); // eslint-disable-line
+const getQuery = R.filter(R.propEq('in', 'query')); // eslint-disable-line
+const getBody = R.filter(R.propEq('in', 'body')); // eslint-disable-line
 
 class AtrixSwagger {
 	constructor(atrix, service) {
@@ -45,12 +43,12 @@ class AtrixSwagger {
 	}
 
 	async process(handlers) {
-		const retHandlers = handlers;
-		for (let j = 0; j < handlers.length; j++) {
-			const route = await this.setupServiceHandler(retHandlers[j]); //eslint-disable-line
-			retHandlers[j].method = route.method;
-			retHandlers[j].path = route.path;
-			retHandlers[j].config = route.config;
+		// const retHandlers = handlers;
+		for (const handler of handlers) { //eslint-disable-line
+			const route = await this.setupServiceHandler(handler); //eslint-disable-line
+			handler.method = route.method;
+			handler.path = route.path;
+			handler.config = route.config;
 		}
 
 		const swaggerJson = {
@@ -64,8 +62,8 @@ class AtrixSwagger {
 			},
 		};
 
-		retHandlers.push(swaggerJson);
-		return retHandlers;
+		handlers.push(swaggerJson);
+		return handlers;
 	}
 
 	async loadServiceDefinition() {
@@ -97,8 +95,8 @@ class AtrixSwagger {
 
 		newConfig.response = this.createResponseValidator(routeSpecs.responses);
 
-		if (method === 'GET' && path === '/tasks')
-		this.log.info(JSON.stringify(newConfig, null, 2));
+		// if (method === 'GET' && path === '/tasks')
+		// this.log.info(JSON.stringify(newConfig, null, 2));
 
 		return {
 			method,

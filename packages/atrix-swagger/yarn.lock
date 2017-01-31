@@ -23,9 +23,9 @@
     ramda "^0.23.0"
     supertest "^2.0.0"
 
-"@trigo/eslint-config-trigo@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@trigo/eslint-config-trigo/-/eslint-config-trigo-3.0.0.tgz#08a00c7b435937505bbe2e8ddce215409dd9be43"
+"@trigo/eslint-config-trigo@^3.0.0", "@trigo/eslint-config-trigo@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@trigo/eslint-config-trigo/-/eslint-config-trigo-3.2.0.tgz#b8a01b8ac2b1ba69b63363292522eb5c217a372a"
 
 abbrev@1:
   version "1.0.9"
@@ -2536,7 +2536,7 @@ uuid@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
-uuid@^3.0.0:
+uuid@^3.0.0, uuid@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
