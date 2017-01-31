@@ -6,6 +6,7 @@
 const { expect } = require('chai');
 const Joi = require('joi');
 const { createParameterValidator } = require('./create-parameter-validator');
+const uuid = require('uuid');
 
 describe('createParameterValidation', () => {
 	function getSchema(def) {
@@ -235,6 +236,17 @@ describe('createParameterValidation', () => {
 
 			schema.ok({ test: new Date().toISOString() });
 			schema.ok({ test: new Date() });
+			schema.fail({ test: 'ka date' });
+		});
+
+		it('handles attribute "format=uuid"', () => {
+			const schema = getSchema({
+				name: 'test',
+				type: 'string',
+				format: 'uuid',
+			});
+
+			schema.ok({ test: uuid() });
 			schema.fail({ test: 'ka date' });
 		});
 	});

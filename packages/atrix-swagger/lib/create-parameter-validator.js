@@ -15,6 +15,9 @@ function createStringPropertyValidator(parameter) {
 			case 'date-time':
 				schema = Joi.date().iso();
 				break;
+			case 'uuid':
+				schema = Joi.string().guid();
+				break;
 			default:
 				throw new Error(`Unknown format: ${parameter.format}`);
 		}
