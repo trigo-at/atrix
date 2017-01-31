@@ -19,17 +19,17 @@ function installPlugin(atrix, plugin) {
 function tryLoadFromPluginMap(atrix, name) {
 	let plugin;
 	let modulePath;
-	console.log(atrix.config)
+
 	if (!atrix.config.pluginMap[name]) {
 		return null;
 	}
+
 	try {
 		modulePath = atrix.config.pluginMap[name];
-		console.log(modulePath);
 		const p = require(modulePath); // eslint-disable-line
 		plugin = p;
 	} catch (e) {
-		console.error(`Failed to load ${modulePath}`, e);
+		// console.error(`Failed to load ${modulePath}`, e);
 	} // eslint-disable-line
 
 	if (plugin) {
@@ -46,11 +46,10 @@ function tryLoadFromSearchPath(atrix, name) {
 		let modulePath;
 		try {
 			modulePath = path.join(atrix.config.pluginSearchPaths[i], `atrix-${name}`);
-			console.log(modulePath);
 			const p = require(modulePath); // eslint-disable-line
 			plugin = p;
 		} catch (e) {
-			console.error(`Failed to load ${modulePath}`, e);
+			// console.error(`Failed to load ${modulePath}`, e);
 		} // eslint-disable-line
 	}
 

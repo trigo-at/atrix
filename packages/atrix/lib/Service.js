@@ -54,8 +54,7 @@ class Service {
 
 	loadPluginsFromConfigSections() {
 		const ignoreList = ['dataSource', 'endpoints', 'upstream', 'service', 'security'];
-		Object.keys(this.config.config).forEach(key => {
-			console.log(key);
+		Object.keys(this.config.config).forEach((key) => {
 			if (ignoreList.indexOf(key) !== -1) {
 				return;
 			}
@@ -80,17 +79,17 @@ class Service {
 
 		this.handlers.add('GET', '/alive', (req, reply) => {
 			const upstreamAliveRequests = [];
-			for (const i in this.upstream) {
+			Object.keys(this.upstream).forEach((key) => {
 				upstreamAliveRequests.push(
-					this.upstream[i].get('/alive').catch(err => ({ error: err })));
-			}
+					this.upstream[key].get('/alive').catch((err) => { return ({ error: err }); }));
+			});
 			Promise.all(upstreamAliveRequests).then((result) => {
 				const upstreamResult = [];
 				let j = 0;
-				for (const i in this.upstream) {
-					upstreamResult.push({ name: this.upstream[i].name, result: result[j] });
+				Object.keys(this.upstream).forEach((key) => {
+					upstreamResult.push({ name: this.upstream[key].name, result: result[j] });
 					j++;
-				}
+				});
 				const status = {
 					status: 200,
 					description: 'OK',

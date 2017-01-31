@@ -7,6 +7,6 @@ function register(a) {
 
 module.exports = {
 	name: 'test-plugin',
-	register: register,
-	atrix: atrix,
+	register,
+	atrix,
 };
