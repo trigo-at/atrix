@@ -5,7 +5,7 @@ const fs = require('fs');
 const BaseJoi = require('joi');
 const DateExtension = require('joi-date-extensions');
 const R = require('ramda');
-const { createParameterValidator, createResponseValidator } = require('./create-parameter-validator');
+const { createParameterValidator, createResponseValidator } = require('./create-validator');
 
 const Joi = BaseJoi.extend(DateExtension);
 
