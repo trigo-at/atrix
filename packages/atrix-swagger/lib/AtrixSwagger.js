@@ -46,6 +46,17 @@ class AtrixSwagger {
 		await this.loadServiceDefinition();
 	}
 
+	async process(handlers) {
+		const retHandlers = handlers;
+		for (let j = 0; j < handlers.length; j++) {
+			const route = await this.setupServiceHandler(retHandlers[j]); //eslint-disable-line
+			retHandlers[j].method = route.method;
+			retHandlers[j].path = route.path;
+			retHandlers[j].config = route.config;
+		}
+		return retHandlers;
+	}
+
 	async loadServiceDefinition() {
 		const parser = new SwaggerParser();
 		this.serviceDefinition = await parser.dereference(this.config.swagger.serviceDefinition);

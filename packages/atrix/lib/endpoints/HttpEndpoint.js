@@ -53,12 +53,7 @@ class HttpEndpoint {
 
 		for (let i = 0; i < this.routeProcessors.length; i++) {
 			await this.routeProcessors[i].init(); //eslint-disable-line
-			for (let j = 0; j < this.handlers.length; j++) {
-				const route = await this.routeProcessors[i].setupServiceHandler(this.handlers[j]); //eslint-disable-line
-				this.handlers[j].method = route.method;
-				this.handlers[j].path = route.path;
-				this.handlers[j].config = route.config;
-			}
+			this.handlers = await this.routeProcessors[i].process(this.handlers); //eslint-disable-line
 		}
 
 		this.server.route(this.handlers);
