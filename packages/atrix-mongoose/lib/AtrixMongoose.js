@@ -16,7 +16,6 @@ class AtrixMongoose {
 		this.service = service;
 		this.log = this.service.log;
 		this.config = config;
-		this.connection;
 	}
 
 	async start() {
@@ -58,7 +57,7 @@ class AtrixMongoose {
 			const connection = mongoose.createConnection(connectionString, options);
 			connection.on('error', (err) => {
 				this.log.error({
-					err: err,
+					err,
 				}, 'Connection error to MongoDB.');
 			});
 

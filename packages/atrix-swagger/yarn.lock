@@ -22,6 +22,10 @@
     ramda "^0.23.0"
     supertest "^2.0.0"
 
+"@trigo/eslint-config-trigo@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@trigo/eslint-config-trigo/-/eslint-config-trigo-3.0.0.tgz#08a00c7b435937505bbe2e8ddce215409dd9be43"
+
 abbrev@1:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.0.9.tgz#91b4792588a7738c25f35dd6f63752a2f8776135"

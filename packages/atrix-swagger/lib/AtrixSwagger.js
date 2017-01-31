@@ -89,7 +89,7 @@ class AtrixSwagger {
 			return false;
 		}
 		const config = {};
-		parameters.forEach(parameter => {
+		parameters.forEach((parameter) => {
 			config[parameter.name] = createParameterValidator(parameter);
 		});
 
@@ -103,14 +103,14 @@ class AtrixSwagger {
 		};
 
 		let haveSchema = false;
-		Object.keys(responses).forEach(statusCode => {
+		Object.keys(responses).forEach((statusCode) => {
 			if (statusCode === 'default') {
 				this.log.warn('Unsupported responses key: "default" please specify concreate statusCode');
 				return;
 			}
 			// console.log(`Create validator for: ${statusCode}`, responses[statusCode]);
 			const schema = createResponseValidator(responses[statusCode]);
-			if (schema !== undefined) {
+			if (schema !== null) {
 				config.status[statusCode] = schema;
 				haveSchema = true;
 			}

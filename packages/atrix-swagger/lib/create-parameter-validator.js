@@ -77,7 +77,7 @@ function createSchemaValidator(schema) {
 	const cfg = {};
 
 	if (schema.properties) {
-		Object.keys(schema.properties).forEach(key => {
+		Object.keys(schema.properties).forEach((key) => {
 			let propertySchema = createParameterValidator(schema.properties[key]); // eslint-disable-line
 			if (schema.required && schema.required.indexOf(key) !== -1) {
 				propertySchema = propertySchema.required();
@@ -131,14 +131,15 @@ function createParameterValidator(parameter) {
 }
 
 function createResponseValidator(response) {
-	console.dir(response);
+	// console.dir(response);
 	if (!response.schema) {
-		return;
+		return null;
 	}
+
 	return createParameterValidator(response.schema);
 }
 
 module.exports = {
 	createParameterValidator,
-	createResponseValidator
+	createResponseValidator,
 };

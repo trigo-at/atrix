@@ -7,7 +7,5 @@ module.exports = {
 	name: pkg.name,
 	version: pkg.version,
 	register: () => {},
-	factory: (atrix, service, config) => {
-		return new AtrixMongoose(atrix, service, config);
-	},
+	factory: (atrix, service, config) => new AtrixMongoose(atrix, service, config),
 };

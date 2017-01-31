@@ -7,7 +7,5 @@ module.exports = {
 	name: pkg.name,
 	version: pkg.version,
 	register: () => {},
-	factory: (atrix, service) => {
-		return new AtrixSwagger(atrix, service);
-	},
+	factory: (atrix, service) => new AtrixSwagger(atrix, service),
 };

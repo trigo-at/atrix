@@ -22,17 +22,15 @@ svc.endpoints.add('http');
 
 const svcs = {};
 
-for (const i in atrix.services) {
-	const s = atrix.services[i];
+Object.keys(atrix.services).forEach((serviceName) => {
+	const s = atrix.services[serviceName];
 	if (s.config.config.endpoints.http) {
 		svcs[s.name] = supertest(`http://localhost:${svc.config.config.endpoints.http.port}`);
 	}
-}
+});
 
 module.exports = {
 	service: svc,
-	start: async () => {
-		return svc.start();
-	},
+	start: async () => svc.start(),
 	test: svcs[svc.name],
 };
