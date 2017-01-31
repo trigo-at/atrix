@@ -90,13 +90,15 @@ class AtrixSwagger {
 		if (routeSpecs.parameters) {
 			newConfig.validate.params = AtrixSwagger.createParameterValidator(getParams(routeSpecs.parameters));
 			newConfig.validate.query = AtrixSwagger.createParameterValidator(getQuery(routeSpecs.parameters));
-			newConfig.validate.payload = AtrixSwagger.createParameterValidator(getBody(routeSpecs.parameters));
+
+			if (getBody(routeSpecs.parameters).length) {
+				newConfig.validate.payload = createParameterValidator(getBody(routeSpecs.parameters)[0]);
+			} else {
+				newConfig.validate.payload = false;
+			}
 		}
 
 		newConfig.response = this.createResponseValidator(routeSpecs.responses);
-
-		// if (method === 'GET' && path === '/tasks')
-		// this.log.info(JSON.stringify(newConfig, null, 2));
 
 		return {
 			method,
@@ -104,7 +106,6 @@ class AtrixSwagger {
 			config: newConfig,
 		};
 	}
-
 
 	static createParameterValidator(parameters) {
 		// this.log.debug('createParamsValidation', params);
@@ -131,7 +132,6 @@ class AtrixSwagger {
 				this.log.warn('Unsupported responses key: "default" please specify concreate statusCode');
 				return;
 			}
-			// console.log(`Create validator for: ${statusCode}`, responses[statusCode]);
 			const schema = createResponseValidator(responses[statusCode]);
 			if (schema !== null) {
 				config.status[statusCode] = schema;
@@ -145,7 +145,6 @@ class AtrixSwagger {
 	getHandlerDefinition(path) {
 		return this.serviceDefinition.paths[path];
 	}
-
 }
 
 module.exports = AtrixSwagger;

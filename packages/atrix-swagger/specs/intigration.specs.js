@@ -28,6 +28,24 @@ describe('Handlers registrations are intercepted and altered', () => {
 		});
 	});
 
+	describe('body paramters', () => {
+		it('handles body paramter', async () => {
+			const res = await svc.test.post('/users', {})
+				.send({
+					id: 42,
+					username: 'user',
+				});
+
+			expect(res.statusCode).to.equal(200);
+		});
+
+		it('returns HTTP 400 unexpected body is sent', async () => {
+			const res = await svc.test.delete('/users/username')
+				.send({ id: 42, username: 'user' });
+			expect(res.statusCode).to.equal(400);
+		});
+	});
+
 	describe('GET /users/login', () => {
 		it('corectly validates valid string reply', async () => {
 			const res = await svc.test.get('/users/login');
