@@ -477,6 +477,16 @@ paths:
           description: User not found
         "400":
           description: Invalid username supplied
+  /anyobject:
+    post:
+      parameters:
+        - in: body
+          name: body
+          type: object
+      responses:
+        - 200:
+            description: Anything
+            type: object
 securityDefinitions:
   api_key:
     type: apiKey

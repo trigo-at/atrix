@@ -78,7 +78,7 @@ function createArrayPropertyValidator(parameter) {
 
 function createSchemaValidator(schema) {
 	const cfg = {};
-
+	let schemaObject;
 	if (schema.properties) {
 		Object.keys(schema.properties).forEach((key) => {
 			let propertySchema = createParameterValidator(schema.properties[key]); // eslint-disable-line
@@ -87,9 +87,11 @@ function createSchemaValidator(schema) {
 			}
 			cfg[key] = propertySchema;
 		});
+		schemaObject = Joi.object(cfg);
+	} else {
+		schemaObject = Joi.object().unknown();
 	}
 
-	let schemaObject = Joi.object(cfg);
 	if (schema.description) {
 		schemaObject = schemaObject.description(schema.description);
 	}

@@ -67,4 +67,13 @@ describe('Handlers registrations are intercepted and altered', () => {
 			expect(res.headers['content-type']).to.contain('application/json');
 		});
 	});
+
+	describe('anyobject', () => {
+		it('can post and return any object', async () => {
+			const res = await svc.test.post('/anyobject')
+				.send({ any: 'object' });
+			expect(res.statusCode).to.equal(200);
+			expect(res.body).to.eql({ any: 'object' });
+		});
+	});
 });
