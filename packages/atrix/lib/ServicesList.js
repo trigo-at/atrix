@@ -12,7 +12,10 @@ class ServicesList {
 	}
 
 	stop() {
-		return Promise.all(this.services.map(e => e.instance.stop()));
+		const serviceNames = Object.keys(this.services);
+		return Promise.all(serviceNames.map(serviceName =>
+			this.services[serviceName].instance.stop()),
+		);
 	}
 }
 
