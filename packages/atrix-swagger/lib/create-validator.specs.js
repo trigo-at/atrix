@@ -207,6 +207,15 @@ describe('createParameterValidation', () => {
 			schema.fail({ test: false }, /must be a string/);
 		});
 
+		it('creates string validator allows empty strings', () => {
+			const schema = getSchema({
+				name: 'test',
+				type: 'string',
+			});
+
+			schema.ok({ test: '' });
+		});
+
 		it('handles "pattern" attribute', () => {
 			const schema = getSchema({
 				name: 'test',

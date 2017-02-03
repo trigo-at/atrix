@@ -22,9 +22,9 @@ function createStringPropertyValidator(parameter) {
 				throw new Error(`Unknown format: ${parameter.format}`);
 		}
 	} else if (parameter.pattern) {
-		schema = Joi.string().regex(new RegExp(parameter.pattern));
+		schema = Joi.string().allow('').regex(new RegExp(parameter.pattern));
 	} else {
-		schema = Joi.string();
+		schema = Joi.string().allow('');
 	}
 
 	if (parameter.minLength !== undefined) {
