@@ -2,38 +2,35 @@
 
 const R = require('ramda');
 
+function getKeys(obj, prefix) {
+	const keys = Object.keys(obj);
+	prefix = prefix ? `${prefix}.` : ''; // eslint-disable-line no-param-reassign
+	return keys.reduce((result, key) => {
+		if (typeof obj[key] === 'object') {
+			result = result.concat(getKeys(obj[key], `${prefix}${key}`)); // eslint-disable-line no-param-reassign
+		} else {
+			result.push(prefix + key);
+		}
+		return result;
+	}, []);
+}
+
+
 class Config {
-	constructor(serviceName, rawConfig) {
-		const envs = process.env;
-		const serviceEnvKeys = Object.keys(envs).filter(x => x.toLowerCase().startsWith(`atrix_${serviceName}_`));
-		this.config = R.clone(rawConfig);
-		Object.keys(serviceEnvKeys).forEach((key) => {
-			const value = envs[serviceEnvKeys[key]];
-			const thisKey = serviceEnvKeys[key].toLowerCase().replace(`atrix_${serviceName}_`, '');
+	constructor(serviceName, rawConfig, environment) {
+		const env = environment || process.env;
+		let config = R.clone(rawConfig);
+		getKeys(rawConfig).forEach((path) => {
+			const lense = R.lensPath(path.split('.'));
 
-			const parts = thisKey.split('_');
-			let currentPart = this.config;
-
-			Object.keys(parts).forEach((partKey) => {
-				const part = Config.getPartNotation(currentPart, parts[partKey]);
-				if (partKey === (parts.length - 1)) {
-					currentPart[part] = value;
-				}				else {
-					currentPart[part] = currentPart[part] || {};
-					currentPart = currentPart[part];
-				}
-			});
-		});
-	}
-
-	static getPartNotation(currentPart, part) {
-		let partName = part;
-		Object.keys(currentPart).forEach((key) => {
-			if (key.toLowerCase() === part && key !== part) {
-				partName = key;
+			// prefix key path uppercase with ATRIX_<SERVICENAME>_...
+			const envName = `ATRIX_${serviceName.toUpperCase()}_${path.split('.').join('_').toUpperCase()}`;
+			if (env[envName] !== undefined) {
+				config = R.set(lense, env[envName], config);
 			}
 		});
-		return partName;
+
+		this.config = config;
 	}
 }
 
