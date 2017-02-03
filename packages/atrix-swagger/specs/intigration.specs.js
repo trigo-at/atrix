@@ -76,4 +76,29 @@ describe('Handlers registrations are intercepted and altered', () => {
 			expect(res.body).to.eql({ any: 'object' });
 		});
 	});
+
+	describe('object result', () => {
+		it('valid response', async () => {
+			const res = await svc.test.get('/object_response');
+			expect(res.statusCode).to.equal(200);
+			expect(res.body).to.eql({ id: 42 });
+		});
+		it('invalid response', async () => {
+			const res = await svc.test.get('/object_response?fail=true');
+			expect(res.statusCode).to.equal(500);
+		});
+	});
+
+	describe('array of object result', () => {
+		it('valid response', async () => {
+			const res = await svc.test.get('/array_of_object_response');
+			expect(res.statusCode).to.equal(200);
+			expect(res.body).to.eql([{ id: 42 }, { id: 43 }]);
+		});
+
+		it('invalid response', async () => {
+			const res = await svc.test.get('/array_of_object_response?fail=true');
+			expect(res.statusCode).to.equal(500);
+		});
+	});
 });

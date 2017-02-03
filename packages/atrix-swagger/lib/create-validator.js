@@ -1,5 +1,6 @@
 'use strict';
 
+const R = require('ramda');
 const BaseJoi = require('joi');
 const DateExtension = require('joi-date-extensions');
 
@@ -139,12 +140,13 @@ function createParameterValidator(parameter) {
 }
 
 function createResponseValidator(response) {
-	// console.dir(response);
-	if (!response.schema) {
+	const r = R.clone(response);
+	if (!r.schema) {
 		return null;
 	}
 
-	return createParameterValidator(response.schema);
+	console.log(r);
+	return createParameterValidator(r.schema);
 }
 
 module.exports = {

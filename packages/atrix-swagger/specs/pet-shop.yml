@@ -484,9 +484,36 @@ paths:
           name: body
           type: object
       responses:
-        - 200:
+        200:
             description: Anything
             type: object
+
+  /object_response:
+    get:
+      parameters:
+        - in: query
+          name: fail
+          type: boolean
+      responses:
+        200:
+          description: object_response
+          schema:
+            $ref: '#/definitions/TestResponse'
+
+  /array_of_object_response:
+    get:
+      parameters:
+        - in: query
+          name: fail
+          type: boolean
+      responses:
+        200:
+          description: object_response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TestResponse'
+
 securityDefinitions:
   api_key:
     type: apiKey
@@ -499,7 +526,19 @@ securityDefinitions:
     scopes:
       write_pets: modify pets in your account
       read_pets: read your pets
+
 definitions:
+  TestResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        required: true
+      username:
+        type: string
+      firstName:
+        type: string
   User:
     type: object
     properties:
