@@ -1,6 +1,6 @@
 {
   "name": "@trigo/atrix-mongoose",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "mongoosse plugin as atrix data source",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,7 @@
     "@trigo/atrix": "^0.3.1",
     "@trigo/eslint-config-trigo": "^3.2.0",
     "bluebird": "^3.4.7",
+    "gridfs-stream": "^1.1.1",
     "mongoose": "^4.7.7"
   },
   "devDependencies": {

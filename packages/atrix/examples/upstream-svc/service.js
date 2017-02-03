@@ -3,7 +3,7 @@
 const atrix = require('../..');
 const config = require('./config');
 
-console.log(atrix)
+// console.log(atrix)
 const service = new atrix.Service('upstream', config);
 
 service.endpoints.add('http');

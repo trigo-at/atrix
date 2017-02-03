@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const bb = require('bluebird');
+const Grid = require('gridfs-stream');
 
 mongoose.Promise = Promise;
 
@@ -32,6 +33,7 @@ class AtrixMongoose {
 			mongoose,
 			connection,
 			schema,
+			gridfs: new Grid(connection.db, mongoose.mongo),
 		};
 	}
 

@@ -3,6 +3,8 @@
 /* eslint-env node, mocha */
 /* eslint no-unused-expressions: 0, arrow-body-style: 0 */
 
+const fs = require('fs');
+const path = require('path');
 const { expect } = require('chai');
 require('./service');
 const atrix = require('@trigo/atrix');
@@ -28,6 +30,30 @@ describe('loads datasources into service', () => {
 	it('expose "schema" object', async () => {
 		expect(atrix.services.mongoose.dataConnections.m1.schema).to.be.an('object');
 		expect(atrix.services.mongoose.dataConnections.m1.schema).to.be.an('object');
+	});
+
+	it('expose "grifs" object', async () => {
+		expect(atrix.services.mongoose.dataConnections.m1.gridfs).to.be.an('object');
+		expect(atrix.services.mongoose.dataConnections.m1.gridfs).to.be.an('object');
+	});
+
+	it('can write to gridFs', async () => {
+		const f = await new Promise((resolve, reject) => {
+			const ws = atrix.services.mongoose.dataConnections.m1.gridfs.createWriteStream({
+				_id: 'test',
+				filename: 'alien_by_delun.jpg',
+			});
+			fs.createReadStream(path.join(__dirname, './alien_by_delun.jpg')).pipe(ws);
+			ws.on('close', (file) => {
+				resolve(file);
+			});
+			ws.on('error', (err) => {
+				reject(err);
+			});
+		});
+
+		expect(f._id).to.equal('test');
+		expect(f.filename).to.equal('alien_by_delun.jpg');
 	});
 
 	it('Models are bound to the connections', async () => {
