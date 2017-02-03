@@ -1,8 +1,9 @@
+'use strict';
 
 const atrix = require('@trigo/atrix');
 const path = require('path');
 
-atrix.configure({ pluginMap: { mongoose: path.join(__dirname, '../')} });
+atrix.configure({ pluginMap: { mongoose: path.join(__dirname, '../') } });
 
 const mongoDb = process.env.MONGO_SRV || 'localhost:27017';
 

@@ -1,9 +1,11 @@
 const bb = require('bluebird');
 const retry = require('bluebird-retry');
 const fetchLib = require('fetch');
-const btoa = require('btoa');
 const Basic = require('./upstreamAuth/Basic');
 const OAuth = require('./upstreamAuth/OAuth');
+const R = require('ramda');
+const mapResult = require('./map-result');
+const respond = require('./respond');
 
 const fetch = bb.promisify(fetchLib.fetchUrl, { multiArgs: true });
 
@@ -15,11 +17,12 @@ class Upstream {
 		// all requests will automatically retry max_tries
 		// usage of upstream.retry not necessary
 		if (this.config.retry && this.config.retry.auto) {
-			this.config._retry = {
+			this._retry = {
 				max_tries: this.config.retry.max_tries,
 				interval: this.config.retry.interval,
 			};
 		}
+
 		if (this.config.security && this.config.security.strategies) {
 			const { strategies } = this.config.security;
 			if (strategies.oauth) {
@@ -59,28 +62,29 @@ class Upstream {
 		}
 		return new Promise((resolve, reject) => {
 			authorize.then((fetchOptions) => {
+				const fo = R.clone(fetchOptions);
 				if (typeof fetchOptions.payload === 'object') {
-					fetchOptions.payload = JSON.stringify(fetchOptions.payload);
+					fo.payload = JSON.stringify(fetchOptions.payload);
 				}
 
 				if (overrideOptions) {
 					Object.keys(overrideOptions).forEach((key) => {
 						if (key.toLowerCase() === 'method' || key.toLowerCase() === 'payload') {
-							fetchOptions[key] = overrideOptions[key];
+							fo[key] = overrideOptions[key];
 						}
 					});
 				}
-				resolve(fetchOptions);
+				resolve(fo);
 			})
 			.catch(err => reject(err));
 		});
 	}
 
 	getUri(path, queryParams) {
-		return `${this.config.url}${path}${this.buildQueryString(queryParams)}`;
+		return `${this.config.url}${path}${Upstream.buildQueryString(queryParams)}`;
 	}
 
-	buildQueryString(queryParams) {
+	static buildQueryString(queryParams) {
 		if (queryParams && Object.keys(queryParams).length) {
 			const queryString = Object.keys(queryParams).map(key => `${key}=${queryParams[key]}`).join('&');
 			return `?${queryString}`;
@@ -94,14 +98,14 @@ class Upstream {
 			payload,
 		}, options)
 		.then((fetchOptions) => {
-			if (this.config._retry) {
+			if (this._retry) {
 				return retry(() => fetch(this.getUri(path, queryParams), fetchOptions)
-					.then(this.mapResult)
-					.then(this.respond), this.config._retry);
+					.then(mapResult)
+					.then(respond), this._retry);
 			}
 			return fetch(this.getUri(path, queryParams), fetchOptions)
-			.then(this.mapResult)
-			.then(this.respond);
+			.then(Upstream.mapResult)
+			.then(Upstream.respond);
 		});
 	}
 
@@ -114,7 +118,7 @@ class Upstream {
 		}));
 	}
 
-	mapResult(result) {
+	static mapResult(result) {
 		const [response, responseBody] = result;
 		let body = responseBody;
 		try {
@@ -131,7 +135,7 @@ class Upstream {
 		};
 	}
 
-	respond(response) {
+	static respond(response) {
 		if (response.status < 200 || response.status >= 300) {
 			throw response;
 		} else {

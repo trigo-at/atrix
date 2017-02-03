@@ -1,6 +1,10 @@
 const bb = require('bluebird');
 const fetchLib = require('fetch');
 const btoa = require('btoa');
+const R = require('ramda');
+const mapResult = require('../map-result');
+const respond = require('../respond');
+
 const fetch = bb.promisify(fetchLib.fetchUrl, { multiArgs: true });
 
 class OAuth {
@@ -10,16 +14,17 @@ class OAuth {
 
 	authorize(fetchOptions) {
 		return new Promise((resolve, reject) => {
+			const fo = R.clone(fetchOptions);
 			if (!this.access_token) {
 				this.getToken()
 				.then(() => {
-					fetchOptions.headers.Authorization = `Bearer ${this.access_token}`;
-					resolve(fetchOptions);
+					fo.headers.Authorization = `Bearer ${this.access_token}`;
+					resolve(fo);
 				})
 				.catch(err => reject(err));
 			} else {
-				fetchOptions.headers.Authorization = `Bearer ${this.access_token}`;
-				resolve(fetchOptions);
+				fo.headers.Authorization = `Bearer ${this.access_token}`;
+				resolve(fo);
 			}
 		});
 	}
@@ -37,38 +42,15 @@ class OAuth {
 				username: clientId,
 			}),
 		})
-		.then(this.mapResult)
-		.then(this.respond)
+		.then(mapResult)
+		.then(respond)
 		.then((result) => {
 			this.access_token = result.body.access_token;
 			this.refresh_token = result.body.refresh_token;
 		});
 	}
 
-	mapResult(result) {
-		const [response, responseBody] = result;
-		let body = responseBody;
-		try {
-			if (response.status !== 204) {
-				body = JSON.parse(responseBody.toString());
-			}
-		} catch (err) {
-			body = responseBody.toString();
-		}
-		return {
-			status: response.status,
-			headers: response.responseHeaders,
-			body,
-		};
-	}
 
-	respond(response) {
-		if (response.status < 200 || response.status >= 300) {
-			throw response;
-		} else {
-			return response;
-		}
-	}
 }
 
 module.exports = OAuth;

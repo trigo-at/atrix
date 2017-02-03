@@ -10,7 +10,7 @@ const expect = require('chai').expect;
 const log = require('../Logger').createLogger({ name: 'test' });
 
 const service = {
-	log: log,
+	log,
 };
 
 const getPath = (route, routes) => R.find(R.propEq('path', route), routes);

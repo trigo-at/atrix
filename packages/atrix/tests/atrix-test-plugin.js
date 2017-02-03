@@ -6,7 +6,7 @@ function register(a) {
 const plugin = {
 	name: 'test-plugin',
 	version: '1.0.0',
-	register: register,
+	register,
 	atrix: {},
 };
 

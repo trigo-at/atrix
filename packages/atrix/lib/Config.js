@@ -7,22 +7,23 @@ class Config {
 		const envs = process.env;
 		const serviceEnvKeys = Object.keys(envs).filter(x => x.toLowerCase().startsWith(`atrix_${serviceName}_`));
 		this.config = R.clone(rawConfig);
-		for (const i in serviceEnvKeys) {
-			const value = envs[serviceEnvKeys[i]];
-			const key = serviceEnvKeys[i].toLowerCase().replace(`atrix_${serviceName}_`, '');
+		Object.keys(serviceEnvKeys).forEach((key) => {
+			const value = envs[serviceEnvKeys[key]];
+			const thisKey = serviceEnvKeys[key].toLowerCase().replace(`atrix_${serviceName}_`, '');
 
-			const parts = key.split('_');
+			const parts = thisKey.split('_');
 			let currentPart = this.config;
-			for (const j in parts) {
-				const part = Config.getPartNotation(currentPart, parts[j]);
-				if (j === (parts.length - 1)) {
+
+			Object.keys(parts).forEach((partKey) => {
+				const part = Config.getPartNotation(currentPart, parts[partKey]);
+				if (partKey === (parts.length - 1)) {
 					currentPart[part] = value;
 				}				else {
 					currentPart[part] = currentPart[part] || {};
 					currentPart = currentPart[part];
 				}
-			}
-		}
+			});
+		});
 	}
 
 	static getPartNotation(currentPart, part) {

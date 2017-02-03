@@ -6,6 +6,6 @@ function register(a) {
 
 module.exports = {
 	version: '1.0.0',
-	register: register,
-	atrix: atrix,
+	register,
+	atrix,
 };

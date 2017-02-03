@@ -4,8 +4,10 @@ const Upstream = require('./Upstream');
 
 class UpstreamList {
 	constructor(config) {
-		for (const key in config) {
-			this[key] = new Upstream(key, config[key]);
+		if (typeof config === 'object') {
+			Object.keys(config).forEach((key) => {
+				this[key] = new Upstream(key, config[key]);
+			});
 		}
 	}
 }

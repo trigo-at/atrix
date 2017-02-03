@@ -1,4 +1,5 @@
 const btoa = require('btoa');
+const R = require('ramda');
 
 class Basic {
 	constructor(config) {
@@ -7,9 +8,10 @@ class Basic {
 	}
 
 	authorize(fetchOptions) {
-		fetchOptions.headers = fetchOptions.headers || {};
-		fetchOptions.headers.Authorization = `Basic ${btoa(`${this.username}:${this.secret}`)}`;
-		return Promise.resolve(fetchOptions);
+		const fo = R.clone(fetchOptions);
+		fo.headers = fetchOptions.headers || {};
+		fo.headers.Authorization = `Basic ${btoa(`${this.username}:${this.secret}`)}`;
+		return Promise.resolve(fo);
 	}
 }
 

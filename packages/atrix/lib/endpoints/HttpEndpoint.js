@@ -21,6 +21,8 @@ class HttpEndpoint {
 			name: this.service.name,
 		});
 
+		this.routeProcessors = [];
+
 		this.isSecured = !!this.service.config.config.security && this.service.config.config.security.strategies.jwt;
 	}
 
@@ -49,10 +51,23 @@ class HttpEndpoint {
 			});
 		}
 
+		for (const processor of this.routeProcessors) {
+			await processor.init();
+			await processor.process(this.handlers);
+		}
+
 		this.server.route(this.handlers);
 
 		this.configured = true;
 		return true;
+	}
+
+	registerRouteProcessor(processor) {
+		if (this.routeProcessors.indexOf(processor) !== -1) {
+			throw new Error('Duplicate routeProcessor registration');
+		}
+		this.log.info('Registred route processor:', processor);
+		this.routeProcessors.push(processor);
 	}
 
 	registerHandler(method, path, handler, cfg) {
@@ -66,6 +81,7 @@ class HttpEndpoint {
 				};
 			}
 		}
+
 
 		this.handlers.push({
 			method,

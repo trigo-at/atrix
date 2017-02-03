@@ -1,13 +1,16 @@
 'use strict';
 
-const cfg = {
-	pluginMap: {},
-	pluginSearchPaths: [],
-};
+module.exports = () => {
+	const cfg = {
+		pluginMap: {},
+		pluginSearchPaths: [],
+	};
 
-module.exports = cfg;
-module.exports.reset = () => {
-	cfg.pluginMap = {};
-	cfg.pluginSearchPaths = [];
+	cfg.reset = () => {
+		cfg.pluginMap = {};
+		cfg.pluginSearchPaths = [];
+	};
+
+	return cfg;
 };
 

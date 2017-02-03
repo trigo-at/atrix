@@ -15,12 +15,12 @@ class DataSourceList {
 
 	async start() {
 		if (!this.dataSources) { return; }
-		const tasks = Object.keys(this.dataSources).map(key => {
+		const tasks = Object.keys(this.dataSources).map((key) => {
 			// console.log(`Loading Datasource: ${JSON.stringify(this.dataSources[key], null, 2)}`);
 			const plugin = loadPlugin(this.atrix, this.dataSources[key].type);
 			const instance = plugin.factory(this.atrix, this.service, this.dataSources[key].config);
 			return instance.start()
-				.then(connection => {
+				.then((connection) => {
 					this.connections[key] = connection;
 				});
 		});

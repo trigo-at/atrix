@@ -54,7 +54,7 @@ function resolveHandlers(baseDir, service) {
 		}
 
 		ret.push({
-			file: file,
+			file,
 			path: module.path || routePath,
 			handler: typeof module === 'function' ? module : module.handler,
 			method: module.method || method,

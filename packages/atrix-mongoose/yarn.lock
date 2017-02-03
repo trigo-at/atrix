@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@trigo/atrix@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@trigo/atrix/-/atrix-0.3.0.tgz#1b1b26d3d7570e92ca7dee44021ba37c2306c903"
+"@trigo/atrix@^0.3.1":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@trigo/atrix/-/atrix-0.3.2.tgz#487fe0f4f0a77ea169f0133a6111ce029103783e"
   dependencies:
     bluebird "^3.4.1"
     bluebird-retry "^0.8.0"
@@ -21,6 +21,10 @@
     mocha "^3.0.2"
     ramda "^0.23.0"
     supertest "^2.0.0"
+
+"@trigo/eslint-config-trigo@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@trigo/eslint-config-trigo/-/eslint-config-trigo-3.2.0.tgz#b8a01b8ac2b1ba69b63363292522eb5c217a372a"
 
 accept@2.x.x:
   version "2.1.3"

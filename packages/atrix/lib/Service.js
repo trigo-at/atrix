@@ -8,18 +8,19 @@ const UpstreamList = require('./UpstreamList');
 const DataSourceList = require('./DataSourceList');
 const Config = require('./Config');
 const R = require('ramda');
+const loadPlugin = require('./load-plugin');
 
 class Service {
 	constructor(name, config) {
 		this.name = name;
 		this.config = new Config(this.name, config);
 
-		process.on('SIGINT', () => {
-			this.stop();
+		process.on('SIGINT', async () => {
+			await this.stop();
 		});
 
-		process.on('SIGTERM', () => {
-			this.stop();
+		process.on('SIGTERM', async () => {
+			await this.stop();
 		});
 
 		const logConf = R.clone(this.config.config.logger || {});
@@ -30,6 +31,8 @@ class Service {
 		this.handlers = new HandlerList(this.endpoints);
 		this.upstream = new UpstreamList(this.config.config.upstream);
 		this.dataSourcesList = new DataSourceList(this, this.config.config.dataSource);
+
+		// console.log(this.endpoints);
 
 		this.events.on('starting', () => {
 			this.log.info(`Settings: ${this.config}` || {});
@@ -49,6 +52,17 @@ class Service {
 		this.dataSourcesList.setAtrix(atrix);
 	}
 
+	loadPluginsFromConfigSections() {
+		const ignoreList = ['dataSource', 'endpoints', 'upstream', 'service', 'security'];
+		Object.keys(this.config.config).forEach((key) => {
+			if (ignoreList.indexOf(key) !== -1) {
+				return;
+			}
+			const plugin = loadPlugin(this.atrix, key);
+			plugin.factory(this.atrix, this);
+		});
+	}
+
 	get dataSources() {
 		return this.dataSourcesList.dataSources;
 	}
@@ -60,21 +74,22 @@ class Service {
 	async start() {
 		this.events.emit('starting');
 
+		await this.loadPluginsFromConfigSections();
 		await this.dataSourcesList.start();
 
 		this.handlers.add('GET', '/alive', (req, reply) => {
 			const upstreamAliveRequests = [];
-			for (const i in this.upstream) {
+			Object.keys(this.upstream).forEach((key) => {
 				upstreamAliveRequests.push(
-					this.upstream[i].get('/alive').catch(err => ({ error: err })));
-			}
+					this.upstream[key].get('/alive').catch((err) => { return ({ error: err }); }));
+			});
 			Promise.all(upstreamAliveRequests).then((result) => {
 				const upstreamResult = [];
 				let j = 0;
-				for (const i in this.upstream) {
-					upstreamResult.push({ name: this.upstream[i].name, result: result[j] });
+				Object.keys(this.upstream).forEach((key) => {
+					upstreamResult.push({ name: this.upstream[key].name, result: result[j] });
 					j++;
-				}
+				});
 				const status = {
 					status: 200,
 					description: 'OK',

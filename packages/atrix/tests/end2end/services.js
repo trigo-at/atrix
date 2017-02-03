@@ -7,11 +7,11 @@ const supertest = require('supertest');
 
 const svcs = {};
 
-for (const i in atrix.services) {
-	const svc = atrix.services[i];
+Object.keys(atrix.services).forEach((serviceName) => {
+	const svc = atrix.services[serviceName];
 	if (svc.config.config.endpoints.http) {
 		svcs[svc.name] = supertest(`http://localhost:${svc.config.config.endpoints.http.port}`);
 	}
-}
+});
 
 module.exports = svcs;
