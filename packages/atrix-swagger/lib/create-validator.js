@@ -145,7 +145,6 @@ function createResponseValidator(response) {
 		return null;
 	}
 
-	console.log(r);
 	return createParameterValidator(r.schema);
 }
 

@@ -98,7 +98,6 @@ class AtrixSwagger {
 			}
 		}
 
-		console.log(routeSpecs.responses);
 		newConfig.response = this.createResponseValidator(routeSpecs.responses);
 
 		return {
