@@ -13,4 +13,44 @@ Atrix is a opinionated micro-service famwork
 
 # Example Server Setup
 
-WIP
+```
+// load-from-dir-svc/handlers/{id}_GET.js
+module.exports = (req, reply, service) => {
+	reply({ status: 'ok' });	
+}
+
+// load-from-dir-svc/config.js
+module.exports = {
+	endpoints: {
+		http: {
+			// declare port to bind
+			port: 3007,
+			
+			// the directory containing the handler files
+			handlerDir: `${__dirname}/handlers`,
+		},
+	},
+};
+
+// index.js
+'use strict';
+
+// get  global atrix instance
+const atrix = require('@trigo/atrix');
+
+// load service config
+const config = require('./load-from-dir-svc/config');
+
+// crete service with config
+const service = new atrix.Service('loadFromDir', config);
+
+// setup http service enpoint
+service.endpoints.add('http');
+
+// register service in atrix
+atrix.addService(service);
+
+// start the service
+atrix.loadFromDir.start(); // returns promise
+
+```
