@@ -1,7 +1,6 @@
 # atrix
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/trigo-at/atrix.svg?token=8175215e928f96258f2f2cf038f2649e81b29ea182f9babab6f45c7ccdc7d041)](https://greenkeeper.io/)
-
 [![NSP Status](https://nodesecurity.io/orgs/trigo-gmbh/projects/6f4ad9d2-40fc-452b-8ae1-41433733d816/badge)](https://nodesecurity.io/orgs/trigo-gmbh/projects/6f4ad9d2-40fc-452b-8ae1-41433733d816)
 
 ## Description
