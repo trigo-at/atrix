@@ -51,6 +51,7 @@ class AtrixSwagger {
 			handler.config = route.config;
 		}
 
+		this.log.debug('register /swagger.json route');
 		const swaggerJson = {
 			method: 'GET',
 			path: '/swagger.json',
@@ -72,7 +73,7 @@ class AtrixSwagger {
 	}
 
 	async setupServiceHandler({ method, path, config }) {
-		// this.log.debug('setupServiceHandler', arguments); // eslint-disable-line
+		this.log.debug(`setup handler for "${method} ${path}"`);
 
 		const handlerDefinition = this.getHandlerDefinition(path);
 		if (!handlerDefinition || !handlerDefinition[method.toLowerCase()]) {
@@ -88,8 +89,8 @@ class AtrixSwagger {
 
 		newConfig.validate = newConfig.validate || {};
 		if (routeSpecs.parameters) {
-			newConfig.validate.params = AtrixSwagger.createParameterValidator(getParams(routeSpecs.parameters));
-			newConfig.validate.query = AtrixSwagger.createParameterValidator(getQuery(routeSpecs.parameters));
+			newConfig.validate.params = this.createParameterValidator(getParams(routeSpecs.parameters));
+			newConfig.validate.query = this.createParameterValidator(getQuery(routeSpecs.parameters));
 
 			if (getBody(routeSpecs.parameters).length) {
 				newConfig.validate.payload = createParameterValidator(getBody(routeSpecs.parameters)[0]);
@@ -107,13 +108,14 @@ class AtrixSwagger {
 		};
 	}
 
-	static createParameterValidator(parameters) {
+	createParameterValidator(parameters) {
 		// this.log.debug('createParamsValidation', params);
 		if (!parameters.length) {
 			return false;
 		}
 		const config = {};
 		parameters.forEach((parameter) => {
+			this.log.debug(`setup validation for parameter: "${parameter.name}" in "${parameter.in}"`);
 			config[parameter.name] = createParameterValidator(parameter);
 		});
 
@@ -134,6 +136,7 @@ class AtrixSwagger {
 			}
 			const schema = createResponseValidator(responses[statusCode]);
 			if (schema !== null) {
+				this.log.debug(`setup response validation for statusCode: "${statusCode}"`);
 				config.status[statusCode] = schema;
 				haveSchema = true;
 			}
