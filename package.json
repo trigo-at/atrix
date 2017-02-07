@@ -13,7 +13,7 @@
   "dependencies": {
     "@trigo/eslint-config-trigo": "^3.2.0",
     "bluebird": "^3.4.1",
-    "bluebird-retry": "^0.8.0",
+    "bluebird-retry": "^0.10.1",
     "boom": "^4.2.0",
     "btoa": "^1.1.2",
     "bunyan": "^1.8.5",
@@ -26,7 +26,7 @@
     "joi": "^10.2.0",
     "mocha": "^3.0.2",
     "ramda": "^0.23.0",
-    "supertest": "^2.0.0"
+    "supertest": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^3.12.2",
