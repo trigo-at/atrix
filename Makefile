@@ -1,30 +1,39 @@
 
-SUBDIRS := $(wildcard packages/*)
-PACKAGES := $(subst packages/,, $(SUBDIRS))
+PACKAGE=$(shell cat package.json | jq ".name" | sed 's/@trigo\///')
 
-install: $(addprefix install-, $(PACKAGES))
-	@# Do not remove
-install-%:
-	@cd packages/$* && $(MAKE) install
+debug:
+	echo $(PACKAGE)
 
-test: $(addprefix test-, $(PACKAGES))
-	@# Do not remove
-test-%:
-	@cd packages/$* && $(MAKE) test && echo "So long, and thanks for all the 🐠 ;)"
+install:
+	yarn install
 
-ci-test: $(addprefix ci-test-, $(PACKAGES))
-	@# Do not remove
-ci-test-%:
-	@cd packages/$* && $(MAKE) ci-test && echo "So long, and thanks for all the 🐠 ;)"
+test:
+	yarn test
 
-publish: $(addprefix publish-, $(PACKAGES))
-	@# Do not remove
-publish-%:
-	@cd packages/$* && $(MAKE) publish || echo "publish failed! ignore it..."
+lint:
+	yarn run lint
 
-lint: $(addprefix lint-, $(PACKAGES))
-	@# Do not remove
-lint-%:
-	@cd packages/$* && $(MAKE) lint
+build: .
+	docker-compose -f docker-compose.test.yml build
 
-.PHONY: $(SUBDIRS)
+clean:
+	rm -rf node_modules/
+
+ci-test: build
+	docker-compose -f docker-compose.test.yml run --rm $(PACKAGE); \
+		test_exit=$$?; \
+		docker-compose -f docker-compose.test.yml down; \
+		exit $$test_exit
+
+publish: build
+	docker-compose -f docker-compose.test.yml run --rm $(PACKAGE) npm publish; \
+		test_exit=$$?; \
+		docker-compose -f docker-compose.test.yml down; \
+		exit $$test_exit
+
+
+setup-dev:
+	@cd lib && npm link
+	@cd examples && npm link @trigo/atrix
+	@cd examples && npm install
+	@npm install
