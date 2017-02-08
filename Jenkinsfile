@@ -3,11 +3,15 @@ node('linux') {
 		checkout scm
 	}
 
+	def branch = sh(returnStdout: true, script: 'git branch')
+
 	stage('services') {
 		sh 'make ci-test'
 	}
 
-	stage('Publish') {
-		sh 'make publish'
+	if (branch == "master") {
+		stage('Publish') {
+			sh 'make publish'
+		}
 	}
 }
