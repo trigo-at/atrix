@@ -6,6 +6,7 @@ atrix.addService(require('./downstream-svc/service'));
 atrix.addService(require('./broken-upstream-svc/service'));
 atrix.addService(require('./load-from-dir-svc/service'));
 atrix.addService(require('./secured-svc/service'));
+atrix.addService(require('./test-svc/service'));
 
 // console.log('start service...')
 module.exports = Promise.all([

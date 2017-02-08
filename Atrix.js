@@ -14,14 +14,19 @@ class Atrix {
 		this.servicesList = new ServicesList(this);
 		this.globalConfig = globalConfig();
 
+		process.on('unhandledRejection', (err) => {
+			console.error(err);
+			process.exit(1);
+		});
+
 		process.on('SIGINT', async () => {
 			await this.servicesList.stop();
-			process.exit(1);
+			process.exit(0);
 		});
 
 		process.on('SIGTERM', async () => {
 			await this.servicesList.stop();
-			process.exit(1);
+			process.exit(0);
 		});
 	}
 
