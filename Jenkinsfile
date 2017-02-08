@@ -3,7 +3,7 @@ node('linux') {
 		checkout scm
 	}
 
-	def branch = sh(returnStdout: true, script: 'git branch')
+	def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD')
 
 	stage('services') {
 		sh 'make ci-test'
