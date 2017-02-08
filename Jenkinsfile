@@ -3,13 +3,12 @@ node('linux') {
 		checkout scm
 	}
 
-	def branch = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD')
 
 	stage('services') {
 		sh 'make ci-test'
 	}
 
-	if (branch == "master") {
+	if (env.BRANCH_NAME == "master") {
 		stage('Publish') {
 			sh 'make publish'
 		}
