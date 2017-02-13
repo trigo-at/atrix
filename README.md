@@ -30,7 +30,8 @@ module.exports = {
 			// the directory containing the handler files
 			handlerDir: `${__dirname}/handlers`,
 			
-			// global server cors configuraton
+			// global server cors configuraton 
+			// see: https://hapijs.com/api#route-options rules apply here too
 			cors: {
 				// defaults to '*' 
 				origin: ['https://myui.myservice.at', 'http://lvh.me'], 
