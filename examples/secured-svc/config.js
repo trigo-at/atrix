@@ -2,6 +2,7 @@ module.exports = {
 	endpoints: {
 		http: {
 			port: 3008,
+			cors: true,
 		},
 	},
 	security: {

@@ -32,7 +32,8 @@
     "eslint": "^3.12.2",
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-mocha": "^4.8.0"
+    "eslint-plugin-mocha": "^4.8.0",
+    "nodemon": "^1.11.0"
   },
   "engines": ">=7.4.0"
 }

@@ -3,6 +3,7 @@ module.exports = {
 		http: {
 			port: 3007,
 			handlerDir: `${__dirname}/handlers`,
+			cors: true,
 		},
 	},
 };
