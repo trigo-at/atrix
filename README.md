@@ -29,6 +29,16 @@ module.exports = {
 			
 			// the directory containing the handler files
 			handlerDir: `${__dirname}/handlers`,
+			
+			// global server cors configuraton
+			cors: {
+				// defaults to '*' 
+				origin: ['https://myui.myservice.at', 'http://lvh.me'], 
+				
+				// allow additional headers to be sent when client XHR
+				// lib is sending them like angular $http etc
+				additionalHeaders: ['x-requested-with']
+			},
 		},
 	},
 };
