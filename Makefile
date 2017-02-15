@@ -2,23 +2,33 @@ SHELL=/bin/bash
 PACKAGE=$(shell cat package.json | jq ".name" | sed 's/@trigo\///')
 REPO_VERSION:=$(shell cat package.json| jq .version)
 
-debug:
-	echo $(PACKAGE)
+info:
+	@echo "=====> Info"
+	@echo "Package:               $(PACKAGE)"
+	@echo "Version:               ${REPO_VERSION}"
+	@echo "Published:             $$(npm show @trigo/$(PACKAGE) version)"
 
 install:
 	yarn install
 
+clean:
+	rm -rf node_modules/
+
 test:
 	yarn test
-
-lint:
-	yarn run lint
 
 build: .
 	docker-compose -f docker-compose.test.yml build
 
-clean:
-	rm -rf node_modules/
+lint:
+	yarn lint
+
+ci-lint: build
+	docker-compose -f docker-compose.test.yml run --rm $(PACKAGE) yarn lint; \
+		test_exit=$$?; \
+		docker-compose -f docker-compose.test.yml down; \
+		exit $$test_exit
+
 
 ci-test: build
 	docker-compose -f docker-compose.test.yml run --rm $(PACKAGE); \

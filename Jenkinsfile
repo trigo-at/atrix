@@ -3,14 +3,15 @@ node('linux') {
 		checkout scm
 	}
 
+	stage('lint') {
+		sh 'make ci-lint'
+	}
 
-	stage('services') {
+	stage('test') {
 		sh 'make ci-test'
 	}
 
-	if (env.BRANCH_NAME == "master") {
-		stage('Publish') {
-			sh 'make publish'
-		}
+	stage('Publish') {
+		sh 'make publish'
 	}
 }
