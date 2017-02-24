@@ -18,7 +18,7 @@ describe('the service process', function test() {
 	this.timeout(10000);
 
 	it('should exit properly', async () => {
-		const svcProcess = spawn('node', ['--harmony-async-await', './examples/test']);
+		const svcProcess = spawn('node', ['./examples/test']);
 		svcProcess.stdout.on('data', () => {});
 		const killed = new Promise((resolve) => {
 			svcProcess.on('close', resolve);
