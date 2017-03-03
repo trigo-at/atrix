@@ -3,8 +3,11 @@
   "version": "0.5.2",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": ">=7.6.0"
+  },
   "scripts": {
-    "test": "NODE_ENV=test mocha --harmony-async-await $(find . -name '*.specs.js' -not -path './node_modules/*')",
+    "test": "NODE_ENV=test mocha $(find . -name '*.specs.js' -not -path './node_modules/*')",
     "lint": "eslint lib tests",
     "yarn": "yarn install"
   },
