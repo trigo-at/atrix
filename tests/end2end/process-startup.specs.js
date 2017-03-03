@@ -20,8 +20,15 @@ describe('the service process', function test() {
 	it('should exit properly', async () => {
 		const svcProcess = spawn('node', ['--harmony-async-await', './examples/test']);
 		svcProcess.stdout.on('data', () => {});
-		const killed = new Promise((resolve) => {
+		svcProcess.stderr.on('data', () => {});
+		const killed = new Promise((resolve, reject) => {
 			svcProcess.on('close', resolve);
+			svcProcess.on('exit', (code) => {
+				if (code !== 0) {
+					reject(code);
+				}
+				svcProcess.kill('SIGINT');
+			});
 		});
 
 		while (!(await checkService()));
