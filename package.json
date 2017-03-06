@@ -1,11 +1,9 @@
 {
   "name": "@trigo/atrix",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "",
   "main": "index.js",
-  "engines": {
-    "node": ">=7.6.0"
-  },
+  "engines": ">=7.4.0",
   "scripts": {
     "test": "NODE_ENV=test mocha $(find . -name '*.specs.js' -not -path './node_modules/*')",
     "lint": "eslint lib tests",
@@ -37,6 +35,5 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.8.0",
     "nodemon": "^1.11.0"
-  },
-  "engines": ">=7.4.0"
+  }
 }
