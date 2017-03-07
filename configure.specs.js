@@ -9,7 +9,7 @@ const { expect } = require('chai');
 
 describe('configure', () => {
 	it('merges configurations', () => {
-		Object.keys(cfgObj, key => {
+		Object.keys(cfgObj, (key) => {
 			delete cfgObj[key];
 		});
 
