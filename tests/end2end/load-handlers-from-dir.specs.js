@@ -41,4 +41,15 @@ describe('loading handlers from fs', () => {
 		const res = await svc.get('/async-500');
 		expect(res.statusCode).to.eql(500);
 	});
+
+	it('reply interface has withEvent() mthod', async() => {
+		const res = await svc.put('/with-event').send({});
+		expect(res.statusCode).to.equal(201);
+	});
+
+	it('reply interface has withEvent() handles null content correctly', async() => {
+		const res = await svc.put('/with-event-no-content').send({});
+		expect(res.statusCode).to.equal(204);
+		expect(res.text).to.equal('');
+	});
 });
