@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@trigo/eslint-config-trigo": "^3.2.0",
+    "@trigo/eslint-config-trigo": "^3.3.0",
     "blipp": "^2.3.0",
     "bluebird": "^3.5.0",
     "bluebird-retry": "^0.10.1",
@@ -26,7 +26,7 @@
     "hapi-auth-jwt": "^4.0.0",
     "inert": "^4.1.0",
     "joi": "^10.2.2",
-    "mocha": "^3.0.2",
+    "mocha": "^3.2.0",
     "ramda": "^0.23.0",
     "supertest": "^3.0.0"
   },

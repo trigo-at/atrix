@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@trigo/eslint-config-trigo@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@trigo/eslint-config-trigo/-/eslint-config-trigo-3.2.0.tgz#b8a01b8ac2b1ba69b63363292522eb5c217a372a"
+"@trigo/eslint-config-trigo@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@trigo/eslint-config-trigo/-/eslint-config-trigo-3.3.0.tgz#84a198c2ddcf4b0369347d561594de58f1865df0"
 
 abbrev@1:
   version "1.0.9"
@@ -1639,7 +1639,7 @@ mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mocha@^3.0.2:
+mocha@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-3.2.0.tgz#7dc4f45e5088075171a68896814e6ae9eb7a85e3"
   dependencies:
