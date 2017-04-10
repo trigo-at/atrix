@@ -42,6 +42,10 @@ module.exports = {
 			},
 		},
 	},
+	// Add service settings in here. They are accessible int the handler as "service.settings" object
+	settings: {
+		test: 'value',
+	},
 };
 
 // index.js

@@ -1,6 +1,6 @@
 {
   "name": "@trigo/atrix",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "",
   "main": "index.js",
   "engines": ">=7.4.0",
@@ -16,9 +16,9 @@
     "blipp": "^2.3.0",
     "bluebird": "^3.5.0",
     "bluebird-retry": "^0.10.1",
-    "boom": "^4.2.0",
+    "boom": "^4.3.0",
     "btoa": "^1.1.2",
-    "bunyan": "^1.8.8",
+    "bunyan": "^1.8.9",
     "bylog": "^0.3.5",
     "chai": "^3.5.0",
     "fetch": "^1.1.0",
@@ -31,10 +31,10 @@
     "supertest": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^3.17.1",
+    "eslint": "^3.18.0",
     "eslint-config-airbnb-base": "^11.1.1",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-mocha": "^4.8.0",
+    "eslint-plugin-mocha": "^4.9.0",
     "nodemon": "^1.11.0"
   }
 }
