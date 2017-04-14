@@ -7,6 +7,7 @@ atrix.addService(require('./load-from-dir-svc/service'));
 atrix.addService(require('./secured-svc/service'));
 atrix.addService(require('./test-svc/service'));
 atrix.addService(require('./settings-svc/service'));
+atrix.addService(require('./route-prefix/service'));
 
 // console.log('start service...')
 module.exports = Promise.all([
@@ -16,4 +17,5 @@ module.exports = Promise.all([
 	atrix.services.loadFromDir.start(),
 	atrix.services.secured.start(),
 	atrix.services.settings.start(),
+	atrix.services.routeprefix.start(),
 ]);
