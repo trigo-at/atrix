@@ -1,3 +1,4 @@
+'use strict';
 
 function register(a) {
 	plugin.atrix = a; // eslint-disable-line

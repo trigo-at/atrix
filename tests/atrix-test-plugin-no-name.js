@@ -1,3 +1,5 @@
+'use strict';
+
 let atrix;
 
 function register(a) {

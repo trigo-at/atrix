@@ -1,3 +1,5 @@
+'use strict';
+
 const spawn = require('child_process').spawn;
 const Promise = require('bluebird');
 const expect = require('chai').expect;
