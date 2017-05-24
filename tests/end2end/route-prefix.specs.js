@@ -16,4 +16,15 @@ describe('route-prefix', () => {
 			},
 		});
 	});
+
+	it('prepends the prefix when using service.request API', async () => {
+		const res = await svc.post('/events/api/call_get');
+		expect(res.statusCode).to.equal(200);
+
+		expect(res.body).to.eql({
+			test: {
+				key: 'value',
+			},
+		});
+	});
 });
