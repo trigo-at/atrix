@@ -1,8 +1,8 @@
 module.exports = {
 	endpoints: {
 		http: {
-			port: 3006
-		}
+			port: 3006,
+		},
 	},
 	upstream: {
 		options: {
