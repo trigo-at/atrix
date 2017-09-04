@@ -32,6 +32,11 @@ describe('loading handlers from fs', () => {
 		expect(res.statusCode).to.equal(500);
 	});
 
+	it('returns HTTP 500 when handler throws non error Object', async() => {
+		const res = await svc.get('/500-no-error-object-thrown');
+		expect(res.statusCode).to.equal(500);
+	});
+
 	it('can use async handler', async() => {
 		const res = await svc.get('/async');
 		expect(res.body).to.eql({ ok: true });
