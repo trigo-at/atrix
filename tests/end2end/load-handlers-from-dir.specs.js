@@ -20,7 +20,7 @@ describe('loading handlers from fs', () => {
 	});
 
 	it('loaded POST /{id}', async() => {
-		const res = await svc.post('/{id}');
+		const res = await svc.post('/{id}').send({ test: 'prop' });
 		expect(res.statusCode).to.equal(200);
 		expect(res.body).to.eql({
 			res: 'POST /{id}',
