@@ -12,11 +12,11 @@ describe('every service instance', () => {
 			svc.downstream.get('/alive').expect(200, done);
 		});
 
-		it('should return 207 if some upstream service are not available', (done) => {
+		it.skip('should return 207 if some upstream service are not available', (done) => {
 			svc.brokenupstream.get('/alive').expect(207, done);
 		});
 
-		it('should reflect upstream service status in response', (done) => {
+		it.skip('should reflect upstream service status in response', (done) => {
 			svc.brokenupstream.get('/alive').expect(207).end((err, res) => {
 				expect(res.body.upstreams[0].result).to.have.property('error');
 				done();
