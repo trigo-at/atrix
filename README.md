@@ -40,6 +40,17 @@ module.exports = {
 				// lib is sending them like angular $http etc
 				additionalHeaders: ['x-requested-with']
 			},
+			// request logger configuration
+			requestLogger: {
+				// enable the request logger 
+				enabled: false,
+
+				// log full request body if content-type: application/javascript and multipart/form-data
+				logFullRequest: true,
+
+				// log full response if content-type: application/javascript
+				logFullResponse: true,
+			},
 		},
 	},
 	// Add service settings in here. They are accessible int the handler as "service.settings" object
