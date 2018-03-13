@@ -1,13 +1,20 @@
 {
-	"extends": "trigo",
-	"env": {
-		"node": true
-   	},
-	"parserOptions": {
-    	"sourceType": "script"
+    "extends": [
+        "trigo",
+        "prettier"
+    ],
+    "plugins": [
+        "prettier"
+    ],
+    "env": {
+        "node": true
     },
-	"rules": {
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "rules": {
 		"strict": [2, "global"],
-		"no-underscore-dangle": 0
-	}
+		"no-underscore-dangle": 0,
+        "prettier/prettier": ["error"]
+    }
 }

@@ -7,10 +7,19 @@
   "scripts": {
     "test": "NODE_ENV=test mocha $(find . -name '*.specs.js' -not -path './node_modules/*')",
     "lint": "eslint lib tests",
-    "yarn": "yarn install"
+    "yarn": "yarn install",
+    "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
+    "precommit": "lint-staged",
+    "prettify": "prettier --write '**/*.{js,jsx}'"
   },
-  "author": "",
-  "license": "ISC",
+  "lint-staged": {
+    "*.{js,jsx}": [
+        "prettier --write",
+        "git add"
+    ]
+  },
+  "author": "trigo GmbH <team@trigo.at> (http://www.trigo.at)",
+  "license": "MIT",
   "dependencies": {
     "@trigo/hapi-auth-signedlink": "^0.1.0",
     "blipp": "^2.3.0",
@@ -31,11 +40,15 @@
     "supertest": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^4.0.0",
-    "eslint-config-airbnb-base": "^11.2.0",
-    "eslint-config-trigo": "^4.1.1",
-    "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-mocha": "^4.10.1",
-    "nodemon": "^1.11.0"
+    "eslint": "^4.18.2",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-trigo": "^4.3.3",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-mocha": "^4.12.1",
+    "eslint-plugin-prettier": "^2.6.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.0",
+    "nodemon": "^1.11.0",
+    "prettier": "^1.11.1"
   }
 }
