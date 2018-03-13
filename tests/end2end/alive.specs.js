@@ -8,23 +8,30 @@ const expect = require('chai').expect;
 
 describe('every service instance', () => {
 	describe('/alive', () => {
-		it('should have alive endpoint returning 200 if everything is ok', (done) => {
+		it('should have alive endpoint returning 200 if everything is ok', done => {
 			svc.downstream.get('/alive').expect(200, done);
 		});
 
-		it.skip('should return 207 if some upstream service are not available', (done) => {
+		it.skip('should return 207 if some upstream service are not available', done => {
 			svc.brokenupstream.get('/alive').expect(207, done);
 		});
 
-		it.skip('should reflect upstream service status in response', (done) => {
-			svc.brokenupstream.get('/alive').expect(207).end((err, res) => {
-				expect(res.body.upstreams[0].result).to.have.property('error');
-				done();
-			});
+		it.skip('should reflect upstream service status in response', done => {
+			svc.brokenupstream
+				.get('/alive')
+				.expect(207)
+				.end((err, res) => {
+					expect(res.body.upstreams[0].result).to.have.property(
+						'error'
+					);
+					done();
+				});
 		});
 	});
 
 	describe('service endpoints', () => {
-		it('should return 503 service unavailable if required upstream is not reachable');
+		it(
+			'should return 503 service unavailable if required upstream is not reachable'
+		);
 	});
 });

@@ -6,7 +6,6 @@ const Upstream = require('./lib/Upstream');
 const globalConfig = require('./lib/global-config');
 const configure = require('./configure');
 
-
 class Atrix {
 	constructor() {
 		this.ServiceConstructor = Service;
@@ -14,7 +13,7 @@ class Atrix {
 		this.servicesList = new ServicesList(this);
 		this.globalConfig = globalConfig();
 
-		process.on('unhandledRejection', (err) => {
+		process.on('unhandledRejection', err => {
 			console.error(err);
 			process.exit(1);
 		});

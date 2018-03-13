@@ -7,7 +7,7 @@ const svc = require('./services').routeprefix;
 const expect = require('chai').expect;
 
 describe('route-prefix', () => {
-	it('routes are prefixed with the supllied value', async() => {
+	it('routes are prefixed with the supllied value', async () => {
 		const res = await svc.get('/events/api/');
 		expect(res.statusCode).to.equal(200);
 		expect(res.body).to.eql({

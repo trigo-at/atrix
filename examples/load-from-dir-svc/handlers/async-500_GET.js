@@ -1,5 +1,5 @@
 module.exports = async (req, reply) => {
-	const obj = { ok: false };
+	const obj = {ok: false};
 	const task = new Promise((res, rej) => {
 		setTimeout(() => {
 			obj.ok = true;

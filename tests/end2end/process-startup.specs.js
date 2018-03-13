@@ -25,7 +25,7 @@ describe('the service process', function test() {
 		svcProcess.stderr.on('data', () => {});
 		const killed = new Promise((resolve, reject) => {
 			svcProcess.on('close', resolve);
-			svcProcess.on('exit', (code) => {
+			svcProcess.on('exit', code => {
 				if (code !== 0) {
 					reject(code);
 				}
@@ -33,7 +33,7 @@ describe('the service process', function test() {
 			});
 		});
 
-		while (!(await checkService()));
+		while (!await checkService());
 		svcProcess.kill('SIGINT');
 		const exitCode = await killed;
 		expect(exitCode).to.equal(0);
