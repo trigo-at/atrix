@@ -8,6 +8,7 @@ atrix.addService(require('./secured-svc/service'));
 atrix.addService(require('./multi-secured-svc/service'));
 atrix.addService(require('./test-svc/service'));
 atrix.addService(require('./settings-svc/service'));
+atrix.addService(require('./logger-svc/service'));
 atrix.addService(require('./route-prefix/service'));
 
 // console.log('start service...')
@@ -19,5 +20,6 @@ module.exports = Promise.all([
 	atrix.services.secured.start(),
 	atrix.services.multiSecured.start(),
 	atrix.services.settings.start(),
+	atrix.services.logger.start(),
 	atrix.services.routeprefix.start(),
 ]);
