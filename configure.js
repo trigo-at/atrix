@@ -1,11 +1,10 @@
 'use strict';
 
-module.exports = (configObj) => {
+module.exports = configObj => {
 	const atrixConfig = configObj;
-	return (cfg) => {
+	return cfg => {
 		Object.keys(cfg).forEach(key => {
 			atrixConfig[key] = cfg[key];
 		});
 	};
 };
-

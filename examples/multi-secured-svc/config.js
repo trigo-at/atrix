@@ -18,12 +18,8 @@ module.exports = {
 			},
 		},
 		endpoints: {
-			jwt: [
-				'/jwt.*',
-			],
-			signedlink: [
-				'/signedlink.*',
-			],
+			jwt: ['/jwt.*'],
+			signedlink: ['/signedlink.*'],
 		},
 	},
 };

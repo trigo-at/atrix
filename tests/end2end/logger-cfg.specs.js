@@ -7,7 +7,7 @@ const svc = require('./services').logger;
 const expect = require('chai').expect;
 
 describe('logger-cfg', () => {
-	it('applies logger configuration', async() => {
+	it('applies logger configuration', async () => {
 		const res = await svc.get('/');
 		expect(res.statusCode).to.equal(200);
 		expect(res.body).to.eql({

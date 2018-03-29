@@ -1,6 +1,5 @@
 module.exports = {
-	service: {
-	},
+	service: {},
 	endpoints: {
 		http: {
 			port: 3000,

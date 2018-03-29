@@ -6,12 +6,15 @@ const service = new atrix.Service('logger', {
 	logger: {
 		level: 'debug',
 		name: 'franz',
-		streams: [{
-			stream: process.stdout,
-		}, {
-			path: './logger-test.log',
-			level: 'error',
-		}],
+		streams: [
+			{
+				stream: process.stdout,
+			},
+			{
+				path: './logger-test.log',
+				level: 'error',
+			},
+		],
 	},
 	endpoints: {
 		http: {

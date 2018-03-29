@@ -12,8 +12,6 @@ module.exports = {
 				algorithm: 'HS256',
 			},
 		},
-		endpoints: [
-			'/data.*',
-		],
+		endpoints: ['/data.*'],
 	},
 };
