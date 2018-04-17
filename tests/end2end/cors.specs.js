@@ -1,5 +1,9 @@
 'use strict';
 
+/* eslint-env node, mocha */
+/* eslint prefer-arrow-callback: 0, func-names: 0, space-before-function-paren: 0, one-var: 0, no-unused-expressions: 0 */
+
+
 const atrix = require('../..');
 const Chance = require('chance');
 const supertest = require('supertest');
