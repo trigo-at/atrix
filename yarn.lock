@@ -1301,6 +1301,15 @@ growl@1.9.2:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.9.2.tgz#0ea7743715db8d8de2c5ede1775e1b45ac85c02f"
 
+h2o2@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/h2o2/-/h2o2-6.1.0.tgz#2b2e7fcca0e3665c9497645e3203af99ed9033f1"
+  dependencies:
+    boom "5.x.x"
+    hoek "4.x.x"
+    joi "10.x.x"
+    wreck "12.x.x"
+
 hapi-auth-jwt@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/hapi-auth-jwt/-/hapi-auth-jwt-4.0.0.tgz#ca1a0dda86aec97ea83b184dfdff57c13236b9ae"
