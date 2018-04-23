@@ -132,9 +132,23 @@ describe('Proxy Handler', () => {
 		});
 	});
 
-	it('can load prox from handler file', async () => {
+	it('can load proxy from handler file', async () => {
 		const res = await svc.get('/proxy');
 		expect(res.statusCode).to.equal(200);
 		expect(res.text).to.contain('google');
+	});
+
+	it('uses custom path from handler file', async () => {
+		const res = await svc.get('/da-ondare');
+		expect(res.statusCode).to.equal(200);
+		expect(res.text).to.contain('google');
+	});
+
+	it('can use * as method froim file name', async () => {
+		expect((await svc.get('/ohne-method')).statusCode).to.equal(200);
+		expect((await svc.post('/ohne-method')).statusCode).to.equal(200);
+		expect((await svc.put('/ohne-method')).statusCode).to.equal(200);
+		expect((await svc.patch('/ohne-method')).statusCode).to.equal(200);
+		expect((await svc.delete('/ohne-method')).statusCode).to.equal(200);
 	});
 });
