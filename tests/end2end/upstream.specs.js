@@ -17,6 +17,9 @@ describe('Ustreams', () => {
 		svc,
 		tries = 0;
 
+	beforeEach(async () => {
+		tries = 0;
+	});
 
 	before(async () => {
 		upstreamPort = chance.integer({ min: 10000, max: 20000 });
@@ -128,4 +131,3 @@ describe('Ustreams', () => {
 		expect(res.statusCode).to.eql(400);
 	});
 });
-
