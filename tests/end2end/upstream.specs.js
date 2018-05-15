@@ -38,6 +38,7 @@ describe('Ustreams', () => {
 			reply({ foo: 'bar' });
 		});
 		upstream.handlers.add('GET', '/not-enough', () => { throw new Error('try again'); });
+		upstream.handlers.add('GET', '/bad-request', (req, reply) => reply({ foo: 'bar' }).code(400));
 
 		atrix.addService(upstream);
 		await atrix.services.upstream.start();
@@ -58,11 +59,19 @@ describe('Ustreams', () => {
 						auto: true,
 					},
 				},
+				ups: {
+					url: `http://localhost:${upstreamPort}`,
+				},
 			},
 		});
 
 		service.endpoints.add('http');
 
+		service.handlers.add('GET', '/ups', async (req, reply, s) => {
+			const ur = await s.upstream.ups.get('/need-retry');
+
+			reply(ur.body).code(ur.status);
+		});
 		service.handlers.add('GET', '/', async (req, reply, s) => {
 			const ur = await s.upstream.upstream.get('/');
 
@@ -74,6 +83,11 @@ describe('Ustreams', () => {
 		});
 		service.handlers.add('GET', '/not-enough', async (req, reply, s) => {
 			const ur = await s.upstream.upstream.get('/not-enough');
+			reply(ur.body).code(ur.status);
+		});
+		service.handlers.add('GET', '/bad-request', async (req, reply, s) => {
+			const ur = await s.upstream.upstream.get('/bad-request');
+
 			reply(ur.body).code(ur.status);
 		});
 
@@ -102,6 +116,16 @@ describe('Ustreams', () => {
 			await svc.get('/not-enough');
 			throw new Error('this should have thrown');
 		} catch (e) {} //eslint-disable-line
+	});
+
+	it('can call upstream without retry settings', async () => {
+		const res = await svc.get('/ups');
+		expect(res.statusCode).to.eql(500);
+	});
+
+	it('upstrema returns retuls with statiscode <= 500', async () => {
+		const res = await svc.get('/bad-request');
+		expect(res.statusCode).to.eql(400);
 	});
 });
 
