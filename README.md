@@ -8,9 +8,9 @@
 Atrix is an opinionated micro-service framework
 
 ### Goals
-* out-of the box default configuration
-* minimum code required to implement features
-* extendable using plugins (npm packages), currently available are
+* Out-of the box default configuration on initial pull
+* Minimum code required to implement features
+* Extendable using plugins (npm packages). Currently available are:
   * [atrix-mongoose](https://github.com/trigo-at/atrix-mongoose)
   * [atrix-orientdb](https://github.com/trigo-at/atrix-orentdb)
   * [atrix-mysql](https://github.com/trigo-at/atrix-mysql)
@@ -21,15 +21,364 @@ Atrix is an opinionated micro-service framework
   * [atrix-pubsub](https://github.com/trigo-at/atrix-pubsub)
 
 ### Content
-1. [Example Server setup](#example-server-setup)
 1. [Handler Definition](#handler-definition)
-1. [Cors](#cors)
+1. [CORS](#cors)
 1. [Request Logger](#request-logger)
 1. [Logger](#logger)
 1. [Settings](#settings)
 1. [Upstream](#upstream)
+  * [Basic Upstream](#basic-upstream)
+  * [Options](#options)
+  * [Retry](#retry)
+  * [Authentication](#upstream-authentication)
+    * [Basic](#basic-authentication)
+	* [OAuth](#oauth-authentication)
 1. [Overwriting config via env variables](#overwriting-config-via-env-variables)
+1. [Example Server setup](#example-server-setup)
 
+> In the examples below, several `/config.js` files are cited. In a single project, you may have more than one config file, however, _only one config file is used to create a service._
+
+___
+
+# Handler definition
+
+Declare a directory in which all handlers are contained, or add route handlers manually.
+
+## Filename routes
+
+### handlerDir
+When using the `handlerDir` option the appropriate routes will be created based on the filenames and folder structure. The Caret symbol `^` is used as subroute indicator when using a single filename to represent a deep route. Route params can be defined by curly brackets e.g.: `{id}`
+
+**Special Characters:**
+* `_` the last underscore in the filename indicates the beginning of the http method to be used e.g.: `persons_GET.js`
+*  `^` indicates the beginning of a subroute, e.g.: `persons^details_GET.js`
+* Something in between curly braces indicates a route param e.g.: `persons^{id}_GET.js`;
+* The method wildcard character (`$` by default) can be used to create a route for all http methods `persons_$.js`
+
+**Examples:**
+
+* The file `/handlers/persons^{id}^details_GET.js` will create a route `GET /persons/{id}/details`.
+* The file `/handlers/persons/{id}/details/GET.js` will create the same route.
+* A wildcard character (by default `$`) can be used for the HTTP method file ending. A file with a wildcard character as a method would be open for following the HTTP methods: `GET, PUT, POST, PATCH, OPTIONS, DELETE`
+
+**Code Example:**
+`/config.js`
+```js
+module.exports = {
+	endpoints: {
+		http: {
+			port: 3000,
+			// the directory containing the handler files
+			handlerDir: `${__dirname}/handlers`,
+		},
+	},
+};
+```
+
+`/handlers/persons_GET.js`
+```js
+module.exports = (req, reply, service) => {
+	reply({status: 'ok'});
+};
+```
+The route `GET /persons` is made available by the above examples.
+
+### Manually adding route handlers
+
+Once a service has been created and an endpoint has been added, routes can be added manually.
+
+```js
+const atrix = require('@trigo/atrix');
+
+const service = new atrix.Service('dummyService', {
+	endpoints: {
+		http: {
+			port: 3000,
+		},
+	},
+});
+
+service.endpoints.add('http');
+
+// service.handlers.add(httpMethod, route, handler);
+service.handlers.add('GET', '/persons/{id}/details', (req, reply, service) => {
+	reply({status: 'ok'});
+});
+
+service.start();
+```
+
+# CORS
+
+`/config.js`
+```js
+module.exports = {
+	endpoints: {
+		http: {
+			port: 3000,
+
+			// global server cors configuraton
+			// see: https://hapijs.com/api#route-options rules apply here too
+			cors: {
+				// defaults to '*'
+				origin: ['https://myui.myservice.at', 'http://lvh.me'],
+
+				// allow additional headers to be sent when client XHR
+				// lib is sending them like angular $http etc
+				additionalHeaders: ['x-requested-with']
+			},
+		},
+	},
+};
+```
+
+# Request Logger
+
+`/config.js`
+```js
+module.exports = {
+	endpoints: {
+		http: {
+			port: 3000,
+
+			// request logger configuration
+			requestLogger: {
+				// enable the request logger
+				enabled: false,
+
+				// log full request body if content-type: application/javascript and multipart/form-data
+				logFullRequest: true,
+
+				// log full response if content-type: application/javascript
+				logFullResponse: true,
+			},
+		},
+	},
+};
+```
+
+# Logger
+
+The atrix logger uses bunyan under the hood. For more info about bunyan streams have a look at the [bunyan stream documentation](https://github.com/trentm/node-bunyan#streams).
+
+`/config.js`
+```js
+module.exports = {
+	logger: {
+		level: 'debug',
+		name: 'dummyDebugger', // optional, atrix would insert the services name if no logger name is provided
+		streams: [], // optional, bunyan streams
+	}
+}
+```
+
+The logger can be accessed on the request object in every service handler.
+
+`/simple_GET.js`
+```js
+module.exports = (req, reply) => {
+	req.log.debug('I am a debug message');
+	req.log.info('I am an info message');
+	req.log.warn('I am a warning message');
+	req.log.info('I am a error message');
+	reply({status: 'ok'});
+};
+```
+
+Optionally, you can also access the logger of your service as it is exposed via atrix:
+
+`/service.js`
+```js
+const atrix = require('@trigo/atrix');
+
+const service = new atrix.Service('dummyService', {...service configuration...});
+
+atrix.addService(service);
+
+service.log.info('I am the dummyService logger');
+
+// can only be accessed after adding the service to atrix with atrix.addService(...)
+atrix.service.dummyService.log.info('I am also the dummyService logger');
+```
+
+# Settings
+
+Add service settings in here. They are accessible in the handler as the  "service.settings" object
+
+`/config.js`
+```js
+module.exports = {
+	settings: {
+		pika: 'chu',
+	},
+};
+```
+
+For example, if the service were to be called `demoService`, you could access its settings like this:
+
+```js
+const atrix = ('@trigo/atrix');
+const service = atrix.services.demoService;
+
+const pikaValue = service.settings.pika;
+```
+
+Or in every service handler
+
+```js
+module.exports = (req, res, service) => {
+	req.log.info(`Value of Pika is ${service.settings.pika}`);
+}
+```
+
+
+
+# Upstream
+
+Atrix uses [fetch](https://github.com/andris9/fetch) for HTTP requests and can be configured for multiple upstreams. Upstreams will expose a simple interface to make preconfigured HTTP requests.
+
+## Basic Upstream
+
+`/config.js`
+```js
+module.exports = {
+	upstream: {
+		example: {
+			url: 'http://some.url',
+		},
+	},
+};
+```
+
+The defined upstream can be accessed in every service handler via the service parameter.
+
+`/simple_GET.js`
+```js
+module.exports = async (req, reply, service) => {
+	const result = await service.upstream.example.get('/');
+	req.log.info(result);
+	reply({status: 'ok'});
+};
+```
+
+Alternativ the upstreams can be accessed via the exposed service from atrix.
+
+`/some_file/which_is/part_of/the_service`
+```js
+const atrix = require('@trigo/atrix');
+// here we assume the service has been named 'dummyService'
+const service = atrix.dummyService;
+const exampleUpstream = service.upstream.example;
+```
+
+## Options
+
+You can define options (e.g.: headers) which will be merged into the underlying fetch request.
+
+`/config.js`
+```js
+module.exports = {
+	upstream: {
+		example: {
+			url: 'http://some.url',
+			options: {
+				headers: {
+					'User-Agent': 'ATRIX_SERVICE',
+				},
+			},
+		},
+	},
+};
+```
+
+## Retry
+
+Upstreams can be configured to automatically retry the requests in case of an error for several times with a defined interval.
+
+`/config.js`
+```js
+module.exports = {
+	upstream: {
+		example: {
+			url: 'http://some.url',
+			retry: {
+				interval: 1000, // milliseconds
+				max_tries: 3,
+			},
+		},
+	},
+};
+```
+
+## Upstream Authentication
+
+You can set up basic authentication or oAuth authentication which will be handled by the upstream itself.
+
+### Basic Authentication
+
+`/config.js`
+```js
+module.exports = {
+	upstream: {
+		example: {
+			url: 'http://some.url',
+			security: {
+				strategies: {
+					basic: {
+						username: 'username',
+						password: 'password',
+					},
+				},
+			},
+		},
+	},
+};
+```
+
+### OAuth Authentication
+
+`/config.js`
+```js
+module.exports = {
+	upstream: {
+		example: {
+			url: 'http://some.url',
+			security: {
+				strategies: {
+					oauth: {
+						client_id: 'client_id',
+						client_secret: 'client_secret',
+						auth_endpoint: 'http://auth.endpoint/token',
+						grant_type: 'password',
+					},
+				},
+			},
+		},
+	},
+};
+```
+
+# Overwriting config via env variables
+
+Every variable defined in the `/config.js` can be overwritten by declaring environment variables. Configurations that are not already defined in `/config.js` **may not** be declared by environment variables - _especially arrays_ - you may not insert additional items to arrays...
+
+They have to follow a strict pattern. The environment variable has to be defined in snakecased uppercased words eg. `THIS_IS_AN_ENV_VAR`. Starting with `ATRIX`, followed by the atrix service's name, which is defined by the `new atrix.Service('demoService', config)` call. For the `demoService` we would have to start with `ATRIX_DEMOSERVICE_` as environment variable name.
+
+`/config.js`
+```js
+module.exports = {
+	settings: {
+		nestedSetting: {
+			pika: 'chu',
+		},
+	},
+};
+```
+
+To overwrite the value of pika we would have to define the env variable like that:
+```
+ATRIX_DEMOSERVICE_SETTINGS_NESTEDSETTING_PIKA=chuchu
+```
 
 # Example Server Setup
 
@@ -108,195 +457,4 @@ atrix.addService(service);
 // start the service
 atrix.services.demoService.start(); // returns promise
 
-```
-# Handler definition
-
-Declare a directory in which all handlers are saved, or add route handlers manually.
-
-## Filename routes
-
-### handlerDir
-When using the `handlerDir` option the appropriate routes will be created based on the filenames and folder structure. The Caret symbol `^` is used as subroute indicator when using a single filename to represent a deep route. Route params can be defined by curly brackets e.g.: `{id}`
-
-Special Characters:
-* `_` the last underscore in the filename indicates the beginning of the http method to be used e.g.: `persons_GET.js`
-*  `^` indicates the beginning of a subroute, e.g.: `persons^details_GET.js`
-* Something in between curly braces indicates a route param e.g.: `persons^{id}_GET.js`;
-* The method wildcard (`$` by default) can be used to open a route for all http methods `persons_$.js`
-
-**Examples:**
-
-* The file `/handlers/persons^{id}^details_GET.js` will create a route `GET /persons/{id}/details`.
-* The File `/handlers/persons/{id}/details/GET.js` will created the same route.
-* A Wildcard (by default `$`) can be used for the HTTP Method file ending. A file with the wildcard as method would be open for following HTTP Methods: `GET, PUT, POST, PATCH, OPTIONS, DELETE`
-
-**Code Example:**
-`/config.js`
-```js
-module.exports = {
-	endpoints: {
-		http: {
-			port: 3000,
-			// the directory containing the handler files
-			handlerDir: `${__dirname}/handlers`,
-		},
-	},
-};
-```
-
-`/handlers/persons_GET.js`
-```js
-module.exports = (req, reply, service) => {
-	reply({status: 'ok'});
-};
-```
-The route `GET /persons` will be available.
-
-### Manually adding route handlers
-
-As soon as the service has been created and an endpoint has been added, routes can be added manually.
-
-```js
-const atrix = require('@trigo/atrix');
-
-const service = new atrix.Service('dummyService', {
-	endpoints: {
-		http: {
-			port: 3000,
-		},
-	},
-});
-
-service.endpoints.add('http');
-
-// service.handlers.add(httpMethod, route, handler);
-service.handlers.add('GET', '/persons/{id}/details', (req, reply, service) => {
-	reply({status: 'ok'});
-});
-
-service.start();
-```
-
-# Cors
-
-`/config.js`
-```js
-module.exports = {
-	endpoints: {
-		http: {
-			port: 3000,
-
-			// global server cors configuraton
-			// see: https://hapijs.com/api#route-options rules apply here too
-			cors: {
-				// defaults to '*'
-				origin: ['https://myui.myservice.at', 'http://lvh.me'],
-
-				// allow additional headers to be sent when client XHR
-				// lib is sending them like angular $http etc
-				additionalHeaders: ['x-requested-with']
-			},
-		},
-	},
-};
-```
-
-# Request Logger
-
-`/config.js`
-```js
-module.exports = {
-	endpoints: {
-		http: {
-			port: 3000,
-
-			// request logger configuration
-			requestLogger: {
-				// enable the request logger
-				enabled: false,
-
-				// log full request body if content-type: application/javascript and multipart/form-data
-				logFullRequest: true,
-
-				// log full response if content-type: application/javascript
-				logFullResponse: true,
-			},
-		},
-	},
-};
-```
-
-# Logger
-WIP
-```js
-module.exports = {
-	logger: {
-
-	}
-}
-```
-
-# Settings
-
-Add service settings in here. They are accessible in the handler as "service.settings" object
-
-`/config.js`
-```js
-module.exports = {
-	settings: {
-		pika: 'chu',
-	},
-};
-```
-
-Under the assumption the service is called `demoService`. You could access your settings like this:
-
-```js
-const atrix = ('@trigo/atrix');
-const service = atrix.services.demoService;
-
-const pikaValue = service.settings.pika;
-```
-
-Or in every service handler
-
-```js
-module.exports = (req, res, service) => {
-	req.log.info(`Value of Pika is ${service.settings.pika}`);
-}
-```
-
-
-
-# Upstream
-
-## Basic Upstream
-
-## Retry
-
-## Authentication
-
-### Basic
-
-### OAuth
-
-# Overwriting config via env variables
-
-Every in the `config` defined variables can be overwritten by environment variables. They have to follow a strict pattern. The enviroment variable has to be defined in Uppercase-Snakecase. Starting with `ATRIX` followed by the atrix services name which is defined by the `new atrix.Service('demoService', config)` call. For the `demoService` we would have to start with `ATRIX_DEMOSERVICE_` as environment variable name.
-
-e.g.:
-`/config.js`
-```js
-module.exports = {
-	settings: {
-		nestedSetting: {
-			pika: 'chu',
-		},
-	},
-};
-```
-
-To overwrite the value of pika we would have to define the env variable like that:
-```
-ATRIX_DEMOSERVICE_SETTINGS_NESTEDSETTING_PIKA=chuchu
 ```
