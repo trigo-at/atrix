@@ -62,6 +62,7 @@ When using the `handlerDir` option the appropriate routes will be created based 
 * A wildcard character (by default `$`) can be used for the HTTP method file ending. A file with a wildcard character as a method would be open for following the HTTP methods: `GET, PUT, POST, PATCH, OPTIONS, DELETE`
 
 **Code Example:**
+
 `/config.js`
 ```js
 module.exports = {
