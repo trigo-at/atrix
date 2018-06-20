@@ -21,20 +21,20 @@ Atrix is an opinionated micro-service framework
   * [atrix-pubsub](https://github.com/trigo-at/atrix-pubsub)
 
 ### Content
-1. [Handler Definition](#handler-definition)
-1. [CORS](#cors)
-1. [Request Logger](#request-logger)
-1. [Logger](#logger)
-1. [Settings](#settings)
-1. [Upstream](#upstream)
+* [Handler Definition](#handler-definition)
+* [CORS](#cors)
+* [Request Logger](#request-logger)
+* [Logger](#logger)
+* [Settings](#settings)
+* [Upstream](#upstream)
   * [Basic Upstream](#basic-upstream)
   * [Options](#options)
   * [Retry](#retry)
   * [Authentication](#upstream-authentication)
-    * [Basic](#basic-authentication)
-	* [OAuth](#oauth-authentication)
-1. [Overwriting config via env variables](#overwriting-config-via-env-variables)
-1. [Example Server setup](#example-server-setup)
+  * [Basic Authentication](#basic-authentication)
+  * [OAuth Authentication](#oauth-authentication)
+* [Overwriting config via env variables](#overwriting-config-via-env-variables)
+* [Example Server setup](#example-server-setup)
 
 > In the examples below, several `/config.js` files are cited. In a single project, you may have more than one config file, however, _only one config file is used to create a service._
 
