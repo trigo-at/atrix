@@ -2,11 +2,41 @@
 
 /* eslint-env node, mocha */
 /* eslint prefer-arrow-callback: 0, func-names: 0, space-before-function-paren: 0 */
-
-const svc = require('./services').loadFromDir;
+const atrix = require('../..');
+const Chance = require('chance');
+const supertest = require('supertest');
 const expect = require('chai').expect;
 
+const chance = new Chance();
+
 describe('loading handlers from fs', () => {
+	let svc;
+	let service;
+	before(async () => {
+		const port = chance.integer({ min: 20000, max: 30000 });
+		service = new atrix.Service('loadFromDir', {
+			endpoints: {
+				http: {
+					port,
+					handlerDir: `${__dirname}/load-handlers-from-dir`,
+					cors: true,
+					requestLogger: {
+						enabled: false,
+						logFullRequest: true,
+						logFullResponse: true,
+					},
+				},
+			} });
+		service.endpoints.add('http');
+		atrix.addService(service);
+		await service.start();
+		svc = supertest(`http://localhost:${port}`);
+	});
+
+	after(async () => {
+		await service.stop();
+	});
+
 	it('loaded GET /', async() => {
 		const res = await svc.get('/');
 		expect(res.statusCode).to.equal(200);
