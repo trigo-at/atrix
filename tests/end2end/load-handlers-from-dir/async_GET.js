@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = async (req, reply) => {
 	const obj = { ok: false };
 	const task = new Promise((res) => {

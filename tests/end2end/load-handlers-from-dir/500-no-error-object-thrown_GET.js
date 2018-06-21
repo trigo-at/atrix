@@ -1,4 +1,5 @@
-module.exports = () => {
-	throw 'Error';
-};
+'use strict';
 
+module.exports = () => {
+	throw new Error('Error');
+};
