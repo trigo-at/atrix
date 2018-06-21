@@ -144,7 +144,7 @@ describe('Proxy Handler', () => {
 		expect(res.text).to.contain('google');
 	});
 
-	it("can use default wildcard '$' as method from file name", async () => {
+	it("can use default wildcard '%' as method from file name", async () => {
 		expect((await svc.get('/without-method')).statusCode).to.equal(200);
 		expect((await svc.post('/without-method')).statusCode).to.equal(200);
 		expect((await svc.put('/without-method')).statusCode).to.equal(200);

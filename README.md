@@ -401,11 +401,6 @@ module.exports = {
 			// the directory containing the handler files
 			handlerDir: `${__dirname}/handlers`,
 
-			// determines which wilcard will be used for handler methods
-			// e.g.: /info_GET.js could only be accessed with a GET request
-			// /info_$.js could be accessed by following HTTP Methods (GET, POST, PATCH, PUT, OPTIONS, DELETE)
-			handlerMethodWildcard: '$' // defaults to $
-
 			// global server cors configuraton
 			// see: https://hapijs.com/api#route-options rules apply here too
 			cors: {
