@@ -144,11 +144,11 @@ describe('Proxy Handler', () => {
 		expect(res.text).to.contain('google');
 	});
 
-	it('can use * as method froim file name', async () => {
-		expect((await svc.get('/ohne-method')).statusCode).to.equal(200);
-		expect((await svc.post('/ohne-method')).statusCode).to.equal(200);
-		expect((await svc.put('/ohne-method')).statusCode).to.equal(200);
-		expect((await svc.patch('/ohne-method')).statusCode).to.equal(200);
-		expect((await svc.delete('/ohne-method')).statusCode).to.equal(200);
+	it("can use default wildcard '%' as method from file name", async () => {
+		expect((await svc.get('/without-method')).statusCode).to.equal(200);
+		expect((await svc.post('/without-method')).statusCode).to.equal(200);
+		expect((await svc.put('/without-method')).statusCode).to.equal(200);
+		expect((await svc.patch('/without-method')).statusCode).to.equal(200);
+		expect((await svc.delete('/without-method')).statusCode).to.equal(200);
 	});
 });

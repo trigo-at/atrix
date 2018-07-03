@@ -1,6 +1,6 @@
 {
   "name": "@trigo/atrix",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "engines": ">=7.4.0",
@@ -27,7 +27,7 @@
     "hapi-auth-jwt": "^4.0.0",
     "inert": "^4.2.0",
     "joi": "^10.6.0",
-    "mocha": "^3.4.2",
+    "mocha": "^5.2.0",
     "ramda": "^0.24.1",
     "supertest": "^3.0.0"
   },

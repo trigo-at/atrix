@@ -3,11 +3,13 @@
 const spawn = require('child_process').spawn;
 const Promise = require('bluebird');
 const expect = require('chai').expect;
-const svc = require('./services');
+const supertest = require('supertest');
+
+const svc = supertest('http://localhost:3333');
 
 async function checkService() {
 	try {
-		const available = (await svc.test.get('/')).status === 200;
+		const available = (await svc.get('/')).status === 200;
 		if (available) return true;
 		await new Promise(x => setTimeout(x, 1000));
 		return false;

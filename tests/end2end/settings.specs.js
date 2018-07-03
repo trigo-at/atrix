@@ -3,10 +3,40 @@
 /* eslint-env node, mocha */
 /* eslint prefer-arrow-callback: 0, func-names: 0, space-before-function-paren: 0 */
 
-const svc = require('./services').settings;
+const atrix = require('../..');
+const Chance = require('chance');
+const supertest = require('supertest');
 const expect = require('chai').expect;
 
+const chance = new Chance();
+
 describe('settings', () => {
+	let svc;
+	let service;
+	before(async () => {
+		const port = chance.integer({ min: 20000, max: 30000 });
+		service = new atrix.Service('settings', {
+			endpoints: {
+				http: {
+					port,
+					handlerDir: `${__dirname}/settings`,
+				},
+			},
+			settings: {
+				test: {
+					key: 'value',
+				},
+			} });
+		service.endpoints.add('http');
+		atrix.addService(service);
+		await service.start();
+		svc = supertest(`http://localhost:${port}`);
+	});
+
+	after(async () => {
+		await service.stop();
+	});
+
 	it('settings object is attached to service', async() => {
 		const res = await svc.get('/');
 		expect(res.statusCode).to.equal(200);
