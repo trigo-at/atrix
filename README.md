@@ -53,13 +53,13 @@ When using the `handlerDir` option the appropriate routes will be created based 
 * `_` the last underscore in the filename indicates the beginning of the http method to be used e.g.: `persons_GET.js`
 *  `^` indicates the beginning of a subroute, e.g.: `persons^details_GET.js`
 * Something in between curly braces indicates a route param e.g.: `persons^{id}_GET.js`;
-* The method wildcard character (`$` by default) can be used to create a route for all http methods `persons_$.js`
+* The method wildcard character (`%` by default) can be used to create a route for all http methods `persons_%.js`
 
 **Examples:**
 
 * The file `/handlers/persons^{id}^details_GET.js` will create a route `GET /persons/{id}/details`.
 * The file `/handlers/persons/{id}/details/GET.js` will create the same route.
-* A wildcard character (by default `$`) can be used for the HTTP method file ending. A file with a wildcard character as a method would be open for following the HTTP methods: `GET, PUT, POST, PATCH, OPTIONS, DELETE`
+* A wildcard character (by default `%`) can be used for the HTTP method file ending. A file with a wildcard character as a method would be open for following the HTTP methods: `GET, PUT, POST, PATCH, OPTIONS, DELETE`
 
 **Code Example:**
 
