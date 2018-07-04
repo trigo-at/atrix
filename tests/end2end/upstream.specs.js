@@ -109,6 +109,11 @@ describe('Ustreams', () => {
 		expect(res.body).to.eql({ foo: 'bar' });
 	});
 
+	it('return 404 from upstream', async () => {
+		const res = await svc.get('/gibts-ned');
+		expect(res.status).to.eql(404);
+	});
+
 	it('reties configured times', async () => {
 		const res = await svc.get('/need-retry');
 		expect(res.body).to.eql({ foo: 'bar' });
