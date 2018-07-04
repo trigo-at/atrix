@@ -5,4 +5,3 @@ module.exports = {
 		mapUri: () => 'http://eu.httpbin.org/anything',
 	},
 };
-
