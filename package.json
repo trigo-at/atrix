@@ -1,6 +1,6 @@
 {
   "name": "@trigo/atrix",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "",
   "main": "index.js",
   "engines": ">=7.4.0",
