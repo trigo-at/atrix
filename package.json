@@ -27,7 +27,6 @@
     "hapi-auth-jwt": "^4.0.0",
     "inert": "^4.2.0",
     "joi": "^10.6.0",
-    "node-fetch": "^2.1.2",
     "mocha": "^5.2.0",
     "ramda": "^0.24.1",
     "supertest": "^3.0.0"

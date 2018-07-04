@@ -94,6 +94,11 @@ describe('Ustreams', () => {
 			reply(ur.body).code(ur.status);
 		});
 
+		service.handlers.add('POST', '/gibts-ned', async (req, reply, s) => {
+			const ur = await s.upstream.upstream.post('/iaaa', { payload: req.payload });
+			reply(ur.body).code(ur.status);
+		});
+
 		atrix.addService(service);
 		await atrix.services.svc.start();
 		svc = supertest(`http://localhost:${port}`);
@@ -110,7 +115,7 @@ describe('Ustreams', () => {
 	});
 
 	it('return 404 from upstream', async () => {
-		const res = await svc.get('/gibts-ned');
+		const res = await svc.post('/gibts-ned').send({ test: 'test' });
 		expect(res.status).to.eql(404);
 	});
 
