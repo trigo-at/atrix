@@ -1,6 +1,6 @@
 {
   "name": "@trigo/atrix",
-  "version": "3.0.3",
+  "version": "4.0.0",
   "description": "",
   "main": "index.js",
   "engines": ">=7.4.0",
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@trigo/hapi-auth-signedlink": "^0.1.0",
+    "axios": "^0.18.0",
     "blipp": "^2.3.0",
     "bluebird": "^3.5.0",
     "bluebird-retry": "^0.11.0",
