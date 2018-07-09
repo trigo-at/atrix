@@ -7,11 +7,12 @@
 const atrix = require('../..');
 const Chance = require('chance');
 const supertest = require('supertest');
+const btoa = require('../../lib/btoa');
 const { expect } = require('chai');
 
 const chance = new Chance();
 
-describe('Upstreams', () => {
+describe.only('Upstreams', () => {
 	let svc,
 		tries = 0,
 		service;
@@ -72,6 +73,17 @@ describe('Upstreams', () => {
 				},
 				ups: {
 					url: `http://localhost:${upstreamPort}`,
+				},
+				basic: {
+					url: `http://localhost:${upstreamPort}`,
+					security: {
+						strategies: {
+							basic: {
+								username: 'testname',
+								secret: 'testpass',
+							},
+						},
+					},
 				},
 			},
 		});
@@ -251,5 +263,11 @@ describe('Upstreams', () => {
 		const mixedCaseResponse = await service.upstream.upstream.get('/headers', { options: { headers: { 'User-Agent': 'Pikachu' } } });
 		const lowercaseResponse = await service.upstream.upstream.get('/headers', { options: { headers: { 'user-agent': 'Pikachu' } } });
 		expect(mixedCaseResponse.body.headers['user-agent']).to.eql(lowercaseResponse.body.headers['user-agent']);
+	});
+
+	it('builds basic auth headers correctly', async () => {
+		const response = await service.upstream.basic.get('/headers');
+		expect(response.status).to.eql(200);
+		expect(response.body.headers.authorization).to.eql(`Basic ${btoa('testname:testpass')}`);
 	});
 });
