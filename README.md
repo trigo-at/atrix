@@ -53,13 +53,13 @@ When using the `handlerDir` option the appropriate routes will be created based 
 * `_` the last underscore in the filename indicates the beginning of the http method to be used e.g.: `persons_GET.js`
 *  `^` indicates the beginning of a subroute, e.g.: `persons^details_GET.js`
 * Something in between curly braces indicates a route param e.g.: `persons^{id}_GET.js`;
-* The method wildcard character (`$` by default) can be used to create a route for all http methods `persons_$.js`
+* The method wildcard character (`%` by default) can be used to create a route for all http methods `persons_%.js`
 
 **Examples:**
 
 * The file `/handlers/persons^{id}^details_GET.js` will create a route `GET /persons/{id}/details`.
 * The file `/handlers/persons/{id}/details/GET.js` will create the same route.
-* A wildcard character (by default `$`) can be used for the HTTP method file ending. A file with a wildcard character as a method would be open for following the HTTP methods: `GET, PUT, POST, PATCH, OPTIONS, DELETE`
+* A wildcard character (by default `%`) can be used for the HTTP method file ending. A file with a wildcard character as a method would be open for following the HTTP methods: `GET, PUT, POST, PATCH, OPTIONS, DELETE`
 
 **Code Example:**
 
@@ -236,11 +236,11 @@ module.exports = (req, res, service) => {
 
 # Upstream
 
-Atrix uses [fetch](https://github.com/andris9/fetch) for HTTP requests and can be configured for multiple upstreams. Upstreams will expose a simple interface to make preconfigured HTTP requests.
+Atrix uses [axios](https://github.com/axios/axios) for HTTP requests and can be configured for multiple upstreams. Upstreams will expose a simple interface to make preconfigured HTTP requests.
 
 ## Basic Upstream
 
-`/config.js`
+**Example of a basic upstream configuration** `/config.js`
 ```js
 module.exports = {
 	upstream: {
@@ -253,7 +253,7 @@ module.exports = {
 
 The defined upstream can be accessed in every service handler via the service parameter.
 
-`/simple_GET.js`
+**Example usage of upstream directly inside a service handler** `/simple_GET.js`
 ```js
 module.exports = async (req, reply, service) => {
 	const result = await service.upstream.example.get('/');
@@ -264,7 +264,7 @@ module.exports = async (req, reply, service) => {
 
 Alternativ the upstreams can be accessed via the exposed service from atrix.
 
-`/some_file/which_is/part_of/the_service`
+**Example usage of upstream inside a module which is called from within the dummyService** `/some_file/which_is/part_of/the_service`
 ```js
 const atrix = require('@trigo/atrix');
 // here we assume the service has been named 'dummyService'
@@ -276,7 +276,7 @@ const exampleUpstream = service.upstream.example;
 
 You can define options (e.g.: headers) which will be merged into the underlying fetch request.
 
-`/config.js`
+**Example configuration for upstream headers** `/config.js`
 ```js
 module.exports = {
 	upstream: {
@@ -296,7 +296,7 @@ module.exports = {
 
 Upstreams can be configured to automatically retry the requests in case of an error for several times with a defined interval.
 
-`/config.js`
+**Example configuration for retry upstream** `/config.js`
 ```js
 module.exports = {
 	upstream: {
@@ -317,7 +317,7 @@ You can set up basic authentication or oAuth authentication which will be handle
 
 ### Basic Authentication
 
-`/config.js`
+**Example configuration for a basic authentication upstream** `/config.js`
 ```js
 module.exports = {
 	upstream: {
@@ -338,7 +338,18 @@ module.exports = {
 
 ### OAuth Authentication
 
-`/config.js`
+The OAuth strategy will try to authenticate against the provided `authEndpoint` and `grantType` via Basic authentication. The auth endpoint has to return a JSON answer contiaining an `access_token`.
+
+```js
+// json answer e.g.:
+{
+	access_token: '123456'
+}
+```
+
+After the initial configuration it is not necessary to authenticate manually - upstream will handle the authentication process on the first request and will cache the returning `access_token` for further requests.
+
+**Example configuration for a oauth authentication upstram** `/config.js`
 ```js
 module.exports = {
 	upstream: {
@@ -347,10 +358,10 @@ module.exports = {
 			security: {
 				strategies: {
 					oauth: {
-						client_id: 'client_id',
-						client_secret: 'client_secret',
-						auth_endpoint: 'http://auth.endpoint/token',
-						grant_type: 'password',
+						clientId: 'client_id',
+						clientSecret: 'client_secret',
+						authEndpoint: 'http://auth.endpoint/token',
+						grantType: 'password',
 					},
 				},
 			},

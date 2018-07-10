@@ -1,0 +1,2 @@
+- replaced `fetch` with `axios` as the underlying package used for upstream, keeping compatibility with earlier versions
+- removed package `btoa` because it is no longer needed

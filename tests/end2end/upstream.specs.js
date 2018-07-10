@@ -7,12 +7,11 @@
 const atrix = require('../..');
 const Chance = require('chance');
 const supertest = require('supertest');
-const btoa = require('../../lib/btoa');
 const { expect } = require('chai');
 
 const chance = new Chance();
 
-describe.only('Upstreams', () => {
+describe('Upstreams', () => {
 	let svc,
 		tries = 0,
 		service;
@@ -46,6 +45,22 @@ describe.only('Upstreams', () => {
 		upstream.handlers.add('GET', '/bad-request', (req, reply) => reply({ foo: 'bar' }).code(400));
 
 		upstream.handlers.add('GET', '/headers', (req, reply) => reply({ headers: req.headers }));
+
+		upstream.handlers.add('POST', '/token', (req, reply) => {
+			if (req.headers.authorization === 'Basic dGVzdG5hbWU6dGVzdHBhc3M=') {
+				reply({ access_token: '123456' });
+			} else {
+				reply().code(400);
+			}
+		});
+
+		upstream.handlers.add('GET', '/oauthsecured', (req, reply) => {
+			if (req.headers.authorization === 'Bearer 123456') {
+				reply();
+			} else {
+				reply().code(401);
+			}
+		});
 
 		atrix.addService(upstream);
 		await atrix.services.upstream.start();
@@ -81,6 +96,19 @@ describe.only('Upstreams', () => {
 							basic: {
 								username: 'testname',
 								secret: 'testpass',
+							},
+						},
+					},
+				},
+				oauth: {
+					url: `http://localhost:${upstreamPort}`,
+					security: {
+						strategies: {
+							oauth: {
+								clientId: 'testname',
+								clientSecret: 'testpass',
+								authEndpoint: `http://localhost:${upstreamPort}/token`,
+								grantType: 'password',
 							},
 						},
 					},
@@ -268,6 +296,11 @@ describe.only('Upstreams', () => {
 	it('builds basic auth headers correctly', async () => {
 		const response = await service.upstream.basic.get('/headers');
 		expect(response.status).to.eql(200);
-		expect(response.body.headers.authorization).to.eql(`Basic ${btoa('testname:testpass')}`);
+		expect(response.body.headers.authorization).to.eql('Basic dGVzdG5hbWU6dGVzdHBhc3M=');
+	});
+
+	it('uses oauth strategy correctly', async () => {
+		const response = await service.upstream.oauth.get('/oauthsecured');
+		expect(response.status).to.eql(200);
 	});
 });
