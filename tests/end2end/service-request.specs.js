@@ -63,8 +63,6 @@ describe('service.request() interface', () => {
 		});
 
 		service.handlers.add('POST', '/with-internal', async (req, reply, s) => {
-			console.log('^^^^^^^^^^^^^^^^^')
-			req.log.info(req.headers);
 			const innerHeaders = await s.request({
 				method: 'post',
 				url: '/called-by-with-internal',
