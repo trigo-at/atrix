@@ -63,6 +63,8 @@ describe('service.request() interface', () => {
 		});
 
 		service.handlers.add('POST', '/with-internal', async (req, reply, s) => {
+			console.log('^^^^^^^^^^^^^^^^^')
+			req.log.info(req.headers);
 			const innerHeaders = await s.request({
 				method: 'post',
 				url: '/called-by-with-internal',
@@ -119,6 +121,8 @@ describe('service.request() interface', () => {
 
 		const contextRequestId = res.body.reqId;
 		expect(contextRequestId).to.exist;
+		const contextRequestIdHeader = res.body.headers['x-atrix-context-req-id'];
+		expect(contextRequestIdHeader).to.eql(contextRequestId);
 
 		const innerReqId = res.body.inner.reqId;
 		const innerContextRequestId = res.body.inner.headers['x-atrix-context-req-id'];
