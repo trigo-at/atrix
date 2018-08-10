@@ -46,6 +46,9 @@ describe('Upstreams', () => {
 
 		upstream.handlers.add('GET', '/headers', (req, reply) => reply({ headers: req.headers }));
 
+		upstream.handlers.add('POST', '/echo-query-params', async (req, reply) => {
+			reply(req.query);
+		});
 		atrix.addService(upstream);
 		await atrix.services.upstream.start();
 
@@ -105,6 +108,11 @@ describe('Upstreams', () => {
 		service.handlers.add('POST', '/gibts-ned', async (req, reply, s) => {
 			const ur = await s.upstream.upstream.post('/iaaa', { payload: req.payload });
 			reply(ur.body).code(ur.status);
+		});
+
+		service.handlers.add('POST', '/mit-query-params', async (req, reply, s) => {
+			const ur = await s.upstream.upstream.post('/echo-query-params', { queryParams: req.query });
+			reply(ur.body);
 		});
 
 		atrix.addService(service);
@@ -251,5 +259,10 @@ describe('Upstreams', () => {
 		const mixedCaseResponse = await service.upstream.upstream.get('/headers', { options: { headers: { 'User-Agent': 'Pikachu' } } });
 		const lowercaseResponse = await service.upstream.upstream.get('/headers', { options: { headers: { 'user-agent': 'Pikachu' } } });
 		expect(mixedCaseResponse.body.headers['user-agent']).to.eql(lowercaseResponse.body.headers['user-agent']);
+	});
+
+	it('handles queryParams', async () => {
+		const res = await svc.post('/mit-query-params').query({ a: '42', b: '12' });
+		expect(res.body).to.eql({ a: '42', b: '12' });
 	});
 });
