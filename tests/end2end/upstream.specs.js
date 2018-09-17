@@ -314,10 +314,10 @@ describe('Upstreams', () => {
 	it('uses oauth strategy correctly', async () => {
 		const response = await service.upstream.oauth.get('/oauthsecured');
 		expect(response.status).to.eql(200);
+	});
 
 	it('handles queryParams', async () => {
 		const res = await svc.post('/mit-query-params').query({ a: '42', b: '12' });
 		expect(res.body).to.eql({ a: '42', b: '12' });
-
 	});
 });
