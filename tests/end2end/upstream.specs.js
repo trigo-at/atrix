@@ -46,6 +46,7 @@ describe('Upstreams', () => {
 
 		upstream.handlers.add('GET', '/headers', (req, reply) => reply({ headers: req.headers }));
 
+
 		upstream.handlers.add('POST', '/token', (req, reply) => {
 			if (req.headers.authorization === 'Basic dGVzdG5hbWU6dGVzdHBhc3M=') {
 				reply({ access_token: '123456' });
@@ -60,6 +61,11 @@ describe('Upstreams', () => {
 			} else {
 				reply().code(401);
 			}
+		});
+
+
+		upstream.handlers.add('POST', '/echo-query-params', async (req, reply) => {
+			reply(req.query);
 		});
 
 		atrix.addService(upstream);
@@ -145,6 +151,11 @@ describe('Upstreams', () => {
 		service.handlers.add('POST', '/gibts-ned', async (req, reply, s) => {
 			const ur = await s.upstream.upstream.post('/iaaa', { payload: req.payload });
 			reply(ur.body).code(ur.status);
+		});
+
+		service.handlers.add('POST', '/mit-query-params', async (req, reply, s) => {
+			const ur = await s.upstream.upstream.post('/echo-query-params', { queryParams: req.query });
+			reply(ur.body);
 		});
 
 		atrix.addService(service);
@@ -293,6 +304,7 @@ describe('Upstreams', () => {
 		expect(mixedCaseResponse.body.headers['user-agent']).to.eql(lowercaseResponse.body.headers['user-agent']);
 	});
 
+
 	it('builds basic auth headers correctly', async () => {
 		const response = await service.upstream.basic.get('/headers');
 		expect(response.status).to.eql(200);
@@ -302,5 +314,10 @@ describe('Upstreams', () => {
 	it('uses oauth strategy correctly', async () => {
 		const response = await service.upstream.oauth.get('/oauthsecured');
 		expect(response.status).to.eql(200);
+
+	it('handles queryParams', async () => {
+		const res = await svc.post('/mit-query-params').query({ a: '42', b: '12' });
+		expect(res.body).to.eql({ a: '42', b: '12' });
+
 	});
 });
