@@ -46,9 +46,28 @@ describe('Upstreams', () => {
 
 		upstream.handlers.add('GET', '/headers', (req, reply) => reply({ headers: req.headers }));
 
+
+		upstream.handlers.add('POST', '/token', (req, reply) => {
+			if (req.headers.authorization === 'Basic dGVzdG5hbWU6dGVzdHBhc3M=') {
+				reply({ access_token: '123456' });
+			} else {
+				reply().code(400);
+			}
+		});
+
+		upstream.handlers.add('GET', '/oauthsecured', (req, reply) => {
+			if (req.headers.authorization === 'Bearer 123456') {
+				reply();
+			} else {
+				reply().code(401);
+			}
+		});
+
+
 		upstream.handlers.add('POST', '/echo-query-params', async (req, reply) => {
 			reply(req.query);
 		});
+
 		atrix.addService(upstream);
 		await atrix.services.upstream.start();
 
@@ -75,6 +94,30 @@ describe('Upstreams', () => {
 				},
 				ups: {
 					url: `http://localhost:${upstreamPort}`,
+				},
+				basic: {
+					url: `http://localhost:${upstreamPort}`,
+					security: {
+						strategies: {
+							basic: {
+								username: 'testname',
+								secret: 'testpass',
+							},
+						},
+					},
+				},
+				oauth: {
+					url: `http://localhost:${upstreamPort}`,
+					security: {
+						strategies: {
+							oauth: {
+								clientId: 'testname',
+								clientSecret: 'testpass',
+								authEndpoint: `http://localhost:${upstreamPort}/token`,
+								grantType: 'password',
+							},
+						},
+					},
 				},
 			},
 		});
@@ -259,6 +302,18 @@ describe('Upstreams', () => {
 		const mixedCaseResponse = await service.upstream.upstream.get('/headers', { options: { headers: { 'User-Agent': 'Pikachu' } } });
 		const lowercaseResponse = await service.upstream.upstream.get('/headers', { options: { headers: { 'user-agent': 'Pikachu' } } });
 		expect(mixedCaseResponse.body.headers['user-agent']).to.eql(lowercaseResponse.body.headers['user-agent']);
+	});
+
+
+	it('builds basic auth headers correctly', async () => {
+		const response = await service.upstream.basic.get('/headers');
+		expect(response.status).to.eql(200);
+		expect(response.body.headers.authorization).to.eql('Basic dGVzdG5hbWU6dGVzdHBhc3M=');
+	});
+
+	it('uses oauth strategy correctly', async () => {
+		const response = await service.upstream.oauth.get('/oauthsecured');
+		expect(response.status).to.eql(200);
 	});
 
 	it('handles queryParams', async () => {
