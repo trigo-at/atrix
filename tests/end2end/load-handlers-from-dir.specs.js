@@ -87,4 +87,15 @@ describe('loading handlers from fs', () => {
 		expect(res.statusCode).to.equal(204);
 		expect(res.text).to.equal('');
 	});
+
+	it('route can be dsiabled with Atrix.DISABLED symbol', async () => {
+		let res = await svc.get('/disabled-route');
+		expect(res.statusCode).to.equal(404);
+
+		res = await svc.get('/disabled-route2');
+		expect(res.statusCode).to.equal(404);
+
+		res = await svc.get('/disabled-route3');
+		expect(res.statusCode).to.equal(404);
+	});
 });

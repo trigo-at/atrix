@@ -5,7 +5,7 @@ const ServicesList = require('./lib/ServicesList');
 const Upstream = require('./lib/Upstream');
 const globalConfig = require('./lib/global-config');
 const configure = require('./configure');
-
+const symbols = require('./lib/symbols');
 
 class Atrix {
 	constructor() {
@@ -15,6 +15,7 @@ class Atrix {
 		this.globalConfig = globalConfig();
 
 		process.on('unhandledRejection', (err) => {
+			// eslint-disable-next-line
 			console.error(err);
 			process.exit(1);
 		});
@@ -52,6 +53,14 @@ class Atrix {
 
 	get configure() {
 		return configure(this.globalConfig);
+	}
+
+	// map symbols to instance & static properties for convinience
+	get DISABLED() { //	eslint-disable-line
+		return symbols.DISABLED;
+	}
+	static get DISABLED() {
+		return symbols.DISABLED;
 	}
 }
 
