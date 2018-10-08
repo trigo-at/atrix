@@ -9,9 +9,9 @@ const symbols = require('./lib/symbols');
 const pkg = require('./package.json');
 
 
-const printCentered = (str, width) => str.padStart(Math.round(width / 2 + str.length /2), ' ');
+const printCentered = (str, width) => str.padStart(Math.round((width / 2) + (str.length / 2)), ' ');
 
-const getBanner = (version) => `
+const getBanner = version => `
                  ___
                ,--.'|_             ,--,
                |  | :,'   __  ,-.,--.'|
