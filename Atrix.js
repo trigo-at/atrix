@@ -8,21 +8,27 @@ const configure = require('./configure');
 const symbols = require('./lib/symbols');
 const pkg = require('./package.json');
 
-const banner = `
-                ___
-              ,--.'|_             ,--,
-              |  | :,'   __  ,-.,--.'|
-              :  : ' : ,' ,'/ /||  |,     ,--,  ,--,
-   ,--.--.  .;__,'  /  '  | |' |\`--'_     |'. \\/ .\`|
-  /       \\ |  |   |   |  |   ,',' ,'|    '  \\/  / ;
- .--.  .-. |:__,'| :   '  :  /  '  | |     \\  \\.' /
-  \\__\\/: . .  '  : |__ |  | '   |  | :      \\  ;  ;
-  ," .--.; |  |  | '.'|;  : |   '  : |__   / \\  \\  \\
- /  /  ,.  |  ;  :    ;|  , ;   |  | '.'|./__;   ;  \\
-;  :   .'   \\ |  ,   /  ---'    ;  :    ;|   :/\\  \\ ;
-|  ,     .-./  ---\`-'           |  ,   / \`---'  \`--\`
- \`--\`---'                        ---\`-'
 
+const printCentered = (str, width) => str.padStart(Math.round(width / 2 + str.length /2), ' ');
+
+const getBanner = (version) => `
+                 ___
+               ,--.'|_             ,--,
+               |  | :,'   __  ,-.,--.'|
+               :  : ' : ,' ,'/ /||  |,     ,--,  ,--,
+    ,--.--.  .;__,'  /  '  | |' |\`--'_     |'. \\/ .\`|
+   /       \\ |  |   |   |  |   ,',' ,'|    '  \\/  / ;
+  .--.  .-. |:__,'| :   '  :  /  '  | |     \\  \\.' /
+   \\__\\/: . .  '  : |__ |  | '   |  | :      \\  ;  ;
+   ," .--.; |  |  | '.'|;  : |   '  : |__   / \\  \\  \\
+  /  /  ,.  |  ;  :    ;|  , ;   |  | '.'|./__;   ;  \\
+ ;  :   .'   \\ |  ,   /  ---'    ;  :    ;|   :/\\  \\ ;
+ |  ,     .-./  ---\`-'           |  ,   / \`---'  \`--\`
+  \`--\`---'                        ---\`-'
+
+${printCentered(`/${'-'.repeat(version.length + 2)}\\`, 54)}
+${printCentered(`| ${version} |`, 54)}
+${printCentered(`\\${'-'.repeat(version.length + 2)}/`, 54)}
 `;
 
 
@@ -53,11 +59,8 @@ class Atrix {
 	}
 
 	static printAtrixHeader() {
-		const greeting = `v${pkg.version}`;
 		// eslint-disable-next-line
-		console.log(`
-${banner}
-${greeting.padStart(Math.ceil(56 / 2))}`);
+		console.log(getBanner(`v${pkg.version}`));
 	}
 
 	get Service() {
