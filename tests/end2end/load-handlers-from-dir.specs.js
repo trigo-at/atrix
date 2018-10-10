@@ -20,6 +20,7 @@ describe('loading handlers from fs', () => {
 					port,
 					handlerDir: `${__dirname}/load-handlers-from-dir`,
 					cors: true,
+					prefix: '',
 					requestLogger: {
 						enabled: false,
 						logFullRequest: true,
