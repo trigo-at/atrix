@@ -4,11 +4,13 @@
 
 const bb = require('bluebird');
 
-class TestPlugin {
+class DataSourcePlugin {
 	async start() {
 		await bb.delay(10);
 		plugin.instance.started = true;// eslint-disable-line
-		return { stuff: 'is here' };
+		return {
+			db: {},
+		};
 	}
 }
 
@@ -21,7 +23,7 @@ const factory = (atrix, service, config) => {
 	plugin.factoryCall.atrix = atrix;
 	plugin.factoryCall.service = service;
 	plugin.factoryCall.config = config;
-	plugin.instance = new TestPlugin();// eslint-disable-line
+	plugin.instance = new DataSourcePlugin();// eslint-disable-line
 	return plugin.instance;// eslint-disable-line
 };
 
@@ -33,7 +35,7 @@ const reset = () => {
 };
 
 const plugin = {
-	name: 'test-plugin',
+	name: 'datasource-plugin',
 	version: '1.0.0',
 	register,
 	atrix: {},

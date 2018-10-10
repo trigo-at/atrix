@@ -1,16 +1,8 @@
 'use strict';
 
 /* eslint class-methods-use-this: 0, no-use-before-define: 0 */
+class TestPluginOther {}
 
-const bb = require('bluebird');
-
-class TestPlugin {
-	async start() {
-		await bb.delay(10);
-		plugin.instance.started = true;// eslint-disable-line
-		return { stuff: 'is here' };
-	}
-}
 
 const register = (a) => {
 	plugin.registerCall.atrix = a;
@@ -21,7 +13,7 @@ const factory = (atrix, service, config) => {
 	plugin.factoryCall.atrix = atrix;
 	plugin.factoryCall.service = service;
 	plugin.factoryCall.config = config;
-	plugin.instance = new TestPlugin();// eslint-disable-line
+	plugin.instance = new TestPluginOther();// eslint-disable-line
 	return plugin.instance;// eslint-disable-line
 };
 
@@ -33,7 +25,7 @@ const reset = () => {
 };
 
 const plugin = {
-	name: 'test-plugin',
+	name: 'test-plugin-other',
 	version: '1.0.0',
 	register,
 	atrix: {},
