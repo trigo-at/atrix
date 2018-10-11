@@ -3,7 +3,6 @@
 /* eslint class-methods-use-this: 0, no-use-before-define: 0 */
 class TestPluginOther {}
 
-
 const register = (a) => {
 	plugin.registerCall.atrix = a;
 	plugin.atrix = a; // eslint-disable-line
