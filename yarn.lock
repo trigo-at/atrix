@@ -353,11 +353,6 @@ browser-stdout@1.3.1:
   resolved "https://registry.yarnpkg.com/browser-stdout/-/browser-stdout-1.3.1.tgz#baa559ee14ced73452229bad7326467c61fabd60"
   integrity sha512-qhAVI1+Av2X7qelOfAIYwXONood6XlZE/fXaBSmW/T5SzLAmCgzi+eiWE7fUvbHaeNBQH13UftjpXxsfLkMpgw==
 
-bson@0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/bson/-/bson-0.2.5.tgz#500d26d883ddc8e02f2c88011627636111c105c5"
-  integrity sha1-UA0m2IPdyOAvLIgBFidjYRHBBcU=
-
 buffer-equal-constant-time@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/buffer-equal-constant-time/-/buffer-equal-constant-time-1.0.1.tgz#f8e71132f7ffe6e01a5c9697a4c6f3e48d5cc819"
@@ -368,20 +363,7 @@ builtin-modules@^1.0.0, builtin-modules@^1.1.1:
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
   integrity sha1-Jw8HbFpywC9bZaR9+Uxf46J4iS8=
 
-bunyan-logentries@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/bunyan-logentries/-/bunyan-logentries-0.1.0.tgz#7b0bdf2f4d3f527af218213b15fb65aee166f2db"
-  integrity sha1-ewvfL00/UnryGCE7FftlruFm8ts=
-  dependencies:
-    node-logentries "~0.1.0"
-
-"bunyan-mongo@git+https://github.com/mdulghier/bunyan-mongo.git":
-  version "0.0.0"
-  resolved "git+https://github.com/mdulghier/bunyan-mongo.git#3c0cc4d99bd2a3f1919016dc9cc09c9ba2c16d05"
-  dependencies:
-    mongodb "~1.3.23"
-
-bunyan@^1.2.3, bunyan@^1.8.10:
+bunyan@^1.8.10:
   version "1.8.12"
   resolved "https://registry.yarnpkg.com/bunyan/-/bunyan-1.8.12.tgz#f150f0f6748abdd72aeae84f04403be2ef113797"
   integrity sha1-8VDw9nSKvdcq6uhPBEA74u8RN5c=
@@ -390,17 +372,6 @@ bunyan@^1.2.3, bunyan@^1.8.10:
     moment "^2.10.6"
     mv "~2"
     safe-json-stringify "~1"
-
-bylog@^0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/bylog/-/bylog-0.3.5.tgz#ee53132455ec4ed227882a5f25fc42813a448710"
-  integrity sha1-7lMTJFXsTtIniCpfJfxCgTpEhxA=
-  dependencies:
-    bunyan "^1.2.3"
-    useragent "^2.1.3"
-  optionalDependencies:
-    bunyan-logentries "^0.1.0"
-    bunyan-mongo "git+https://github.com/mdulghier/bunyan-mongo.git"
 
 call@^4.0.2:
   version "4.0.2"
@@ -2065,11 +2036,6 @@ jws@^3.0.0:
     jwa "^1.1.4"
     safe-buffer "^5.0.1"
 
-kerberos@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/kerberos/-/kerberos-0.0.3.tgz#4285d92a0748db2784062f5adcec9f5956cb818a"
-  integrity sha1-QoXZKgdI2yeEBi9a3OyfWVbLgYo=
-
 kind-of@^3.0.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
@@ -2210,11 +2176,6 @@ lowercase-keys@^1.0.0:
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-1.0.0.tgz#4e3366b39e7f5457e35f1324bdf6f88d0bfc7306"
   integrity sha1-TjNms55/VFfjXxMkvfb4jQv8cwY=
 
-lru-cache@2.2.x:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-2.2.4.tgz#6c658619becf14031d0d0b594b16042ce4dc063d"
-  integrity sha1-bGWGGb7PFAMdDQtZSxYELOTcBj0=
-
 lru-cache@4.1.x, lru-cache@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.1.tgz#622e32e82488b49279114a4f9ecf45e7cd6bba55"
@@ -2335,15 +2296,6 @@ moment@2.x.x, moment@^2.10.6:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.1.tgz#56da1a2d1cbf01d38b7e1afc31c10bcfa1929167"
   integrity sha1-VtoaLRy/AdOLfhr8McELz6GSkWc=
 
-mongodb@~1.3.23:
-  version "1.3.23"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-1.3.23.tgz#874a5212162b16188aeeaee5e06067766c8e9e86"
-  integrity sha1-h0pSEhYrFhiK7q7l4GBndmyOnoY=
-  dependencies:
-    bson "0.2.5"
-  optionalDependencies:
-    kerberos "0.0.3"
-
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -2400,11 +2352,6 @@ nigel@2.x.x:
   dependencies:
     hoek "4.x.x"
     vise "2.x.x"
-
-node-logentries@~0.1.0:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/node-logentries/-/node-logentries-0.1.4.tgz#1a0b99679b627962dc90bc698a5c12957674afc1"
-  integrity sha1-GguZZ5tieWLckLxpilwSlXZ0r8E=
 
 node-pre-gyp@^0.6.36:
   version "0.6.38"
@@ -3346,7 +3293,7 @@ timed-out@^4.0.0:
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
   integrity sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
 
-tmp@0.0.x, tmp@^0.0.33:
+tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
   integrity sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==
@@ -3465,14 +3412,6 @@ user-home@^2.0.0:
   integrity sha1-nHC/2Babwdy/SGBODwS4tJzenp8=
   dependencies:
     os-homedir "^1.0.0"
-
-useragent@^2.1.3:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/useragent/-/useragent-2.2.1.tgz#cf593ef4f2d175875e8bb658ea92e18a4fd06d8e"
-  integrity sha1-z1k+9PLRdYdei7ZY6pLhik/QbY4=
-  dependencies:
-    lru-cache "2.2.x"
-    tmp "0.0.x"
 
 util-deprecate@~1.0.1:
   version "1.0.2"
