@@ -22,7 +22,8 @@ describe('Upstreams', () => {
 
 	before(async () => {
 		const upstreamPort = chance.integer({ min: 10000, max: 20000 });
-		const upstream = new atrix.Service('upstream', {
+		const upstream = atrix.addService({
+			name: 'upstream',
 			endpoints: {
 				http: {
 					port: upstreamPort,
@@ -30,7 +31,6 @@ describe('Upstreams', () => {
 			},
 		});
 
-		upstream.endpoints.add('http');
 		upstream.handlers.add('*', '/echo', (req, reply) => {
 			reply(req.payload);
 		});
@@ -68,11 +68,11 @@ describe('Upstreams', () => {
 			reply(req.query);
 		});
 
-		atrix.addService(upstream);
 		await atrix.services.upstream.start();
 
 		const port = chance.integer({ min: 20001, max: 30000 });
-		service = new atrix.Service('svc', {
+		service = atrix.addService({
+			name: 'svc',
 			endpoints: {
 				http: {
 					port,
@@ -122,7 +122,6 @@ describe('Upstreams', () => {
 			},
 		});
 
-		service.endpoints.add('http');
 
 		service.handlers.add('GET', '/ups', async (req, reply, s) => {
 			const ur = await s.upstream.ups.get('/need-retry');
@@ -158,7 +157,6 @@ describe('Upstreams', () => {
 			reply(ur.body);
 		});
 
-		atrix.addService(service);
 		await atrix.services.svc.start();
 		svc = supertest(`http://localhost:${port}`);
 	});

@@ -1,4 +1,5 @@
 module.exports = {
+	name: 'secured',
 	endpoints: {
 		http: {
 			port: 3008,

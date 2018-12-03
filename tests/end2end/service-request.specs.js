@@ -17,7 +17,8 @@ describe('service.request() interface', () => {
 	let service;
 	before(async () => {
 		const port = chance.integer({ min: 20000, max: 30000 });
-		service = new atrix.Service('serviceRequest', {
+		service = atrix.addService({
+			name: 'serviceRequest',
 			endpoints: {
 				http: {
 					port,
@@ -30,8 +31,6 @@ describe('service.request() interface', () => {
 					},
 				},
 			} });
-		service.endpoints.add('http');
-
 		service.handlers.add('POST', '/called-by-called-by-called-by-with-internal', async (req, reply) => {
 			reply({
 				reqId: req.id,
@@ -74,7 +73,6 @@ describe('service.request() interface', () => {
 			});
 		});
 
-		atrix.addService(service);
 		await service.start();
 		svc = supertest(`http://localhost:${port}`);
 	});

@@ -1,4 +1,5 @@
 module.exports = {
+	name: 'upstreamoptions',
 	endpoints: {
 		http: {
 			port: 3006,

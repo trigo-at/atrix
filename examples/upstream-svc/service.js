@@ -4,9 +4,7 @@ const atrix = require('../..');
 const config = require('./config');
 
 // console.log(atrix)
-const service = new atrix.Service('upstream', config);
-
-service.endpoints.add('http');
+const service = atrix.addService(config);
 
 service.handlers.add('GET', '/data', (req, reply) => {
 	service.upstream.reporting.get('/data').then(result => {

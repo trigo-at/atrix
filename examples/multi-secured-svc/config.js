@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = {
+	name: 'multiSecured',
 	endpoints: {
 		http: {
 			port: 3018,

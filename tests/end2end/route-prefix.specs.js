@@ -15,7 +15,8 @@ describe('route-prefix', () => {
 	let service;
 	before(async () => {
 		const port = chance.integer({ min: 20000, max: 30000 });
-		service = new atrix.Service('routeprefix', {
+		service = atrix.addService({
+			name: 'routeprefix',
 			endpoints: {
 				http: {
 					port,
@@ -29,9 +30,7 @@ describe('route-prefix', () => {
 				},
 			},
 		});
-		service.endpoints.add('http');
 
-		atrix.addService(service);
 		await service.start();
 		svc = supertest(`http://localhost:${port}`);
 	});

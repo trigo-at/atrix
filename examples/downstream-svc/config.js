@@ -1,4 +1,5 @@
 module.exports = {
+	name: 'downstream',
 	service: {
 	},
 	endpoints: {

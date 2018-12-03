@@ -2,7 +2,8 @@
 
 const atrix = require('../..');
 
-const service = new atrix.Service('logger', {
+const service = atrix.addService({
+	name: 'logger',
 	logger: {
 		level: 'debug',
 		name: 'franz',
@@ -25,7 +26,5 @@ const service = new atrix.Service('logger', {
 		},
 	},
 });
-
-service.endpoints.add('http');
 
 module.exports = service;

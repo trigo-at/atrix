@@ -3,15 +3,10 @@
 const atrix = require('../..');
 const config = require('./config');
 
-const service = new atrix.Service('upstreamretry', config);
-
-service.endpoints.add('http');
-
+const service = atrix.addService(config);
 
 service.handlers.add('GET', '/data', (req, reply) => {
-	service.upstream.retrydemo.retry.get('/data').then(result => {
-		return reply({ requests: result.body });
-	});
+	service.upstream.retrydemo.retry.get('/data').then(result => reply({ requests: result.body }));
 });
 
 module.exports = service;

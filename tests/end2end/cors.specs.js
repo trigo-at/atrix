@@ -17,7 +17,8 @@ describe('CORS settings', () => {
 
 	const startWithCorsCfg = async (cors) => {
 		port = chance.integer({ min: 20000, max: 30000 });
-		const service = new atrix.Service('cors', {
+		const service = atrix.addService({
+			name: 'cors',
 			endpoints: {
 				http: {
 					port,
@@ -26,11 +27,8 @@ describe('CORS settings', () => {
 			},
 		});
 
-		service.endpoints.add('http');
-
 		service.handlers.add('GET', '/', (req, reply) => reply({ foo: 'bar' }));
 
-		atrix.addService(service);
 		await atrix.services.cors.start();
 		svc = supertest(`http://localhost:${port}`);
 	};

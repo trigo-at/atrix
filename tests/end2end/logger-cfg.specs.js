@@ -15,6 +15,7 @@ const tmp = require('tmp');
 const chance = new Chance();
 
 const defaultCfg = {
+	name: 'logger',
 	logger: {
 		level: 'debug',
 		name: 'franz',
@@ -47,9 +48,7 @@ describe('logger-cfg', () => {
 	const startService = async (cfg) => {
 		if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
 		process.env.ATRIX_LOGGER_TESTS = true;
-		service = new atrix.Service('logger', cfg);
-		service.endpoints.add('http');
-		atrix.addService(service);
+		service = atrix.addService(cfg);
 		await service.start();
 		svc = supertest(`http://localhost:${port}`);
 	};

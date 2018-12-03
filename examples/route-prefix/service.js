@@ -2,7 +2,8 @@
 
 const atrix = require('../..');
 
-const service = new atrix.Service('routeprefix', {
+const service = atrix.addService({
+	name: 'routeprefix',
 	endpoints: {
 		http: {
 			port: 3336,
@@ -16,7 +17,5 @@ const service = new atrix.Service('routeprefix', {
 		},
 	},
 });
-
-service.endpoints.add('http');
 
 module.exports = service;

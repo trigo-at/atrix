@@ -1,4 +1,5 @@
 module.exports = {
+	name: 'brokenupstream',
 	endpoints: {
 		http: {
 			port: 3002,

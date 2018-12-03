@@ -71,8 +71,16 @@ class Atrix {
 		return this.UpsteamConstructor;
 	}
 
-	addService(service) {
+	addService(config) {
+		if (typeof config === 'object' && config.constructor.name === 'Service') {
+			throw new Error('Use new API const service = atrix.addService(configObj)');
+		}
+		if (!config.name || !config.name.match(/^[a-zA-Z\-_.:]{3,}/)) {
+			throw new Error('Missing mandatory "config.name" property or does not match regex: ^[a-zA-Z\\-_.:]{3,}$');
+		}
+		const service = new Service(config.name, config);
 		this.servicesList.addService(service);
+		return service;
 	}
 
 	get services() {

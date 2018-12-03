@@ -3,9 +3,7 @@
 const atrix = require('../..');
 const config = require('./config');
 
-const service = new atrix.Service('multiSecured', config);
-
-service.endpoints.add('http');
+const service = atrix.addService(config);
 
 service.handlers.add('GET', '/jwt', (req, reply) => reply({ foo: 'bar' }));
 service.handlers.add('GET', '/signedlink', (req, reply) => reply({ foo: 'bar' }));

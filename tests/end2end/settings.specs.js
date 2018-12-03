@@ -15,7 +15,8 @@ describe('settings', () => {
 	let service;
 	before(async () => {
 		const port = chance.integer({ min: 20000, max: 30000 });
-		service = new atrix.Service('settings', {
+		service = atrix.addService({
+			name: 'settings',
 			endpoints: {
 				http: {
 					port,
@@ -27,8 +28,6 @@ describe('settings', () => {
 					key: 'value',
 				},
 			} });
-		service.endpoints.add('http');
-		atrix.addService(service);
 		await service.start();
 		svc = supertest(`http://localhost:${port}`);
 	});

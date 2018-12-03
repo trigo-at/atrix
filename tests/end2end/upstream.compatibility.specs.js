@@ -18,7 +18,8 @@ describe('Upstream compatibility', () => {
 
 	before(async () => {
 		upstreamPort = chance.integer({ min: 10000, max: 20000 });
-		const upstream = new atrix.Service('upstream', {
+		const upstream = atrix.addService({
+			name: 'upstream',
 			endpoints: {
 				http: {
 					port: upstreamPort,
@@ -26,15 +27,13 @@ describe('Upstream compatibility', () => {
 			},
 		});
 
-		upstream.endpoints.add('http');
-
 		upstream.handlers.add('GET', '/', (req, reply) => reply({ foo: 'bar' }));
 
-		atrix.addService(upstream);
 		await atrix.services.upstream.start();
 
 		port = chance.integer({ min: 20001, max: 30000 });
-		const service = new atrix.Service('svc', {
+		const service = atrix.addService({
+			name: 'svc',
 			endpoints: {
 				http: {
 					port,
@@ -52,14 +51,11 @@ describe('Upstream compatibility', () => {
 			},
 		});
 
-		service.endpoints.add('http');
-
 		service.handlers.add('GET', '/', async (req, reply, s) => {
 			const ur = await s.upstream.upstream.get('/');
 			reply(ur.body).code(ur.status);
 		});
 
-		atrix.addService(service);
 		await atrix.services.svc.start();
 		svc = supertest(`http://localhost:${port}`);
 	});

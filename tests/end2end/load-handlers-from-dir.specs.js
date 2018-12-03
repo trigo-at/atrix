@@ -14,7 +14,8 @@ describe('loading handlers from fs', () => {
 	let service;
 	before(async () => {
 		const port = chance.integer({ min: 20000, max: 30000 });
-		service = new atrix.Service('loadFromDir', {
+		service = atrix.addService({
+			name: 'loadFromDir',
 			endpoints: {
 				http: {
 					port,
@@ -28,8 +29,6 @@ describe('loading handlers from fs', () => {
 					},
 				},
 			} });
-		service.endpoints.add('http');
-		atrix.addService(service);
 		await service.start();
 		svc = supertest(`http://localhost:${port}`);
 	});

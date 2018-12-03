@@ -1,4 +1,5 @@
 module.exports = {
+	name: 'upstreamauth',
 	endpoints: {
 		http: {
 			port: 3005,

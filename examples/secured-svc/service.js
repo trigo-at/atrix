@@ -3,9 +3,7 @@
 const atrix = require('../..');
 const config = require('./config');
 
-const service = new atrix.Service('secured', config);
-
-service.endpoints.add('http');
+const service = atrix.addService(config);
 
 service.handlers.add('GET', '/data', (req, reply) => {
 	return reply({ foo: 'bar' });

@@ -15,7 +15,8 @@ describe('muti-secured-svc', () => {
 	let service;
 	before(async () => {
 		const port = chance.integer({ min: 20000, max: 30000 });
-		service = new atrix.Service('multiSecured', {
+		service = atrix.addService({
+			name: 'multiSecured',
 			endpoints: {
 				http: {
 					port,
@@ -41,14 +42,11 @@ describe('muti-secured-svc', () => {
 					],
 				},
 			} });
-		service.endpoints.add('http');
-
 		service.handlers.add('GET', '/jwt', (req, reply) => reply({ foo: 'bar' }));
 		service.handlers.add('GET', '/signedlink', (req, reply) => reply({ foo: 'bar' }));
 
 		service.handlers.add('GET', '/test', (req, reply) => reply({ foo: 'bar' }));
 
-		atrix.addService(service);
 		await service.start();
 		svc = supertest(`http://localhost:${port}`);
 	});

@@ -1,6 +1,5 @@
 # atrix
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/trigo-at/atrix.svg?token=8175215e928f96258f2f2cf038f2649e81b29ea182f9babab6f45c7ccdc7d041)](https://greenkeeper.io/)
 [![NSP Status](https://nodesecurity.io/orgs/trigo-gmbh/projects/6f4ad9d2-40fc-452b-8ae1-41433733d816/badge)](https://nodesecurity.io/orgs/trigo-gmbh/projects/6f4ad9d2-40fc-452b-8ae1-41433733d816)
 
 ## Description
@@ -21,6 +20,7 @@ Atrix is an opinionated micro-service framework
   * [atrix-pubsub](https://github.com/trigo-at/atrix-pubsub)
 
 ### Content
+* [Example Server setup](#example-server-setup)
 * [Handler Definition](#handler-definition)
 * [CORS](#cors)
 * [Request Logger](#request-logger)
@@ -34,12 +34,99 @@ Atrix is an opinionated micro-service framework
   * [Basic Authentication](#basic-authentication)
   * [OAuth Authentication](#oauth-authentication)
 * [Overwriting config via env variables](#overwriting-config-via-env-variables)
-* [Example Server setup](#example-server-setup)
 
+# ChangeLog
+
+## 5.x -> 6.x
+
+# changes paramters of atrix.addService(), mandatory config property "name"
+
+Parameters have changed form `addService(service: Service)` to `addService(config: object)`
+
+The service instance is the instantiated internaly and automatically added to the atrix service container. As a consequence the `config` object must define a non-empty `name` property.
+Exapmle:
+```
+// v5
+const svc = new atrix.Service('serviceName', { endpoints: ..., settings: ...});
+artrix.addService(svc);
+
+// v6
+const svc = atrix.addService({ name: 'serviceName', endpoints: ..., settings:...})
+
+````
 > In the examples below, several `/config.js` files are cited. In a single project, you may have more than one config file, however, _only one config file is used to create a service._
 
 ___
 
+# Example Server Setup
+
+`/demoService/handlers/{id}_GET.js`
+```js
+module.exports = (req, reply, service) => {
+	reply({ status: 'ok' });
+}
+```
+
+`/demoService/config.js`
+```js
+module.exports = {
+	// name of the service (REQUIRED)
+	name: 'demoService',
+	endpoints: {
+		http: {
+			// declare port to bind
+			port: 3007,
+
+			// the directory containing the handler files
+			handlerDir: `${__dirname}/handlers`,
+
+			// global server cors configuraton
+			// see: https://hapijs.com/api#route-options rules apply here too
+			cors: {
+				// defaults to '*'
+				origin: ['https://myui.myservice.at', 'http://lvh.me'],
+
+				// allow additional headers to be sent when client XHR
+				// lib is sending them like angular $http etc
+				additionalHeaders: ['x-requested-with']
+			},
+			// request logger configuration
+			requestLogger: {
+				// enable the request logger
+				enabled: false,
+
+				// log full request body if content-type: application/javascript and multipart/form-data
+				logFullRequest: true,
+
+				// log full response if content-type: application/javascript
+				logFullResponse: true,
+			},
+		},
+	},
+	// Add service settings in here. They are accessible in the handler as "service.settings" object
+	settings: {
+		test: 'value',
+	},
+};
+```
+
+`/index.js`
+```js
+'use strict';
+
+// get  global atrix instance
+const atrix = require('@trigo/atrix');
+
+// load service config
+const config = require('./demoService/config');
+
+// crete service with config
+const service = atrix.addService(config);
+
+// start the service
+atrix.services.demoService.start(); // returns promise
+
+```
 # Handler definition
 
 Declare a directory in which all handlers are contained, or add route handlers manually.
@@ -66,6 +153,7 @@ When using the `handlerDir` option the appropriate routes will be created based 
 `/config.js`
 ```js
 module.exports = {
+	name: 'dummyService', // mandatory property
 	endpoints: {
 		http: {
 			port: 3000,
@@ -91,15 +179,14 @@ Once a service has been created and an endpoint has been added, routes can be ad
 ```js
 const atrix = require('@trigo/atrix');
 
-const service = new atrix.Service('dummyService', {
+const service = atrix.addService({
+	name: 'dummyService', 
 	endpoints: {
 		http: {
 			port: 3000,
 		},
 	},
 });
-
-service.endpoints.add('http');
 
 // service.handlers.add(httpMethod, route, handler);
 service.handlers.add('GET', '/persons/{id}/details', (req, reply, service) => {
@@ -114,6 +201,7 @@ service.start();
 `/config.js`
 ```js
 module.exports = {
+	name: 'serviceName',
 	endpoints: {
 		http: {
 			port: 3000,
@@ -138,6 +226,7 @@ module.exports = {
 `/config.js`
 ```js
 module.exports = {
+	name: 'serviceName',
 	endpoints: {
 		http: {
 			port: 3000,
@@ -165,6 +254,7 @@ The atrix logger uses bunyan under the hood. For more info about bunyan streams 
 `/config.js`
 ```js
 module.exports = {
+	name: 'serviceName',
 	logger: {
 		level: 'debug',
 		name: 'dummyDebugger', // optional, atrix would insert the services name if no logger name is provided
@@ -192,14 +282,14 @@ Optionally, you can also access the logger of your service as it is exposed via 
 ```js
 const atrix = require('@trigo/atrix');
 
-const service = new atrix.Service('dummyService', {...service configuration...});
+const service = atrix.addService({.name: 'dummyService', ...service configuration...});
 
-atrix.addService(service);
-
+// access directly using service instance
 service.log.info('I am the dummyService logger');
 
-// can only be accessed after adding the service to atrix with atrix.addService(...)
+// access through atrix 
 atrix.service.dummyService.log.info('I am also the dummyService logger');
+
 ```
 
 # Settings
@@ -392,76 +482,3 @@ To overwrite the value of pika we would have to define the env variable like tha
 ATRIX_DEMOSERVICE_SETTINGS_NESTEDSETTING_PIKA=chuchu
 ```
 
-# Example Server Setup
-
-`/demoService/handlers/{id}_GET.js`
-```js
-module.exports = (req, reply, service) => {
-	reply({ status: 'ok' });
-}
-```
-
-`/demoService/config.js`
-```js
-module.exports = {
-	endpoints: {
-		http: {
-			// declare port to bind
-			port: 3007,
-
-			// the directory containing the handler files
-			handlerDir: `${__dirname}/handlers`,
-
-			// global server cors configuraton
-			// see: https://hapijs.com/api#route-options rules apply here too
-			cors: {
-				// defaults to '*'
-				origin: ['https://myui.myservice.at', 'http://lvh.me'],
-
-				// allow additional headers to be sent when client XHR
-				// lib is sending them like angular $http etc
-				additionalHeaders: ['x-requested-with']
-			},
-			// request logger configuration
-			requestLogger: {
-				// enable the request logger
-				enabled: false,
-
-				// log full request body if content-type: application/javascript and multipart/form-data
-				logFullRequest: true,
-
-				// log full response if content-type: application/javascript
-				logFullResponse: true,
-			},
-		},
-	},
-	// Add service settings in here. They are accessible in the handler as "service.settings" object
-	settings: {
-		test: 'value',
-	},
-};
-```
-
-`/index.js`
-```js
-'use strict';
-
-// get  global atrix instance
-const atrix = require('@trigo/atrix');
-
-// load service config
-const config = require('./demoService/config');
-
-// crete service with config
-const service = new atrix.Service('demoService', config);
-
-// setup http service enpoint
-service.endpoints.add('http');
-
-// register service in atrix
-atrix.addService(service);
-
-// start the service
-atrix.services.demoService.start(); // returns promise
-
-```

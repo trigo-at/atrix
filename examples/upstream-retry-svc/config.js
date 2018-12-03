@@ -1,8 +1,9 @@
 module.exports = {
+	name: 'upstreamretry',
 	endpoints: {
 		http: {
-			port: 3006
-		}
+			port: 3006,
+		},
 	},
 	upstream: {
 		retrydemo: {

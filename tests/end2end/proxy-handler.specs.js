@@ -22,7 +22,8 @@ describe('Proxy Handler', () => {
 	});
 	before(async () => {
 		port = chance.integer({ min: 20000, max: 30000 });
-		const service = new atrix.Service('proxy', {
+		const service = atrix.addService({
+			name: 'proxy',
 			endpoints: {
 				http: {
 					port,
@@ -30,8 +31,6 @@ describe('Proxy Handler', () => {
 				},
 			},
 		});
-
-		service.endpoints.add('http');
 
 		service.handlers.add('GET', '/hit-me', async (req, reply) => {
 			reply({
@@ -73,7 +72,6 @@ describe('Proxy Handler', () => {
 				reply.withEvent('eh klor');
 			},
 		} });
-		atrix.addService(service);
 		await atrix.services.proxy.start();
 		svc = supertest(`http://localhost:${port}`);
 	});

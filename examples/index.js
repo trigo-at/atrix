@@ -1,15 +1,15 @@
 const atrix = require('..');
 
-atrix.addService(require('./upstream-svc/service'));
-atrix.addService(require('./downstream-svc/service'));
-atrix.addService(require('./broken-upstream-svc/service'));
-atrix.addService(require('./load-from-dir-svc/service'));
-atrix.addService(require('./secured-svc/service'));
-atrix.addService(require('./multi-secured-svc/service'));
-atrix.addService(require('./test-svc/service'));
-atrix.addService(require('./settings-svc/service'));
-atrix.addService(require('./logger-svc/service'));
-atrix.addService(require('./route-prefix/service'));
+require('./upstream-svc/service');
+require('./downstream-svc/service');
+require('./broken-upstream-svc/service');
+require('./load-from-dir-svc/service');
+require('./secured-svc/service');
+require('./multi-secured-svc/service');
+require('./test-svc/service');
+require('./settings-svc/service');
+require('./logger-svc/service');
+require('./route-prefix/service');
 
 // console.log('start service...')
 module.exports = Promise.all([
