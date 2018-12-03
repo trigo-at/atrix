@@ -20,6 +20,11 @@ const svc = atrix.addService({ name: 'serviceName', endpoints: ..., settings:...
 
 ````
 
+#### Removed API: service.endpoints.add(endpointName: string)
+
+All endpoints declared in the `config.endpoints` section are now loaded by default unless it has been explizitly disabled with `enabled => false` setting.
+Method now throw an error with a message that API has been removed. So migrate your serviecs simply remove all calls to this method. 
+
 ### Improvements
 
 * Print out service configuration on startup
