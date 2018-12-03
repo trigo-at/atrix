@@ -75,7 +75,7 @@ class Atrix {
 		if (typeof config === 'object' && config.constructor.name === 'Service') {
 			throw new Error('Use new API const service = atrix.addService(configObj)');
 		}
-		if (!config.name || !config.name.match(/^[a-zA-Z\-_.:]{3,}/)) {
+		if (!config.name || !config.name.match(/^[a-zA-Z0-9\-_.:]{3,}/)) {
 			throw new Error('Missing mandatory "config.name" property or does not match regex: ^[a-zA-Z\\-_.:]{3,}$');
 		}
 		const service = new Service(config.name, config);
