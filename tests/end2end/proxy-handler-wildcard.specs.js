@@ -17,7 +17,7 @@ describe('Proxy Handler Wildcard', () => {
 
 	before(async () => {
 		port = chance.integer({ min: 20000, max: 30000 });
-		const service = atrix.addService({
+		atrix.addService({
 			name: 'proxy',
 			endpoints: {
 				http: {
