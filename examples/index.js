@@ -13,13 +13,13 @@ require('./route-prefix/service');
 
 // console.log('start service...')
 module.exports = Promise.all([
-	atrix.services.upstream.start(),
-	atrix.services.downstream.start(),
-	atrix.services.brokenupstream.start(),
-	atrix.services.loadFromDir.start(),
-	atrix.services.secured.start(),
-	atrix.services.multiSecured.start(),
-	atrix.services.settings.start(),
-	atrix.services.logger.start(),
-	atrix.services.routeprefix.start(),
+    atrix.services.upstream.start(),
+    atrix.services.downstream.start(),
+    atrix.services.brokenupstream.start(),
+    atrix.services.loadFromDir.start(),
+    atrix.services.secured.start(),
+    atrix.services.multiSecured.start(),
+    atrix.services.settings.start(),
+    atrix.services.logger.start(),
+    atrix.services.routeprefix.start(),
 ]);

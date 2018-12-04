@@ -3,11 +3,11 @@
 let atrix;
 
 function register(a) {
-	atrix = a;
+    atrix = a;
 }
 
 module.exports = {
-	name: 'test-plugin',
-	register,
-	atrix,
+    name: 'test-plugin',
+    register,
+    atrix,
 };

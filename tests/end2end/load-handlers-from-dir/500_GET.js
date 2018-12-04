@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = () => {
-	throw Error('test');
+    throw Error('test');
 };

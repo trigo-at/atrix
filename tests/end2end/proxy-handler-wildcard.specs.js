@@ -6,40 +6,39 @@
 const atrix = require('../..');
 const Chance = require('chance');
 const supertest = require('supertest');
-const { expect } = require('chai');
+const {expect} = require('chai');
 const path = require('path');
 
 const chance = new Chance();
 
 describe('Proxy Handler Wildcard', () => {
-	let port,
-		svc;
+    let port, svc;
 
-	before(async () => {
-		port = chance.integer({ min: 20000, max: 30000 });
-		atrix.addService({
-			name: 'proxy',
-			endpoints: {
-				http: {
-					port,
-					handlerDir: path.join(__dirname, '/../proxy-handler/'),
-				},
-			},
-		});
+    before(async () => {
+        port = chance.integer({min: 20000, max: 30000});
+        atrix.addService({
+            name: 'proxy',
+            endpoints: {
+                http: {
+                    port,
+                    handlerDir: path.join(__dirname, '/../proxy-handler/'),
+                },
+            },
+        });
 
-		await atrix.services.proxy.start();
-		svc = supertest(`http://localhost:${port}`);
-	});
+        await atrix.services.proxy.start();
+        svc = supertest(`http://localhost:${port}`);
+    });
 
-	after(async () => {
-		await atrix.services.proxy.stop();
-	});
+    after(async () => {
+        await atrix.services.proxy.stop();
+    });
 
-	it("can use different wildcard '%' as method from file name", async () => {
-		expect((await svc.get('/without-method')).statusCode).to.equal(200);
-		expect((await svc.post('/without-method')).statusCode).to.equal(200);
-		expect((await svc.put('/without-method')).statusCode).to.equal(200);
-		expect((await svc.patch('/without-method')).statusCode).to.equal(200);
-		expect((await svc.delete('/without-method')).statusCode).to.equal(200);
-	});
+    it("can use different wildcard '%' as method from file name", async () => {
+        expect((await svc.get('/without-method')).statusCode).to.equal(200);
+        expect((await svc.post('/without-method')).statusCode).to.equal(200);
+        expect((await svc.put('/without-method')).statusCode).to.equal(200);
+        expect((await svc.patch('/without-method')).statusCode).to.equal(200);
+        expect((await svc.delete('/without-method')).statusCode).to.equal(200);
+    });
 });

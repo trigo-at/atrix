@@ -11,38 +11,39 @@ const expect = require('chai').expect;
 const chance = new Chance();
 
 describe('settings', () => {
-	let svc;
-	let service;
-	before(async () => {
-		const port = chance.integer({ min: 20000, max: 30000 });
-		service = atrix.addService({
-			name: 'settings',
-			endpoints: {
-				http: {
-					port,
-					handlerDir: `${__dirname}/settings`,
-				},
-			},
-			settings: {
-				test: {
-					key: 'value',
-				},
-			} });
-		await service.start();
-		svc = supertest(`http://localhost:${port}`);
-	});
+    let svc;
+    let service;
+    before(async () => {
+        const port = chance.integer({min: 20000, max: 30000});
+        service = atrix.addService({
+            name: 'settings',
+            endpoints: {
+                http: {
+                    port,
+                    handlerDir: `${__dirname}/settings`,
+                },
+            },
+            settings: {
+                test: {
+                    key: 'value',
+                },
+            },
+        });
+        await service.start();
+        svc = supertest(`http://localhost:${port}`);
+    });
 
-	after(async () => {
-		await service.stop();
-	});
+    after(async () => {
+        await service.stop();
+    });
 
-	it('settings object is attached to service', async() => {
-		const res = await svc.get('/');
-		expect(res.statusCode).to.equal(200);
-		expect(res.body).to.eql({
-			test: {
-				key: 'value',
-			},
-		});
-	});
+    it('settings object is attached to service', async () => {
+        const res = await svc.get('/');
+        expect(res.statusCode).to.equal(200);
+        expect(res.body).to.eql({
+            test: {
+                key: 'value',
+            },
+        });
+    });
 });

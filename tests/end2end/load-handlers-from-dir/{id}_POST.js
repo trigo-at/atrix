@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = (req, reply) => {
-	reply({ res: 'POST /{id}' });
+    reply({res: 'POST /{id}'});
 };

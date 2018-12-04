@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = (req, reply) => {
-	reply.withEvent({}, 201);
+    reply.withEvent({}, 201);
 };

@@ -8,36 +8,36 @@ const supertest = require('supertest');
 const svc = supertest('http://localhost:3333');
 
 async function checkService() {
-	try {
-		const available = (await svc.get('/')).status === 200;
-		if (available) return true;
-		await new Promise(x => setTimeout(x, 1000));
-		return false;
-	} catch (err) {
-		return false;
-	}
+    try {
+        const available = (await svc.get('/')).status === 200;
+        if (available) return true;
+        await new Promise(x => setTimeout(x, 1000));
+        return false;
+    } catch (err) {
+        return false;
+    }
 }
 
 describe('the service process', function test() {
-	this.timeout(10000);
+    this.timeout(10000);
 
-	it.skip('should exit properly', async () => {
-		const svcProcess = spawn('node', ['./examples/test']);
-		svcProcess.stdout.on('data', () => {});
-		svcProcess.stderr.on('data', () => {});
-		const killed = new Promise((resolve, reject) => {
-			svcProcess.on('close', resolve);
-			svcProcess.on('exit', (code) => {
-				if (code !== 0) {
-					reject(code);
-				}
-				svcProcess.kill('SIGINT');
-			});
-		});
+    it.skip('should exit properly', async () => {
+        const svcProcess = spawn('node', ['./examples/test']);
+        svcProcess.stdout.on('data', () => {});
+        svcProcess.stderr.on('data', () => {});
+        const killed = new Promise((resolve, reject) => {
+            svcProcess.on('close', resolve);
+            svcProcess.on('exit', code => {
+                if (code !== 0) {
+                    reject(code);
+                }
+                svcProcess.kill('SIGINT');
+            });
+        });
 
-		while (!(await checkService()));
-		svcProcess.kill('SIGINT');
-		const exitCode = await killed;
-		expect(exitCode).to.equal(0);
-	});
+        while (!(await checkService()));
+        svcProcess.kill('SIGINT');
+        const exitCode = await killed;
+        expect(exitCode).to.equal(0);
+    });
 });
