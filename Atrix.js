@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint class-methods-use-this: 0 */
+
 const Service = require('./lib/Service');
 const ServicesList = require('./lib/ServicesList');
 const Upstream = require('./lib/Upstream');
@@ -95,11 +97,14 @@ class Atrix {
 
     // map symbols to instance & static properties for convinience
     get DISABLED() {
-        //	eslint-disable-line
         return symbols.DISABLED;
     }
     static get DISABLED() {
         return symbols.DISABLED;
+    }
+
+    get version() {
+        return pkg.version;
     }
 }
 

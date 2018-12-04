@@ -7,6 +7,7 @@ const {expect} = require('chai');
 const Atrix = require('./Atrix');
 
 const atrix = new Atrix();
+const {version} = require('./package.json');
 
 describe('atrix', () => {
     it('exposes property "config"', () => {
@@ -21,5 +22,9 @@ describe('atrix', () => {
 
     it('exposes function "configure"', () => {
         expect(atrix.configure).to.be.a('function');
+    });
+
+    it('exposes "version"', () => {
+        expect(atrix.version).to.eql(version);
     });
 });
