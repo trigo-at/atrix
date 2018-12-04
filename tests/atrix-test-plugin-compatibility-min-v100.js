@@ -5,14 +5,12 @@ function register(a) {
 }
 
 const plugin = {
-    name: 'test-plugin2',
+    name: 'test-plugin-compatibility-min-v100',
     version: '1.0.0',
     register,
     atrix: {},
     compatibility: {
-        atrix: {
-            min: '6.0.0-7',
-        },
+        atrix: {min: '100.0.0'},
     },
 };
 

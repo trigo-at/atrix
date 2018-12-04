@@ -5,15 +5,11 @@ function register(a) {
 }
 
 const plugin = {
-    name: 'test-plugin2',
+    name: 'test-plugin-compatibilty-no-atrix',
     version: '1.0.0',
     register,
     atrix: {},
-    compatibility: {
-        atrix: {
-            min: '6.0.0-7',
-        },
-    },
+    compatibility: {atrix: {}},
 };
 
 module.exports = plugin;

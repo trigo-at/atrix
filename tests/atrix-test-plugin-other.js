@@ -29,6 +29,11 @@ const plugin = {
     register,
     atrix: {},
     factory,
+    compatibility: {
+        atrix: {
+            min: '6.0.0-7',
+        },
+    },
     factoryCall: {},
     registerCall: {},
     instance: {},
