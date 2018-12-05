@@ -40,12 +40,14 @@ ci-test: build
 		exit $$test_exit
 
 publish: build
-	@set -x; if [ "$$(npm show --json @trigo/$(PACKAGE) | jq ".versions[] | select(.==\"${REPO_VERSION}\")")" != "" ]; then \
-		echo "Already published"; exit 0; else \
-		docker-compose -f docker-compose.test.yml run --rm $(PACKAGE) npm publish; \
-		EXIT_CODE=$$?; \
+	@$(eval VERSION_EXISTS :=  $(shell npm show --json @trigo/$(PACKAGE) | jq ".versions[] | select(.==\"${REPO_VERSION}\")")) echo "$(VERSION_EXISTS)"; \
+		docker-compose -f docker-compose.test.yml run --rm $(PACKAGE) \
+	   	/bin/bash -c 'if [ "$(REPO_VERSION)" != "$(VERSION_EXISTS)" ]; then \
+			npm publish; \
+		else \
+			echo "Version unchanged, no need to publish"; \
+		fi'; EXIT_CODE=$$?; \
 		docker-compose -f docker-compose.test.yml down; \
-		fi; \
 		exit $$EXIT_CODE
 
 
