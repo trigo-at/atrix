@@ -6,7 +6,7 @@ info:
 	@echo "=====> Info"
 	@echo "Package:               $(PACKAGE)"
 	@echo "Version:               ${REPO_VERSION}"
-	@echo "Published:             $$(npm show @trigo/$(PACKAGE) version)"
+	@echo "Published:             $$(npm show --json @trigo/$(PACKAGE) | jq ".versions[] | select(.==\"${REPO_VERSION}\")")"
 
 install:
 	yarn install
@@ -40,13 +40,12 @@ ci-test: build
 		exit $$test_exit
 
 publish: build
-	@docker-compose -f docker-compose.test.yml run --rm $(PACKAGE) \
-	   	/bin/bash -c 'if [ "$(REPO_VERSION)" != $$(npm show @trigo/$(PACKAGE) version) ]; then \
-			npm publish; \
-		else \
-			echo "Version unchanged, no need to publish"; \
-		fi'; EXIT_CODE=$$?; \
+	@set -x; if [ "$$(npm show --json @trigo/$(PACKAGE) | jq ".versions[] | select(.==\"${REPO_VERSION}\")")" != "" ]; then \
+		echo "Already published"; exit 0; else \
+		docker-compose -f docker-compose.test.yml run --rm $(PACKAGE) npm publish; \
+		EXIT_CODE=$$?; \
 		docker-compose -f docker-compose.test.yml down; \
+		fi; \
 		exit $$EXIT_CODE
 
 
