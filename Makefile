@@ -3,10 +3,10 @@ PACKAGE=$(shell cat package.json | jq ".name" | sed 's/@trigo\///')
 REPO_VERSION:=$(shell cat package.json| jq .version)
 
 info:
-	@echo "=====> Info"
+	@echo "=====> NPM Info"
 	@echo "Package:               $(PACKAGE)"
 	@echo "Version:               ${REPO_VERSION}"
-	@echo "Published:             $$(npm show --json @trigo/$(PACKAGE) | jq ".versions[] | select(.==\"${REPO_VERSION}\")")"
+	@echo "Published:             $$(npm show --json @trigo/$(PACKAGE) | jq -r ".versions | join(\", \")")"
 
 install:
 	yarn install
@@ -48,10 +48,3 @@ publish: build
 		fi'; EXIT_CODE=$$?; \
 		docker-compose -f docker-compose.test.yml down; \
 		exit $$EXIT_CODE
-
-
-setup-dev:
-	@cd lib && npm link
-	@cd examples && npm link @trigo/atrix
-	@cd examples && npm install
-	@npm install
