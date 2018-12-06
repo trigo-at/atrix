@@ -4,4 +4,4 @@ const atrix = require('../../');
 
 require('./service');
 
-atrix.services.secured.start();
+atrix.services.multiSecured.start();
