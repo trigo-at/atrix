@@ -34,7 +34,7 @@ describe('service.request() interface', () => {
         });
         service.handlers.add('POST', '/called-by-called-by-called-by-with-internal', async (req, reply) => {
             reply({
-                reqId: req.id,
+                reqId: req.info.id,
                 headers: req.headers,
             });
         });
@@ -47,7 +47,7 @@ describe('service.request() interface', () => {
                 req
             );
             reply({
-                reqId: req.id,
+                reqId: req.info.id,
                 headers: req.headers,
                 inner: innerHeaders.result,
             });
@@ -62,7 +62,7 @@ describe('service.request() interface', () => {
                 req
             );
             reply({
-                reqId: req.id,
+                reqId: req.info.id,
                 headers: req.headers,
                 inner: innerHeaders.result,
             });
@@ -77,7 +77,7 @@ describe('service.request() interface', () => {
                 req
             );
             reply({
-                reqId: req.id,
+                reqId: req.info.id,
                 headers: req.headers,
                 inner: innerHeaders.result,
             });
