@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = (req, reply, service) => {
-    reply({res: 'GET /', serviceName: service.name});
+    return reply({res: 'GET /', serviceName: service.name}).code(201);
 };

@@ -40,8 +40,8 @@ describe('loading handlers from fs', () => {
 
     it('loaded GET /', async () => {
         const res = await svc.get('/');
-        expect(res.statusCode).to.equal(200);
         expect(res.body.res).to.eql('GET /');
+        expect(res.statusCode).to.equal(200);
     });
 
     it('service is passed to hanlder funciton', async () => {
