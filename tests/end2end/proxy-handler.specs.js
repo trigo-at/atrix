@@ -156,5 +156,5 @@ describe('Proxy Handler', () => {
         expect((await svc.put('/without-method')).statusCode).to.equal(200);
         expect((await svc.patch('/without-method')).statusCode).to.equal(200);
         expect((await svc.delete('/without-method')).statusCode).to.equal(200);
-    });
+    }).timeout(5000);
 });
