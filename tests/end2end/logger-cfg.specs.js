@@ -161,7 +161,7 @@ describe('logger-cfg', () => {
 
             await bb.delay(100);
             const file = fs.readFileSync(logFile, {encoding: 'utf-8'});
-            expect(file).not.to.contain('"path":"/"');
+            expect(file).not.to.contain('"data":{"remoteAddress"');
         });
 
         it('request logs request & response per default', async () => {
