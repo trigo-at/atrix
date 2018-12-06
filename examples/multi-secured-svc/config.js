@@ -6,6 +6,9 @@ module.exports = {
         http: {
             port: 3018,
             cors: true,
+            requestLogger: {
+                enabled: true,
+            },
         },
     },
     security: {
