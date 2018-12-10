@@ -57,7 +57,7 @@ describe('Handler reply interface', () => {
         expect(res.statusCode).to.eql(204);
     });
 
-    it('can return with reply.redirect("http://www.google.com")', async () => {
+    it('can return with reply().redirect("http://www.google.com")', async () => {
         service.handlers.add('GET', '/', (req, reply) => reply().redirect('http://www.google.com'));
         await atrix.services.svc.start();
         const res = await svc.get('/');
@@ -67,7 +67,7 @@ describe('Handler reply interface', () => {
         expect(res.headers.location).to.eql('http://www.google.com');
     });
 
-    it('can return with reply.redirect("http://www.google.com").temporary()', async () => {
+    it('can return with reply().redirect("http://www.google.com").temporary()', async () => {
         service.handlers.add('GET', '/', (req, reply) =>
             reply()
                 .redirect('http://www.google.com')
@@ -81,7 +81,7 @@ describe('Handler reply interface', () => {
         expect(res.headers.location).to.eql('http://www.google.com');
     });
 
-    it('can return with reply.redirect("http://www.google.com").permanent()', async () => {
+    it('can return with reply().redirect("http://www.google.com").permanent()', async () => {
         service.handlers.add('GET', '/', (req, reply) =>
             reply()
                 .redirect('http://www.google.com')
