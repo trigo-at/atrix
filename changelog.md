@@ -4,10 +4,33 @@
 
 ### Breaking Changes
 
+#### Upgrade to Hapi 17
+
+Atrix uses [Hapi](http://hapijs.com) under the hood for serving HTTP based services. As Hapi 17 was a major rewrite of the framwork and contained several breaking changes, this is metioned here explicitly.
+
+Although atrix provides abstractions for lot of the hapi specific stuff, expecially the rather complex route configurations & myriads of plugins and opotions several interfaces are directly used in atrix service handlers.
+
+`my-entity/POST.js`
+```
+module.exports = async (
+	// plain hapi request object (see: https://hapijs.com/api#request)
+    req, 
+    // a wrapped hapi response toolkit (see: https://hapijs.com/api#response-toolkit)
+    // simple compatibility layer to provide a interface similar to the reply interface
+    // as provided by hapi v16 and before. e.g reply(result).code(201) instead of
+    // h.response(result).code(201)
+    reply, 
+    // the atrix service object
+    service) => {
+	...
+}
+```
+
+For a complete list of what changed under the hood have a look at the official hapi 17 release notes [https://github.com/hapijs/hapi/issues/3658](https://github.com/hapijs/hapi/issues/3658)
+
 #### changes paramters of atrix.addService(), mandatory config property "name"
 
 Parameters have changed form `addService(service: Service)` to `addService(config: object)`
-
 The service instance is the instantiated internaly and automatically added to the atrix service container. As a consequence the `config` object must define a non-empty `name` property.
 Exapmle:
 ```

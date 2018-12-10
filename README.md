@@ -35,30 +35,11 @@ Atrix is an opinionated micro-service framework
   * [OAuth Authentication](#oauth-authentication)
 * [Overwriting config via env variables](#overwriting-config-via-env-variables)
 
-# ChangeLog
-
-## 5.x -> 6.x
-
-# changes paramters of atrix.addService(), mandatory config property "name"
-
-Parameters have changed form `addService(service: Service)` to `addService(config: object)`
-
-The service instance is the instantiated internaly and automatically added to the atrix service container. As a consequence the `config` object must define a non-empty `name` property.
-Exapmle:
-```
-// v5
-const svc = new atrix.Service('serviceName', { endpoints: ..., settings: ...});
-artrix.addService(svc);
-
-// v6
-const svc = atrix.addService({ name: 'serviceName', endpoints: ..., settings:...})
-
-````
-> In the examples below, several `/config.js` files are cited. In a single project, you may have more than one config file, however, _only one config file is used to create a service._
-
+### See here for the [Change Log](changelog.md)
 ___
-
 # Example Server Setup
+
+> In the examples below, several `/config.js` files are cited. In a single project, you may have more than one config file, however, _only one config file is used to create a service._
 
 `/demoService/handlers/{id}_GET.js`
 ```js
@@ -101,6 +82,14 @@ module.exports = {
 				// log full response if content-type: application/javascript
 				logFullResponse: true,
 			},
+
+            // validation settings
+            validation: {
+            	// list of regular expression that define the routed that should
+                // return structured and verbose validation error responses that 
+                // may be used in the fronened form logic et al.
+            	verbose: ['^/items$']
+            }
 		},
 	},
 	// Add service settings in here. They are accessible in the handler as "service.settings" object
