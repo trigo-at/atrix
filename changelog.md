@@ -8,7 +8,7 @@
 
 Atrix uses [Hapi](http://hapijs.com) under the hood for serving HTTP based services. As Hapi 17 was a major rewrite of the framwork and contained several breaking changes, this is metioned here explicitly.
 
-Although atrix provides abstractions for lot of the hapi specific stuff, expecially the rather complex route configurations & myriads of plugins and opotions several interfaces are directly used in atrix service handlers.
+Although atrix provides abstractions for lot of the hapi specific stuff, expecially the rather complex route configurations & myriads of plugins and options several interfaces are directly used in atrix service handlers.
 
 `my-entity/POST.js`
 ```
@@ -27,6 +27,29 @@ module.exports = async (
 ```
 
 For a complete list of what changed under the hood have a look at the official hapi 17 release notes [https://github.com/hapijs/hapi/issues/3658](https://github.com/hapijs/hapi/issues/3658)
+
+#### `reply(<value>)` no longer supports promises
+
+When using `reply(<value>)` value **MUST NOT** be a promise. Simply `await` the value before calling `reply()` e.g.
+
+```
+// Atrix v5
+const result = getFromDb();
+reply(result).code(201)
+
+// Atrix v6
+const result = await getFromDb();
+reply(result).code(201);
+
+// use response toolkit methods (see: https://hapijs.com/api#response-toolkit)
+const result = await getFromDb();
+return reply.response(result).code(201)
+
+// directly return value from handler -> fefaults to statusCode 200
+const result = await getFromDb();
+return result;
+
+```
 
 #### changes paramters of atrix.addService(), mandatory config property "name"
 

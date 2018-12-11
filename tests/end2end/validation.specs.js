@@ -87,6 +87,21 @@ describe('HTTP Endpoint validation settings', () => {
         }
     });
 
+    it('passes the payload to handler', async () => {
+        await start({
+            verbose: ['.*'],
+        });
+        service.handlers.add('POST', '/', (req, reply) => reply(req.payload), {
+            validate: {
+                payload: Joi.object(),
+            },
+        });
+        await atrix.services.svc.start();
+        const res = await svc.post('/').send({key: 'asdf'});
+        expect(res.statusCode).to.eql(200);
+        expect(res.body).to.eql({key: 'asdf'});
+    });
+
     it('{ validation: { verbose: ["/", "^/.*ne$"] } } => use endpoints expressions to select specific routes only', async () => {
         await start({
             verbose: ['^/$', '^/.*ne$'],
