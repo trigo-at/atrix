@@ -22,6 +22,7 @@ Atrix is an opinionated micro-service framework
 ### Content
 * [Example Server setup](#example-server-setup)
 * [Handler Definition](#handler-definition)
+* [Validaton](#validation)
 * [CORS](#cors)
 * [Request Logger](#request-logger)
 * [Logger](#logger)
@@ -184,6 +185,164 @@ service.handlers.add('GET', '/persons/{id}/details', (req, reply, service) => {
 
 service.start();
 ```
+
+# Validation
+
+Atrix uses Hapi/Joi to perform request and response validation. 
+Validation  is configureed by configuing hapi's `route.options.validate` object [https://hapijs.com/api#route-options](https://hapijs.com/api#route-options).
+
+## Configure API validation rules
+
+### [atrix-swagger](https://github.com/trigo-at/atrix-swagger)
+
+Whenever possible use the `atrix-swagger` plugin to setup proper validations for your API.
+
+As in some cases this will not be suitable for your needs (e.g. limitation of swagger et al) you can allways configure those options manually
+
+
+### When adding a handler using code
+```js
+service.handlers.add('POST', '/{id}', (req, reply) => reply(req.payload), {
+    validate: {
+        params: {
+            id: Joi.string().regex(/^[a-z]{3}$/),
+        },
+    },
+});
+```
+
+### in a handlerfile
+`handlers/cars/{id}/POST.js`
+```js
+
+const Joi = require('joi');
+
+module.exports.options = {
+    validate: {
+    	payload: Joi.object({
+        	name: Joi.string().required(),
+        }),
+    },
+    params: {
+    	id: Joi.string().required().regex(/[0-9a-f]{16}/)
+    },
+    query: <schema>
+    headers: <schema>
+    response: {
+        status: {
+            201: <schema>,
+            202: <schema>,
+        }
+    }
+};
+
+module.exports.handler = async (req, reply, service) => { ... };
+```
+
+## Validation options
+
+The validation option are applied to the routes **after** all other configurations are done by _route processor_ plugins like `atrix-swagger` et al.
+
+`/config.js`
+```js
+module.exports = {
+	name: 'serviceName',
+	endpoints: {
+		http: {
+			port: 3000,
+
+			// the validation config
+			validation: {
+            	// list of route patterns of the routes that should return
+                // vaerbose validation errors
+                // defaults to: []
+            	verboseEndpoints: ['^/internal/.*$', ...]
+                // list of route patterns that enforce strict validation. E.g. do not
+                // allow unknown keys. When strict checking is disabled the unknown 
+                // keys will be ignored and stripped from the objects before they are
+                // passed on the header.
+                strictEndpoints: ['^/public.*$']
+			},
+		},
+	},
+};
+```
+
+### Verbose validation
+
+Per default the server reutrns just HTTP statusCode `400 Bad Request` withpout any further details where exactly the validation failed.
+```json
+{
+  "statusCode": 400,
+  "error": "Bad Request",
+  "message": "Invalid request payload input"
+}
+```
+
+When enabling `verbose` validation the errors response contains details aboout all failed validators, thier types and expected/valid values.
+```json
+{
+  "statusCode": 400,
+  "error": "Bad Request",
+  "message": "child \"events\" fails because [\"events\" at position 1 fails because [child \"resId\" fails because [\"resId\" is required]]]. child \"links\" fails because [child \"href\" fails because [\"href\" must be a valid uri], child \"method\" fails because [\"method\" must be one of [GET, POST, PUT]], child \"response\" fails because [\"response\" with value \"herbert\" fails to match the required pattern: /^testOida$/]]",
+  "validation": {
+    "source": "payload",
+    "keys": [
+      "events.1.resId",
+      "links.href",
+      "links.method",
+      "links.response"
+    ]
+  },
+  "details": [
+    {
+      "message": "\"resId\" is required",
+      "path": [ "events", 1, "resId" ],
+      "type": "any.required",
+      "context": {
+        "key": "resId",
+        "label": "resId"
+      }
+    },
+    {
+      "message": "\"href\" must be a valid uri",
+      "path": [ "links", "href" ],
+      "type": "string.uri",
+      "context": {
+        "value": "asdf",
+        "key": "href",
+        "label": "href"
+      }
+    },
+    {
+      "message": "\"method\" must be one of [GET, POST, PUT]",
+      "path": [ "links", "method" ],
+      "type": "any.allowOnly",
+      "context": {
+        "value": "franz",
+        "valids": [ "GET", "POST", "PUT" ],
+        "key": "method",
+        "label": "method"
+      }
+    },
+    {
+      "message": "\"response\" with value \"herbert\" fails to match the required pattern: /^testOida$/",
+      "path": [ "links", "response" ],
+      "type": "string.regex.base",
+      "context": {
+        "pattern": "/^testOida$/",
+        "value": "herbert",
+        "key": "response",
+        "label": "response"
+      }
+    }
+  ]
+}
+
+```
+
+The detailed documentation about the possible errors, their properties and options see: [https://github.com/hapijs/joi/blob/v14.3.0/API.md#list-of-errors](https://github.com/hapijs/joi/blob/v14.3.0/API.md#list-of-errors)
+
 
 # CORS
 

@@ -41,84 +41,142 @@ describe('HTTP Endpoint validation settings', () => {
         await atrix.services.svc.stop();
     });
 
-    it('per default verbose errors are disabled', async () => {
-        await start({});
-        service.handlers.add('POST', '/', (req, reply) => reply({foo: 'bar'}), {
-            validate: {
-                payload: schema,
-            },
-        });
-        await atrix.services.svc.start();
-        const res = await svc.post('/').send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
-        expect(res.statusCode).to.eql(400);
-        expect(res.body.message).to.eql('Invalid request payload input');
-    });
-
-    it('{ validation: { verbose: [".*"] } } => enables verbose errors for all routes', async () => {
-        await start({
-            verbose: ['.*'],
-        });
-        service.handlers.add('POST', '/', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
-        service.handlers.add('POST', '/andere', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
-        service.handlers.add('POST', '/no/ane', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
-        await atrix.services.svc.start();
-        for (const path of ['/', '/andere', '/no/ane']) {
-            const res = await svc.post(path).send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
+    describe('unknown keys & stripping', () => {
+        it('default setting do not allow unknown keys', async () => {
+            await start({
+                verboseEndpoints: ['.*'],
+            });
+            service.handlers.add('POST', '/', (req, reply) => reply(req.payload), {
+                validate: {
+                    payload: Joi.object({
+                        name: Joi.string(),
+                    }),
+                },
+            });
+            await atrix.services.svc.start();
+            const res = await svc.post('/').send({notName: 'asdf'});
             expect(res.statusCode).to.eql(400);
-            expect(res.body.message).not.to.eql('Invalid request payload input');
-            expect(res.body.details).to.be.an('array');
-        }
+            expect(res.body.details[0].type).to.eql('object.allowUnknown');
+        });
+
+        it('disabling strictEndpoints validation allows unknown keys', async () => {
+            await start({
+                verboseEndpoints: ['.*'],
+                strictEndpoints: [],
+            });
+            service.handlers.add('POST', '/', (req, reply) => reply(req.payload), {
+                validate: {
+                    payload: Joi.object({
+                        name: Joi.string(),
+                    }),
+                },
+            });
+            await atrix.services.svc.start();
+            const res = await svc.post('/').send({notName: 'asdf'});
+            expect(res.statusCode).to.eql(200);
+        });
+        it('with strictEndpoints validation disable unknonw keys are stripped before passed to the handler', async () => {
+            await start({
+                verboseEndpoints: ['.*'],
+                strictEndpoints: [],
+            });
+            service.handlers.add('POST', '/', (req, reply) => reply(req.payload), {
+                validate: {
+                    payload: Joi.object({
+                        name: Joi.string(),
+                    }),
+                },
+            });
+            await atrix.services.svc.start();
+            const res = await svc.post('/').send({notName: 'asdf', name: 'franz'});
+            expect(res.statusCode).to.eql(200);
+            expect(res.body).to.eql({name: 'franz'});
+        });
     });
 
-    it('} => errors contain all failed rules', async () => {
-        await start({
-            verbose: ['.*'],
-        });
-        service.handlers.add('POST', '/', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
-        service.handlers.add('POST', '/andere', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
-        service.handlers.add('POST', '/no/ane', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
-        await atrix.services.svc.start();
-        for (const path of ['/', '/andere', '/no/ane']) {
-            const res = await svc.post(path).send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
+    describe('verboseEndpoints validation errors', () => {
+        it('per default verboseEndpoints errors are disabled', async () => {
+            await start({});
+            service.handlers.add('POST', '/', (req, reply) => reply({foo: 'bar'}), {
+                validate: {
+                    payload: schema,
+                },
+            });
+            await atrix.services.svc.start();
+            const res = await svc.post('/').send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
             expect(res.statusCode).to.eql(400);
-            expect(res.body.message).not.to.eql('Invalid request payload input');
-            expect(res.body.details).to.be.an('array');
-            expect(res.body.details.length).to.eql(2);
-        }
-    });
+            expect(res.body.message).to.eql('Invalid request payload input');
+        });
 
-    it('passes the payload to handler', async () => {
-        await start({
-            verbose: ['.*'],
+        it('{ validation: { verboseEndpoints: [".*"] } } => enables verboseEndpoints errors for all routes', async () => {
+            await start({
+                verboseEndpoints: ['.*'],
+            });
+            service.handlers.add('POST', '/', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
+            service.handlers.add('POST', '/andere', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
+            service.handlers.add('POST', '/no/ane', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
+            await atrix.services.svc.start();
+            for (const path of ['/', '/andere', '/no/ane']) {
+                const res = await svc.post(path).send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
+                expect(res.statusCode).to.eql(400);
+                expect(res.body.message).not.to.eql('Invalid request payload input');
+                expect(res.body.details).to.be.an('array');
+            }
         });
-        service.handlers.add('POST', '/', (req, reply) => reply(req.payload), {
-            validate: {
-                payload: Joi.object(),
-            },
-        });
-        await atrix.services.svc.start();
-        const res = await svc.post('/').send({key: 'asdf'});
-        expect(res.statusCode).to.eql(200);
-        expect(res.body).to.eql({key: 'asdf'});
-    });
 
-    it('{ validation: { verbose: ["/", "^/.*ne$"] } } => use endpoints expressions to select specific routes only', async () => {
-        await start({
-            verbose: ['^/$', '^/.*ne$'],
+        it('} => errors contain all failed rules', async () => {
+            await start({
+                verboseEndpoints: ['.*'],
+            });
+            service.handlers.add('POST', '/', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
+            service.handlers.add('POST', '/andere', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
+            service.handlers.add('POST', '/no/ane', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
+            await atrix.services.svc.start();
+            for (const path of ['/', '/andere', '/no/ane']) {
+                const res = await svc.post(path).send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
+                expect(res.statusCode).to.eql(400);
+                expect(res.body.message).not.to.eql('Invalid request payload input');
+                expect(res.body.details).to.be.an('array');
+                expect(res.body.details.length).to.eql(2);
+            }
         });
-        service.handlers.add('POST', '/', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
-        service.handlers.add('POST', '/andere', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
-        service.handlers.add('POST', '/no/ane', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
-        await atrix.services.svc.start();
-        for (const path of ['/', '/no/ane']) {
-            const res = await svc.post(path).send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
+
+        it('{ validation: { verboseEndpoints: ["/", "^/.*ne$"] } } => use endpoints expressions to select specific routes only', async () => {
+            await start({
+                verboseEndpoints: ['^/$', '^/.*ne$'],
+            });
+            service.handlers.add('POST', '/', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
+            service.handlers.add('POST', '/andere', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
+            service.handlers.add('POST', '/no/ane', (req, reply) => reply({foo: 'bar'}), {validate: {payload: schema}});
+            await atrix.services.svc.start();
+            for (const path of ['/', '/no/ane']) {
+                const res = await svc.post(path).send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
+                expect(res.statusCode).to.eql(400);
+                expect(res.body.message).not.to.eql('Invalid request payload input');
+                expect(res.body.details).to.be.an('array');
+                expect(res.body.details.length).to.eql(2);
+            }
+            const res = await svc.post('/andere').send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
             expect(res.statusCode).to.eql(400);
-            expect(res.body.message).not.to.eql('Invalid request payload input');
-            expect(res.body.details).to.be.an('array');
-            expect(res.body.details.length).to.eql(2);
-        }
-        const res = await svc.post('/andere').send({foo: 'bar', key: 'adsf', sub: {key: 'as'}});
-        expect(res.statusCode).to.eql(400);
-        expect(res.body.message).to.eql('Invalid request payload input');
+            expect(res.body.message).to.eql('Invalid request payload input');
+        });
+
+        it('serializes regex patterns as string in error details', async () => {
+            await start({
+                verboseEndpoints: ['.*'],
+            });
+
+            service.handlers.add('POST', '/{id}', (req, reply) => reply(req.payload), {
+                validate: {
+                    params: {
+                        id: Joi.string().regex(/^[a-z]{3}$/),
+                    },
+                },
+            });
+
+            await atrix.services.svc.start();
+            const res = await svc.post('/As');
+            expect(res.body.details[0].context.pattern).to.eql('/^[a-z]{3}$/');
+        });
     });
 });
