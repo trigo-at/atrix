@@ -21,7 +21,7 @@
   "author": "trigo GmbH <office@trigo.at>",
   "license": "ISC",
   "dependencies": {
-    "@trigo/hapi-auth-signedlink": "^1.0.0-0",
+    "@trigo/hapi-auth-signedlink": "^1.1.0",
     "axios": "^0.18.0",
     "blipp": "^3.1.1",
     "bluebird": "^3.5.0",
