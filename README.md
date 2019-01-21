@@ -7,6 +7,7 @@
 Atrix is an opinionated micro-service framework
 
 ### Goals
+
 * Out-of the box default configuration on initial pull
 * Minimum code required to implement features
 * Extendable using plugins (npm packages). Currently available are:
@@ -20,8 +21,10 @@ Atrix is an opinionated micro-service framework
   * [atrix-pubsub](https://github.com/trigo-at/atrix-pubsub)
 
 ### Content
+
 * [Example Server setup](#example-server-setup)
 * [Handler Definition](#handler-definition)
+* [Security](#security)
 * [Validaton](#validation)
 * [CORS](#cors)
 * [Request Logger](#request-logger)
@@ -37,70 +40,75 @@ Atrix is an opinionated micro-service framework
 * [Overwriting config via env variables](#overwriting-config-via-env-variables)
 
 ### See here for the [Change Log](changelog.md)
-___
+
+---
+
 # Example Server Setup
 
 > In the examples below, several `/config.js` files are cited. In a single project, you may have more than one config file, however, _only one config file is used to create a service._
 
 `/demoService/handlers/{id}_GET.js`
+
 ```js
 module.exports = (req, reply, service) => {
-	reply({ status: 'ok' });
+    reply({ status: 'ok' });
 }
 ```
 
 `/demoService/config.js`
+
 ```js
 module.exports = {
-	// name of the service (REQUIRED)
-	name: 'demoService',
-	endpoints: {
-		http: {
-			// declare port to bind
-			port: 3007,
+    // name of the service (REQUIRED)
+    name: 'demoService',
+    endpoints: {
+        http: {
+            // declare port to bind
+            port: 3007,
 
-			// the directory containing the handler files
-			handlerDir: `${__dirname}/handlers`,
+            // the directory containing the handler files
+            handlerDir: `${__dirname}/handlers`,
 
-			// global server cors configuraton
-			// see: https://hapijs.com/api#route-options rules apply here too
-			cors: {
-				// defaults to '*'
-				origin: ['https://myui.myservice.at', 'http://lvh.me'],
+            // global server cors configuraton
+            // see: https://hapijs.com/api#route-options rules apply here too
+            cors: {
+                // defaults to '*'
+                origin: ['https://myui.myservice.at', 'http://lvh.me'],
 
-				// allow additional headers to be sent when client XHR
-				// lib is sending them like angular $http etc
-				additionalHeaders: ['x-requested-with']
-			},
-			// request logger configuration
-			requestLogger: {
-				// enable the request logger
-				enabled: false,
+                // allow additional headers to be sent when client XHR
+                // lib is sending them like angular $http etc
+                additionalHeaders: ['x-requested-with']
+            },
+            // request logger configuration
+            requestLogger: {
+                // enable the request logger
+                enabled: false,
 
-				// log full request body if content-type: application/javascript and multipart/form-data
-				logFullRequest: true,
+                // log full request body if content-type: application/javascript and multipart/form-data
+                logFullRequest: true,
 
-				// log full response if content-type: application/javascript
-				logFullResponse: true,
-			},
+                // log full response if content-type: application/javascript
+                logFullResponse: true,
+            },
 
             // validation settings
             validation: {
-            	// list of regular expression that define the routed that should
+                // list of regular expression that define the routed that should
                 // return structured and verbose validation error responses that 
                 // may be used in the fronened form logic et al.
-            	verbose: ['^/items$']
+                verbose: ['^/items$']
             }
-		},
-	},
-	// Add service settings in here. They are accessible in the handler as "service.settings" object
-	settings: {
-		test: 'value',
-	},
+        },
+    },
+    // Add service settings in here. They are accessible in the handler as "service.settings" object
+    settings: {
+        test: 'value',
+    },
 };
 ```
 
 `/index.js`
+
 ```js
 'use strict';
 
@@ -115,8 +123,8 @@ const service = atrix.addService(config);
 
 // start the service
 atrix.services.demoService.start(); // returns promise
-
 ```
+
 # Handler definition
 
 Declare a directory in which all handlers are contained, or add route handlers manually.
@@ -124,11 +132,13 @@ Declare a directory in which all handlers are contained, or add route handlers m
 ## Filename routes
 
 ### handlerDir
+
 When using the `handlerDir` option the appropriate routes will be created based on the filenames and folder structure. The Caret symbol `^` is used as subroute indicator when using a single filename to represent a deep route. Route params can be defined by curly brackets e.g.: `{id}`
 
 **Special Characters:**
+
 * `_` the last underscore in the filename indicates the beginning of the http method to be used e.g.: `persons_GET.js`
-*  `^` indicates the beginning of a subroute, e.g.: `persons^details_GET.js`
+* `^` indicates the beginning of a subroute, e.g.: `persons^details_GET.js`
 * Something in between curly braces indicates a route param e.g.: `persons^{id}_GET.js`;
 * The method wildcard character (`%` by default) can be used to create a route for all http methods `persons_%.js`
 
@@ -141,25 +151,28 @@ When using the `handlerDir` option the appropriate routes will be created based 
 **Code Example:**
 
 `/config.js`
+
 ```js
 module.exports = {
-	name: 'dummyService', // mandatory property
-	endpoints: {
-		http: {
-			port: 3000,
-			// the directory containing the handler files
-			handlerDir: `${__dirname}/handlers`,
-		},
-	},
+    name: 'dummyService', // mandatory property
+    endpoints: {
+        http: {
+            port: 3000,
+            // the directory containing the handler files
+            handlerDir: `${__dirname}/handlers`,
+        },
+    },
 };
 ```
 
 `/handlers/persons_GET.js`
+
 ```js
 module.exports = (req, reply, service) => {
-	reply({status: 'ok'});
+    reply({status: 'ok'});
 };
 ```
+
 The route `GET /persons` is made available by the above examples.
 
 ### Manually adding route handlers
@@ -170,20 +183,67 @@ Once a service has been created and an endpoint has been added, routes can be ad
 const atrix = require('@trigo/atrix');
 
 const service = atrix.addService({
-	name: 'dummyService', 
-	endpoints: {
-		http: {
-			port: 3000,
-		},
-	},
+    name: 'dummyService', 
+    endpoints: {
+        http: {
+            port: 3000,
+        },
+    },
 });
 
 // service.handlers.add(httpMethod, route, handler);
 service.handlers.add('GET', '/persons/{id}/details', (req, reply, service) => {
-	reply({status: 'ok'});
+    reply({status: 'ok'});
 });
 
 service.start();
+```
+
+# Security
+
+Atrix uses a declarative pattern to define security options based on `authentication strategies` as they are implemented in Hapi.
+
+Example config:
+
+```javascript
+{
+    name: 'secureService',
+    // the security related settings
+    security: {
+        // define which strategies are available in your service
+        stragtegies: {        
+            // JWT based authentication
+            jwt: {
+                // the jwt secret used to sign the tokens
+                secret: 'jwt-secret-key', 
+                // the algorithm to use. Change to RS256 for priv/pubkey signing
+                algorithm: 'HS256'
+            },            
+            // authentication baes on query param "auth" containing a vaild signatiure of the link    
+            signedlink: {
+                // the singed link secret used to create the signature
+                secret: 'loink-sign-secret',
+                // override default behaviour when signed lonk authorization failes.
+                failAction: async (request, h, reason) => {
+                    // use the "h" parameter to return custom responses see:
+                    // https://hapijs.com/api#response-toolkit
+
+                    // return HTTP 401 Unauthorized. This is the default implementation
+                    // that is used when the failAction option is omited.
+                    // to ignore the failure return h.continue
+                    return h.unauthorized(Boom.unauthorized(reason))
+                }
+            }
+        },
+        // attach to enpoints using endpoint expressions
+        endpoints:{
+            // apply to everything below /secured-by-jwt
+            jwt: ['^/secureed-by-jwt.*'], 
+            // apply to everything below /secured-by-signedlink
+            signedlink: ['^/secureed-by-signedlink.*'],
+        }
+    }    
+}
 ```
 
 # Validation
@@ -199,8 +259,8 @@ Whenever possible use the `atrix-swagger` plugin to setup proper validations for
 
 As in some cases this will not be suitable for your needs (e.g. limitation of swagger et al) you can allways configure those options manually
 
-
 ### When adding a handler using code
+
 ```js
 service.handlers.add('POST', '/{id}', (req, reply) => reply(req.payload), {
     validate: {
@@ -212,19 +272,21 @@ service.handlers.add('POST', '/{id}', (req, reply) => reply(req.payload), {
 ```
 
 ### in a handlerfile
+
 `handlers/cars/{id}/POST.js`
+
 ```js
 
 const Joi = require('joi');
 
 module.exports.options = {
     validate: {
-    	payload: Joi.object({
-        	name: Joi.string().required(),
+        payload: Joi.object({
+            name: Joi.string().required(),
         }),
     },
     params: {
-    	id: Joi.string().required().regex(/[0-9a-f]{16}/)
+        id: Joi.string().required().regex(/[0-9a-f]{16}/)
     },
     query: <schema>
     headers: <schema>
@@ -244,33 +306,35 @@ module.exports.handler = async (req, reply, service) => { ... };
 The validation option are applied to the routes **after** all other configurations are done by _route processor_ plugins like `atrix-swagger` et al.
 
 `/config.js`
+
 ```js
 module.exports = {
-	name: 'serviceName',
-	endpoints: {
-		http: {
-			port: 3000,
+    name: 'serviceName',
+    endpoints: {
+        http: {
+            port: 3000,
 
-			// the validation config
-			validation: {
-            	// list of route patterns of the routes that should return
+            // the validation config
+            validation: {
+                // list of route patterns of the routes that should return
                 // vaerbose validation errors
                 // defaults to: []
-            	verboseEndpoints: ['^/internal/.*$', ...]
+                verboseEndpoints: ['^/internal/.*$', ...]
                 // list of route patterns that enforce strict validation. E.g. do not
                 // allow unknown keys. When strict checking is disabled the unknown 
                 // keys will be ignored and stripped from the objects before they are
                 // passed on the header.
                 strictEndpoints: ['^/public.*$']
-			},
-		},
-	},
+            },
+        },
+    },
 };
 ```
 
 ### Verbose validation
 
 Per default the server reutrns just HTTP statusCode `400 Bad Request` withpout any further details where exactly the validation failed.
+
 ```json
 {
   "statusCode": 400,
@@ -280,6 +344,7 @@ Per default the server reutrns just HTTP statusCode `400 Bad Request` withpout a
 ```
 
 When enabling `verbose` validation the errors response contains details aboout all failed validators, thier types and expected/valid values.
+
 ```json
 {
   "statusCode": 400,
@@ -338,60 +403,60 @@ When enabling `verbose` validation the errors response contains details aboout a
     }
   ]
 }
-
 ```
 
 The detailed documentation about the possible errors, their properties and options see: [https://github.com/hapijs/joi/blob/v14.3.0/API.md#list-of-errors](https://github.com/hapijs/joi/blob/v14.3.0/API.md#list-of-errors)
 
-
 # CORS
 
 `/config.js`
+
 ```js
 module.exports = {
-	name: 'serviceName',
-	endpoints: {
-		http: {
-			port: 3000,
+    name: 'serviceName',
+    endpoints: {
+        http: {
+            port: 3000,
 
-			// global server cors configuraton
-			// see: https://hapijs.com/api#route-options rules apply here too
-			cors: {
-				// defaults to '*'
-				origin: ['https://myui.myservice.at', 'http://lvh.me'],
+            // global server cors configuraton
+            // see: https://hapijs.com/api#route-options rules apply here too
+            cors: {
+                // defaults to '*'
+                origin: ['https://myui.myservice.at', 'http://lvh.me'],
 
-				// allow additional headers to be sent when client XHR
-				// lib is sending them like angular $http etc
-				additionalHeaders: ['x-requested-with']
-			},
-		},
-	},
+                // allow additional headers to be sent when client XHR
+                // lib is sending them like angular $http etc
+                additionalHeaders: ['x-requested-with']
+            },
+        },
+    },
 };
 ```
 
 # Request Logger
 
 `/config.js`
+
 ```js
 module.exports = {
-	name: 'serviceName',
-	endpoints: {
-		http: {
-			port: 3000,
+    name: 'serviceName',
+    endpoints: {
+        http: {
+            port: 3000,
 
-			// request logger configuration
-			requestLogger: {
-				// enable the request logger
-				enabled: false,
+            // request logger configuration
+            requestLogger: {
+                // enable the request logger
+                enabled: false,
 
-				// log full request body if content-type: application/javascript and multipart/form-data
-				logFullRequest: true,
+                // log full request body if content-type: application/javascript and multipart/form-data
+                logFullRequest: true,
 
-				// log full response if content-type: application/javascript
-				logFullResponse: true,
-			},
-		},
-	},
+                // log full response if content-type: application/javascript
+                logFullResponse: true,
+            },
+        },
+    },
 };
 ```
 
@@ -400,33 +465,36 @@ module.exports = {
 The atrix logger uses bunyan under the hood. For more info about bunyan streams have a look at the [bunyan stream documentation](https://github.com/trentm/node-bunyan#streams).
 
 `/config.js`
+
 ```js
 module.exports = {
-	name: 'serviceName',
-	logger: {
-		level: 'debug',
-		name: 'dummyDebugger', // optional, atrix would insert the services name if no logger name is provided
-		streams: [], // optional, bunyan streams
-	}
+    name: 'serviceName',
+    logger: {
+        level: 'debug',
+        name: 'dummyDebugger', // optional, atrix would insert the services name if no logger name is provided
+        streams: [], // optional, bunyan streams
+    }
 }
 ```
 
 The logger can be accessed on the request object in every service handler.
 
 `/simple_GET.js`
+
 ```js
 module.exports = (req, reply) => {
-	req.log.debug('I am a debug message');
-	req.log.info('I am an info message');
-	req.log.warn('I am a warning message');
-	req.log.info('I am a error message');
-	reply({status: 'ok'});
+    req.log.debug('I am a debug message');
+    req.log.info('I am an info message');
+    req.log.warn('I am a warning message');
+    req.log.info('I am a error message');
+    reply({status: 'ok'});
 };
 ```
 
 Optionally, you can also access the logger of your service as it is exposed via atrix:
 
 `/service.js`
+
 ```js
 const atrix = require('@trigo/atrix');
 
@@ -437,7 +505,6 @@ service.log.info('I am the dummyService logger');
 
 // access through atrix 
 atrix.service.dummyService.log.info('I am also the dummyService logger');
-
 ```
 
 # Settings
@@ -445,11 +512,12 @@ atrix.service.dummyService.log.info('I am also the dummyService logger');
 Add service settings in here. They are accessible in the handler as the  "service.settings" object
 
 `/config.js`
+
 ```js
 module.exports = {
-	settings: {
-		pika: 'chu',
-	},
+    settings: {
+        pika: 'chu',
+    },
 };
 ```
 
@@ -466,11 +534,9 @@ Or in every service handler
 
 ```js
 module.exports = (req, res, service) => {
-	req.log.info(`Value of Pika is ${service.settings.pika}`);
+    req.log.info(`Value of Pika is ${service.settings.pika}`);
 }
 ```
-
-
 
 # Upstream
 
@@ -479,30 +545,33 @@ Atrix uses [axios](https://github.com/axios/axios) for HTTP requests and can be 
 ## Basic Upstream
 
 **Example of a basic upstream configuration** `/config.js`
+
 ```js
 module.exports = {
-	upstream: {
-		example: {
-			url: 'http://some.url',
-		},
-	},
+    upstream: {
+        example: {
+            url: 'http://some.url',
+        },
+    },
 };
 ```
 
 The defined upstream can be accessed in every service handler via the service parameter.
 
 **Example usage of upstream directly inside a service handler** `/simple_GET.js`
+
 ```js
 module.exports = async (req, reply, service) => {
-	const result = await service.upstream.example.get('/');
-	req.log.info(result);
-	reply({status: 'ok'});
+    const result = await service.upstream.example.get('/');
+    req.log.info(result);
+    reply({status: 'ok'});
 };
 ```
 
 Alternativ the upstreams can be accessed via the exposed service from atrix.
 
 **Example usage of upstream inside a module which is called from within the dummyService** `/some_file/which_is/part_of/the_service`
+
 ```js
 const atrix = require('@trigo/atrix');
 // here we assume the service has been named 'dummyService'
@@ -515,18 +584,19 @@ const exampleUpstream = service.upstream.example;
 You can define options (e.g.: headers) which will be merged into the underlying fetch request.
 
 **Example configuration for upstream headers** `/config.js`
+
 ```js
 module.exports = {
-	upstream: {
-		example: {
-			url: 'http://some.url',
-			options: {
-				headers: {
-					'User-Agent': 'ATRIX_SERVICE',
-				},
-			},
-		},
-	},
+    upstream: {
+        example: {
+            url: 'http://some.url',
+            options: {
+                headers: {
+                    'User-Agent': 'ATRIX_SERVICE',
+                },
+            },
+        },
+    },
 };
 ```
 
@@ -535,17 +605,18 @@ module.exports = {
 Upstreams can be configured to automatically retry the requests in case of an error for several times with a defined interval.
 
 **Example configuration for retry upstream** `/config.js`
+
 ```js
 module.exports = {
-	upstream: {
-		example: {
-			url: 'http://some.url',
-			retry: {
-				interval: 1000, // milliseconds
-				max_tries: 3,
-			},
-		},
-	},
+    upstream: {
+        example: {
+            url: 'http://some.url',
+            retry: {
+                interval: 1000, // milliseconds
+                max_tries: 3,
+            },
+        },
+    },
 };
 ```
 
@@ -556,21 +627,22 @@ You can set up basic authentication or oAuth authentication which will be handle
 ### Basic Authentication
 
 **Example configuration for a basic authentication upstream** `/config.js`
+
 ```js
 module.exports = {
-	upstream: {
-		example: {
-			url: 'http://some.url',
-			security: {
-				strategies: {
-					basic: {
-						username: 'username',
-						password: 'password',
-					},
-				},
-			},
-		},
-	},
+    upstream: {
+        example: {
+            url: 'http://some.url',
+            security: {
+                strategies: {
+                    basic: {
+                        username: 'username',
+                        password: 'password',
+                    },
+                },
+            },
+        },
+    },
 };
 ```
 
@@ -581,30 +653,31 @@ The OAuth strategy will try to authenticate against the provided `authEndpoint` 
 ```js
 // json answer e.g.:
 {
-	access_token: '123456'
+    access_token: '123456'
 }
 ```
 
 After the initial configuration it is not necessary to authenticate manually - upstream will handle the authentication process on the first request and will cache the returning `access_token` for further requests.
 
 **Example configuration for a oauth authentication upstram** `/config.js`
+
 ```js
 module.exports = {
-	upstream: {
-		example: {
-			url: 'http://some.url',
-			security: {
-				strategies: {
-					oauth: {
-						clientId: 'client_id',
-						clientSecret: 'client_secret',
-						authEndpoint: 'http://auth.endpoint/token',
-						grantType: 'password',
-					},
-				},
-			},
-		},
-	},
+    upstream: {
+        example: {
+            url: 'http://some.url',
+            security: {
+                strategies: {
+                    oauth: {
+                        clientId: 'client_id',
+                        clientSecret: 'client_secret',
+                        authEndpoint: 'http://auth.endpoint/token',
+                        grantType: 'password',
+                    },
+                },
+            },
+        },
+    },
 };
 ```
 
@@ -615,18 +688,19 @@ Every variable defined in the `/config.js` can be overwritten by declaring envir
 They have to follow a strict pattern. The environment variable has to be defined in snakecased uppercased words eg. `THIS_IS_AN_ENV_VAR`. Starting with `ATRIX`, followed by the atrix service's name, which is defined by the `new atrix.Service('demoService', config)` call. For the `demoService` we would have to start with `ATRIX_DEMOSERVICE_` as environment variable name.
 
 `/config.js`
+
 ```js
 module.exports = {
-	settings: {
-		nestedSetting: {
-			pika: 'chu',
-		},
-	},
+    settings: {
+        nestedSetting: {
+            pika: 'chu',
+        },
+    },
 };
 ```
 
 To overwrite the value of pika we would have to define the env variable like that:
+
 ```
 ATRIX_DEMOSERVICE_SETTINGS_NESTEDSETTING_PIKA=chuchu
 ```
-

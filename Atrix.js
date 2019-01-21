@@ -104,6 +104,12 @@ class Atrix {
     static get DISABLED() {
         return symbols.DISABLED;
     }
+    get ATRIX_SERVICE() {
+        return symbols.ATRIX_SERVICE;
+    }
+    static get ATRIX_SERVICE() {
+        return symbols.ATRIX_SERVICE;
+    }
 
     get version() {
         return pkg.version;

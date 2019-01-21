@@ -70,6 +70,22 @@ describe('signedlink-secured-svc', () => {
         expect(reas).to.eql('param "auth" missing');
     });
 
+    it('GET /signedlink can access service using req.server.app[atrix.ATRIX_SERVICE]', async () => {
+        let s;
+        await startService({
+            secret: 'test-secret',
+            failAction: async (request, h, reason) => {
+                s = request.server.app[atrix.ATRIX_SERVICE];
+                return h.redirect('http://www.google.com').takeover();
+            },
+        });
+
+        const res = await svc.get('/signedlink');
+        expect(res.statusCode).to.equal(302);
+        expect(res.headers.location).to.equal('http://www.google.com');
+        expect(s).to.equal(service);
+    });
+
     it('GET /test is not secured', async () => {
         await startService();
         const res = await svc.get('/test');
