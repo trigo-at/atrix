@@ -39,10 +39,10 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@trigo/hapi-auth-signedlink@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@trigo/hapi-auth-signedlink/-/hapi-auth-signedlink-1.1.1.tgz#a807a3d434ce2e486e45e049ab4c3d21646b2c00"
-  integrity sha512-Wb/s/mfw0SiEzC2OJN6E3a01yPJztWMJo9vMS9ZfYtSapS0DhMBrhgIgFTmepDKzJvdYCOx+4GuynsBdpmqVSQ==
+"@trigo/hapi-auth-signedlink@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@trigo/hapi-auth-signedlink/-/hapi-auth-signedlink-1.2.0.tgz#6a661868c12271a72da97d9cbe278c323241e34c"
+  integrity sha512-0RFR0ddhyrdvAl40UGsQ64s3KmSC8DSuEj1xwA1X8sR0SlhLiLWYe90/SjcGpdr+b5MFArEPB/oqkXieYwo1WQ==
   dependencies:
     boom "^7.3.0"
     hoek "^6.1.2"

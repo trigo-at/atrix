@@ -67,7 +67,7 @@ describe('signedlink-secured-svc', () => {
         const res = await svc.get('/signedlink');
         expect(res.statusCode).to.equal(302);
         expect(res.headers.location).to.equal('http://www.google.com');
-        expect(reas).to.eql('param "auth" missing');
+        expect(reas).to.eql('E_AUTH_PARAM_MISSING');
     });
 
     it('GET /signedlink can access service using req.server.app[atrix.ATRIX_SERVICE]', async () => {
