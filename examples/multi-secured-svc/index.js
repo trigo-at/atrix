@@ -2,6 +2,6 @@
 
 const atrix = require('../../');
 
-atrix.addService(require('./service'));
+require('./service');
 
-atrix.services.secured.start();
+atrix.services.multiSecured.start();

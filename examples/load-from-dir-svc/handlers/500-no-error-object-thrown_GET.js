@@ -1,4 +1,3 @@
 module.exports = () => {
-	throw 'Error';
+    throw 'Error';
 };
-

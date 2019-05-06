@@ -3,8 +3,6 @@
 const atrix = require('../..');
 const config = require('./config');
 
-const service = new atrix.Service('loadFromDir', config);
-
-service.endpoints.add('http');
+const service = atrix.addService(config);
 
 module.exports = service;

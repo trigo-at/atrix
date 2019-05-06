@@ -1,7 +1,8 @@
 module.exports = {
-	endpoints: {
-		http: {
-			port: 3001,
-		},
-	},
+    name: 'upstream',
+    endpoints: {
+        http: {
+            port: 3001,
+        },
+    },
 };

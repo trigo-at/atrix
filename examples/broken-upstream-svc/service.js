@@ -3,11 +3,10 @@
 const atrix = require('../..');
 const config = require('./config');
 
-const service = new atrix.Service('brokenupstream', config);
+const service = atrix.addService(config);
 
-service.endpoints.add('http');
 service.handlers.add('GET', '/data', (req, reply) => {
-	service.upstream.broken.get('/data').then(result => reply({ requests: result.body }));
+    service.upstream.broken.get('/data').then(result => reply({requests: result.body}));
 });
 
 module.exports = service;
