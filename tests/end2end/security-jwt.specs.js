@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 const expect = require('chai').expect;
 
 const chance = new Chance();
-describe.only('Security: JWT', () => {
+describe('Security: JWT', () => {
     let svc;
     let service;
     before(async () => {
