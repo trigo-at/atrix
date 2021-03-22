@@ -233,6 +233,39 @@ Example config:
                     // to ignore the failure return h.continue
                     return h.unauthorized(Boom.unauthorized(reason))
                 }
+            },
+            // authenticate using HTTP Basic Auth
+            basic: {
+                // setup the function used to validate your user credentials
+                // if credentials are correct return an object of shape 
+                // {
+                //    isValid: true,
+                //    // the credentials to attach to the auth context that are acessible in
+                //    // the request handlers
+                //    credentials: {...}
+                // }
+                // when authentication fails:
+                // { isValid: false }
+                // to return a standard Boom.unauthorized() error
+                validate: async (request, username, password) => {
+                    // the actual authentication logic
+                    const success = await myCustomUsernamePasswordValidator(username, password);
+                    
+                    // credentials are ok
+                    if (success) {
+                        return { 
+                            // it worked
+                            isValid: true, 
+                            // the credentials to attach to the auth context
+                            credentials: { username, foo: 'bar' }
+                        };
+                    }
+
+                    // authentication failed
+                    return {isValid: false};
+                },
+                // if set true, empty usernames are allowed
+                allowEmptyUsername: false
             }
         },
         // attach to enpoints using endpoint expressions
@@ -241,6 +274,8 @@ Example config:
             jwt: ['^/secureed-by-jwt.*'], 
             // apply to everything below /secured-by-signedlink
             signedlink: ['^/secureed-by-signedlink.*'],
+            // apply basic authenication to /with-basic-auth and below
+            basic: ['^/with-basic-auth.*'],
         }
     }    
 }
