@@ -14,7 +14,7 @@ describe('endpoint startup', () => {
     let svc, svc2, service, service2;
 
     before(async () => {
-        const port = chance.integer({min: 20000, max: 30000});
+        const port = chance.integer({ min: 20000, max: 30000 });
         service = atrix.addService({
             name: 'endpoints',
             endpoints: {
@@ -26,7 +26,7 @@ describe('endpoint startup', () => {
         service.handlers.add('GET', '/', (req, reply) => reply());
         await service.start();
 
-        const port2 = chance.integer({min: 20000, max: 30000});
+        const port2 = chance.integer({ min: 20000, max: 30000 });
         service2 = atrix.addService({
             name: 'endpointDisabled',
             endpoints: {

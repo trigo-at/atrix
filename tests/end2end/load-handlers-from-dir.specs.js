@@ -9,11 +9,11 @@ const expect = require('chai').expect;
 
 const chance = new Chance();
 
-describe('loading handlers from fs', () => {
+describe.only('loading handlers from fs', () => {
     let svc;
     let service;
     before(async () => {
-        const port = chance.integer({min: 20000, max: 30000});
+        const port = chance.integer({ min: 20000, max: 30000 });
         service = atrix.addService({
             name: 'loadFromDir',
             endpoints: {
@@ -51,7 +51,7 @@ describe('loading handlers from fs', () => {
     });
 
     it('loaded POST /{id}', async () => {
-        const res = await svc.post('/{id}').send({test: 'prop'});
+        const res = await svc.post('/{id}').send({ test: 'prop' });
         expect(res.statusCode).to.equal(200);
         expect(res.body).to.eql({
             res: 'POST /{id}',
@@ -70,7 +70,7 @@ describe('loading handlers from fs', () => {
 
     it('can use async handler', async () => {
         const res = await svc.get('/async');
-        expect(res.body).to.eql({ok: true});
+        expect(res.body).to.eql({ ok: true });
     });
 
     it('async handler has proper error handling', async () => {

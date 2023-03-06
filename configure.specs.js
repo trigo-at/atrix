@@ -5,7 +5,7 @@
 
 const cfgObj = {};
 const configure = require('./configure')(cfgObj);
-const {expect} = require('chai');
+const { expect } = require('chai');
 
 describe('configure', () => {
     it('merges configurations', () => {
@@ -13,7 +13,7 @@ describe('configure', () => {
             delete cfgObj[key];
         });
 
-        configure({pluginSearchPaths: ['test']});
+        configure({ pluginSearchPaths: ['test'] });
 
         expect(cfgObj.pluginSearchPaths).to.eql(['test']);
     });

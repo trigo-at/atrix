@@ -6,7 +6,7 @@ services:
       args:
         - NPM_TOKEN=${NPM_TOKEN}
     image: trigo/atrix:latest
-    command: 'yarn run test'
+    command: 'npm run test'
     environment:
       - MONGO_SRV=mongodb://mongo
       - NODE_ENV=test

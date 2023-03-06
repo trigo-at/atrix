@@ -2,6 +2,9 @@
 
 module.exports = {
     proxy: {
-        mapUri: () => 'http://eu.httpbin.org/anything',
+        mapUri: () => {
+            console.log('MAP')
+            return { uri: 'http://eu.httpbin.org/anything' }
+        },
     },
 };

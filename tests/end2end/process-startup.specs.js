@@ -23,8 +23,8 @@ describe('the service process', function test() {
 
     it.skip('should exit properly', async () => {
         const svcProcess = spawn('node', ['./examples/test']);
-        svcProcess.stdout.on('data', () => {});
-        svcProcess.stderr.on('data', () => {});
+        svcProcess.stdout.on('data', () => { });
+        svcProcess.stderr.on('data', () => { });
         const killed = new Promise((resolve, reject) => {
             svcProcess.on('close', resolve);
             svcProcess.on('exit', code => {

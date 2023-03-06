@@ -2,6 +2,8 @@
 
 module.exports = {
     proxy: {
-        mapUri: () => 'http://www.google.com',
+        mapUri: () => {
+            return { uri: 'http://www.google.com' };
+        },
     },
 };

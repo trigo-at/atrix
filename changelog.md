@@ -1,5 +1,11 @@
 # Change Log
 
+## v6.x => 7.x
+
+### Breaking Changes
+
+* Removed signed link auth
+
 ## v5.x -> v6.0.0
 
 ### Breaking Changes
