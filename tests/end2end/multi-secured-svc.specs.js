@@ -10,7 +10,7 @@ const expect = require('chai').expect;
 
 const chance = new Chance();
 
-describe.only('muti-secured-svc', () => {
+describe('muti-secured-svc', () => {
     let svc;
     let service;
     before(async () => {

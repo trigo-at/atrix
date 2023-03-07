@@ -12,7 +12,7 @@ const path = require('path');
 
 const chance = new Chance();
 
-describe.only('Proxy Handler', () => {
+describe('Proxy Handler', () => {
     let port, svc, onRequestCalled;
 
     beforeEach(() => {
@@ -91,11 +91,11 @@ describe.only('Proxy Handler', () => {
     });
 
     describe('"mapUri"', () => {
-        it.only('can proxy with "mapUri" directly returning uri as string', async () => {
+        it('can proxy with "mapUri" directly returning uri as string', async () => {
             const res = await svc.get('/map-uri1');
             expect(res.statusCode).to.equal(200);
             console.log(res)
-            const resp = JSON.parse(res.json);
+            const resp = JSON.parse(Buffer.from(res.body).toString());
             expect(resp.method).to.eql('get');
             expect(resp.path).to.eql('/hit-me');
         });
@@ -103,7 +103,7 @@ describe.only('Proxy Handler', () => {
         it('"mapUri" can return object: { uri: <upstream>, headers: <headers> }', async () => {
             const res = await svc.get('/map-uri2');
             expect(res.statusCode).to.equal(200);
-            const resp = JSON.parse(res.text);
+            const resp = JSON.parse(Buffer.from(res.body).toString());
             expect(resp.headers['x-header']).to.eql('set');
         });
 
@@ -111,7 +111,7 @@ describe.only('Proxy Handler', () => {
             const res = await svc.get('/map-uri2');
             expect(res.statusCode).to.equal(200);
 
-            const resp = JSON.parse(res.text);
+            const resp = JSON.parse(Buffer.from(res.body).toString());
             expect(resp.headers['x-service-name']).to.eql('proxy');
         });
 

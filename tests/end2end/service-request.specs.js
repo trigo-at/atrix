@@ -16,7 +16,7 @@ describe('service.request() interface', () => {
     let svc;
     let service;
     before(async () => {
-        const port = chance.integer({min: 20000, max: 30000});
+        const port = chance.integer({ min: 20000, max: 30000 });
         service = atrix.addService({
             name: 'serviceRequest',
             endpoints: {
@@ -103,7 +103,7 @@ describe('service.request() interface', () => {
 
     it('returns result', async () => {
         const res = await svc.get('/service-request');
-        expect(res.body.result).to.eql({res: 'POST /{id}'});
+        expect(res.body.result).to.eql({ res: 'POST /{id}' });
     });
 
     it('returns statusMessage', async () => {

@@ -6,7 +6,7 @@
 const atrix = require('../..');
 const Chance = require('chance');
 const supertest = require('supertest');
-const {expect} = require('chai');
+const { expect } = require('chai');
 
 const chance = new Chance();
 
@@ -14,7 +14,7 @@ describe('Handler reply interface', () => {
     let port, svc, service;
 
     beforeEach(async () => {
-        port = chance.integer({min: 20000, max: 30000});
+        port = chance.integer({ min: 20000, max: 30000 });
         service = atrix.addService({
             name: 'svc',
             endpoints: {
@@ -32,29 +32,29 @@ describe('Handler reply interface', () => {
     });
 
     it('can return with "reply(value)"', async () => {
-        service.handlers.add('GET', '/', (req, reply) => reply({foo: 'bar'}));
+        service.handlers.add('GET', '/', (req, reply) => reply({ foo: 'bar' }));
         await atrix.services.svc.start();
         const res = await svc.get('/');
-        expect(res.body).to.eql({foo: 'bar'});
+        expect(res.body).to.eql({ foo: 'bar' });
         expect(res.statusCode).to.eql(200);
     });
 
-    it('can return with reply()', async () => {
+    it('can return with reply() => 204', async () => {
         service.handlers.add('GET', '/', (req, reply) => reply());
         await atrix.services.svc.start();
         const res = await svc.get('/');
         expect(res.text).to.eql('');
         expect(res.body).to.eql({});
-        expect(res.statusCode).to.eql(200);
+        expect(res.statusCode).to.eql(204);
     });
 
-    it('can return with reply().code(204)', async () => {
-        service.handlers.add('GET', '/', (req, reply) => reply().code(204));
+    it('can return with reply().code(200)', async () => {
+        service.handlers.add('GET', '/', (req, reply) => reply().code(200));
         await atrix.services.svc.start();
         const res = await svc.get('/');
         expect(res.text).to.eql('');
         expect(res.body).to.eql({});
-        expect(res.statusCode).to.eql(204);
+        expect(res.statusCode).to.eql(200);
     });
 
     it('can return with reply().redirect("http://www.google.com")', async () => {

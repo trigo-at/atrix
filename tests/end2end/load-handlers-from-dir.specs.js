@@ -9,7 +9,7 @@ const expect = require('chai').expect;
 
 const chance = new Chance();
 
-describe.only('loading handlers from fs', () => {
+describe('loading handlers from fs', () => {
     let svc;
     let service;
     before(async () => {

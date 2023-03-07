@@ -6,7 +6,7 @@
 const atrix = require('../..');
 const Chance = require('chance');
 const supertest = require('supertest');
-const {expect} = require('chai');
+const { expect } = require('chai');
 
 const chance = new Chance();
 
@@ -20,7 +20,7 @@ describe('Upstreams', () => {
     });
 
     before(async () => {
-        const upstreamPort = chance.integer({min: 10000, max: 20000});
+        const upstreamPort = chance.integer({ min: 10000, max: 20000 });
         const upstream = atrix.addService({
             name: 'upstream',
             endpoints: {
@@ -33,23 +33,23 @@ describe('Upstreams', () => {
         upstream.handlers.add('*', '/echo', (req, reply) => {
             reply(req.payload);
         });
-        upstream.handlers.add('GET', '/', (req, reply) => reply({foo: 'bar'}));
+        upstream.handlers.add('GET', '/', (req, reply) => reply({ foo: 'bar' }));
         upstream.handlers.add('GET', '/need-retry', (req, reply) => {
             if (tries++ < 2) {
                 throw new Error('try again');
             }
-            reply({foo: 'bar'});
+            reply({ foo: 'bar' });
         });
         upstream.handlers.add('GET', '/not-enough', () => {
             throw new Error('try again');
         });
-        upstream.handlers.add('GET', '/bad-request', (req, reply) => reply({foo: 'bar'}).code(400));
+        upstream.handlers.add('GET', '/bad-request', (req, reply) => reply({ foo: 'bar' }).code(400));
 
-        upstream.handlers.add('GET', '/headers', (req, reply) => reply({headers: req.headers}));
+        upstream.handlers.add('GET', '/headers', (req, reply) => reply({ headers: req.headers }));
 
         upstream.handlers.add('POST', '/token', (req, reply) => {
             if (req.headers.authorization === 'Basic dGVzdG5hbWU6dGVzdHBhc3M=') {
-                reply({access_token: '123456'});
+                reply({ access_token: '123456' });
             } else {
                 reply().code(400);
             }
@@ -69,7 +69,7 @@ describe('Upstreams', () => {
 
         await atrix.services.upstream.start();
 
-        const port = chance.integer({min: 20001, max: 30000});
+        const port = chance.integer({ min: 20001, max: 30000 });
         service = atrix.addService({
             name: 'svc',
             endpoints: {
@@ -146,12 +146,12 @@ describe('Upstreams', () => {
         });
 
         service.handlers.add('POST', '/gibts-ned', async (req, reply, s) => {
-            const ur = await s.upstream.upstream.post('/iaaa', {payload: req.payload});
+            const ur = await s.upstream.upstream.post('/iaaa', { payload: req.payload });
             reply(ur.body).code(ur.status);
         });
 
         service.handlers.add('POST', '/mit-query-params', async (req, reply, s) => {
-            const ur = await s.upstream.upstream.post('/echo-query-params', {queryParams: req.query});
+            const ur = await s.upstream.upstream.post('/echo-query-params', { queryParams: req.query });
             reply(ur.body);
         });
 
@@ -166,7 +166,7 @@ describe('Upstreams', () => {
 
     it('can call upstream', async () => {
         const res = await svc.get('/');
-        expect(res.body).to.eql({foo: 'bar'});
+        expect(res.body).to.eql({ foo: 'bar' });
     });
 
     it('result is formated correctly', async () => {
@@ -181,24 +181,24 @@ describe('Upstreams', () => {
 
     it('result has a body', async () => {
         const res = await svc.get('/');
-        expect(res.body).to.eql({foo: 'bar'});
+        expect(res.body).to.eql({ foo: 'bar' });
     });
 
     it('return 404 from upstream', async () => {
-        const res = await svc.post('/gibts-ned').send({test: 'test'});
+        const res = await svc.post('/gibts-ned').send({ test: 'test' });
         expect(res.status).to.eql(404);
     });
 
     it('reties configured times', async () => {
         const res = await svc.get('/need-retry');
-        expect(res.body).to.eql({foo: 'bar'});
+        expect(res.body).to.eql({ foo: 'bar' });
     });
 
     it('gives up after configured times', async () => {
         try {
             await svc.get('/not-enough');
             throw new Error('this should have thrown');
-        } catch (e) {} //eslint-disable-line
+        } catch (e) { } //eslint-disable-line
     });
 
     it('can call upstream without retry settings', async () => {
@@ -212,48 +212,48 @@ describe('Upstreams', () => {
     });
 
     it('ignores body on GET request', async () => {
-        const response = await service.upstream.upstream.get('/echo', {payload: {pika: 'chu'}});
-        expect(response.statusCode).to.eql(200);
+        const response = await service.upstream.upstream.get('/echo', { payload: { pika: 'chu' } });
+        expect(response.statusCode).to.eql(204);
         expect(response.body).to.be.not.ok;
     });
 
     it('ignores body on HEAD request', async () => {
-        const response = await service.upstream.upstream.head('/echo', {payload: {pika: 'chu'}});
-        expect(response.statusCode).to.eql(200);
+        const response = await service.upstream.upstream.head('/echo', { payload: { pika: 'chu' } });
+        expect(response.statusCode).to.eql(204);
         expect(response.body).to.be.not.ok;
     });
 
     it('accepts body on OPTIONS request', async () => {
-        const body = {pika: 'chu'};
-        const response = await service.upstream.upstream.options('/echo', {payload: body});
+        const body = { pika: 'chu' };
+        const response = await service.upstream.upstream.options('/echo', { payload: body });
         expect(response.statusCode).to.eql(200);
         expect(response.body).to.eql(body);
     });
 
     it('accepts body on DELETE request', async () => {
-        const body = {pika: 'chu'};
-        const response = await service.upstream.upstream.delete('/echo', {payload: body});
+        const body = { pika: 'chu' };
+        const response = await service.upstream.upstream.delete('/echo', { payload: body });
         expect(response.statusCode).to.eql(200);
         expect(response.body).to.eql(body);
     });
 
     it('accepts body on POST request', async () => {
-        const body = {pika: 'chu'};
-        const response = await service.upstream.upstream.post('/echo', {payload: body});
+        const body = { pika: 'chu' };
+        const response = await service.upstream.upstream.post('/echo', { payload: body });
         expect(response.statusCode).to.eql(200);
         expect(response.body).to.eql(body);
     });
 
     it('accepts body on PUT request', async () => {
-        const body = {pika: 'chu'};
-        const response = await service.upstream.upstream.put('/echo', {payload: body});
+        const body = { pika: 'chu' };
+        const response = await service.upstream.upstream.put('/echo', { payload: body });
         expect(response.statusCode).to.eql(200);
         expect(response.body).to.eql(body);
     });
 
     it('accepts body on PATCH request', async () => {
-        const body = {pika: 'chu'};
-        const response = await service.upstream.upstream.patch('/echo', {payload: body});
+        const body = { pika: 'chu' };
+        const response = await service.upstream.upstream.patch('/echo', { payload: body });
         expect(response.statusCode).to.eql(200);
         expect(response.body).to.eql(body);
     });
@@ -284,7 +284,7 @@ describe('Upstreams', () => {
 
     it('sets headers in request options', async () => {
         const response = await service.upstream.upstream.get('/headers', {
-            options: {headers: {'x-pokemon': 'Pikachu'}},
+            options: { headers: { 'x-pokemon': 'Pikachu' } },
         });
         expect(response.statusCode).to.eql(200);
         expect(response.body.headers['x-pokemon']).to.equal('Pikachu');
@@ -292,7 +292,7 @@ describe('Upstreams', () => {
 
     it('overwrites config headers with options headers', async () => {
         const response = await service.upstream.upstream.get('/headers', {
-            options: {headers: {'User-Agent': 'Pikachu'}},
+            options: { headers: { 'User-Agent': 'Pikachu' } },
         });
         expect(response.statusCode).to.eql(200);
         expect(response.body.headers['user-agent']).to.equal('Pikachu');
@@ -300,10 +300,10 @@ describe('Upstreams', () => {
 
     it('headers are case insensitive', async () => {
         const mixedCaseResponse = await service.upstream.upstream.get('/headers', {
-            options: {headers: {'User-Agent': 'Pikachu'}},
+            options: { headers: { 'User-Agent': 'Pikachu' } },
         });
         const lowercaseResponse = await service.upstream.upstream.get('/headers', {
-            options: {headers: {'user-agent': 'Pikachu'}},
+            options: { headers: { 'user-agent': 'Pikachu' } },
         });
         expect(mixedCaseResponse.body.headers['user-agent']).to.eql(lowercaseResponse.body.headers['user-agent']);
     });
@@ -316,11 +316,11 @@ describe('Upstreams', () => {
 
     it('uses oauth strategy correctly', async () => {
         const response = await service.upstream.oauth.get('/oauthsecured');
-        expect(response.status).to.eql(200);
+        expect(response.status).to.eql(204);
     });
 
     it('handles queryParams', async () => {
-        const res = await svc.post('/mit-query-params').query({a: '42', b: '12'});
-        expect(res.body).to.eql({a: '42', b: '12'});
+        const res = await svc.post('/mit-query-params').query({ a: '42', b: '12' });
+        expect(res.body).to.eql({ a: '42', b: '12' });
     });
 });

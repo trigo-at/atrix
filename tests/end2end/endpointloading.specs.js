@@ -48,7 +48,7 @@ describe('endpoint startup', () => {
     });
 
     it('endpoint is started by default', done => {
-        svc.get('/').expect(200, done);
+        svc.get('/').expect(204, done);
     });
     it('endpoint with "enabled => false" is not started by default', async () => {
         let err;

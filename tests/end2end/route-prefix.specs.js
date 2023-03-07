@@ -14,7 +14,7 @@ describe('route-prefix', () => {
     let svc;
     let service;
     before(async () => {
-        const port = chance.integer({min: 20000, max: 30000});
+        const port = chance.integer({ min: 20000, max: 30000 });
         service = atrix.addService({
             name: 'routeprefix',
             endpoints: {

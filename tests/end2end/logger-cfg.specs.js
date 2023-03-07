@@ -32,7 +32,7 @@ const defaultCfg = {
     },
 };
 
-describe.only('logger-cfg', () => {
+describe('logger-cfg', () => {
     let svc;
     let service;
     let config;

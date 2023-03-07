@@ -6,7 +6,7 @@
 const atrix = require('../..');
 const Chance = require('chance');
 const supertest = require('supertest');
-const {expect} = require('chai');
+const { expect } = require('chai');
 
 const chance = new Chance();
 
@@ -14,7 +14,7 @@ describe('Upstream compatibility', () => {
     let upstreamPort, port, svc;
 
     before(async () => {
-        upstreamPort = chance.integer({min: 10000, max: 20000});
+        upstreamPort = chance.integer({ min: 10000, max: 20000 });
         const upstream = atrix.addService({
             name: 'upstream',
             endpoints: {
@@ -24,11 +24,11 @@ describe('Upstream compatibility', () => {
             },
         });
 
-        upstream.handlers.add('GET', '/', (req, reply) => reply({foo: 'bar'}));
+        upstream.handlers.add('GET', '/', (req, reply) => reply({ foo: 'bar' }));
 
         await atrix.services.upstream.start();
 
-        port = chance.integer({min: 20001, max: 30000});
+        port = chance.integer({ min: 20001, max: 30000 });
         const service = atrix.addService({
             name: 'svc',
             endpoints: {
@@ -64,7 +64,7 @@ describe('Upstream compatibility', () => {
 
     it('can call upstream', async () => {
         const res = await svc.get('/');
-        expect(res.body).to.eql({foo: 'bar'});
+        expect(res.body).to.eql({ foo: 'bar' });
     });
 
     it('result is formated correctly', async () => {
@@ -79,6 +79,6 @@ describe('Upstream compatibility', () => {
     //
     it('result has a body', async () => {
         const res = await svc.get('/');
-        expect(res.body).to.eql({foo: 'bar'});
+        expect(res.body).to.eql({ foo: 'bar' });
     });
 });

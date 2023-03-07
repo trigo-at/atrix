@@ -13,7 +13,7 @@ describe('secured-svc', () => {
     let svc;
     let service;
     before(async () => {
-        const port = chance.integer({min: 20000, max: 30000});
+        const port = chance.integer({ min: 20000, max: 30000 });
         service = atrix.addService({
             name: 'secured',
             endpoints: {
@@ -33,9 +33,9 @@ describe('secured-svc', () => {
             },
         });
 
-        service.handlers.add('GET', '/data', (req, reply) => reply({foo: 'bar'}));
+        service.handlers.add('GET', '/data', (req, reply) => reply({ foo: 'bar' }));
 
-        service.handlers.add('GET', '/test', (req, reply) => reply({foo: 'bar'}));
+        service.handlers.add('GET', '/test', (req, reply) => reply({ foo: 'bar' }));
 
         await service.start();
         svc = supertest(`http://localhost:${port}`);
