@@ -10,7 +10,7 @@ const expect = require('chai').expect;
 
 const chance = new Chance();
 
-describe.skip('signedlink-secured-svc', () => {
+describe('Security: Signed Link', () => {
     let svc;
     let service;
     const startService = async (

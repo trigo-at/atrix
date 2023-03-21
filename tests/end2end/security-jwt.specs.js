@@ -6,10 +6,11 @@
 const atrix = require('../..');
 const Chance = require('chance');
 const supertest = require('supertest');
+const jwt = require('jsonwebtoken');
 const expect = require('chai').expect;
 
 const chance = new Chance();
-describe('secured-svc', () => {
+describe('Security: JWT', () => {
     let svc;
     let service;
     before(async () => {
@@ -29,7 +30,9 @@ describe('secured-svc', () => {
                         algorithm: 'HS256',
                     },
                 },
-                endpoints: ['/data.*'],
+                endpoints: {
+                    jwt: ['/data.*'],
+                }
             },
         });
 
@@ -49,8 +52,15 @@ describe('secured-svc', () => {
         const res = await svc.get('/data');
         expect(res.statusCode).to.equal(401);
     });
+
     it('GET /test is not secured', async () => {
         const res = await svc.get('/test');
+        expect(res.statusCode).to.equal(200);
+    });
+
+    it('GET /data can accfess with valid token', async () => {
+        const token = jwt.sign({foo: 'bar'}, 'changeme');
+        const res = await svc.get('/data').set({Authorization: `Bearer ${token}`});
         expect(res.statusCode).to.equal(200);
     });
 });
