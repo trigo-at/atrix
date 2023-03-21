@@ -8,7 +8,7 @@ class TestPlugin {
     async start() {
         await bb.delay(10);
         plugin.instance.started = true; // eslint-disable-line
-        return {stuff: 'is here'};
+        return { stuff: 'is here' };
     }
 }
 

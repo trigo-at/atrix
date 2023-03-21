@@ -35,12 +35,12 @@ describe('muti-secured-svc', () => {
                 },
                 endpoints: {
                     jwt: ['/jwt.*'],
-                    //signedlink: ['/signedlink.*'],
+                    signedlink: ['/signedlink.*'],
                 },
             },
         });
         service.handlers.add('GET', '/jwt', (req, reply) => reply({ foo: 'bar' }));
-        // service.handlers.add('GET', '/signedlink', (req, reply) => reply({ foo: 'bar' }));
+        service.handlers.add('GET', '/signedlink', (req, reply) => reply({ foo: 'bar' }));
 
         service.handlers.add('GET', '/test', (req, reply) => reply({ foo: 'bar' }));
 
@@ -57,7 +57,7 @@ describe('muti-secured-svc', () => {
         expect(res.statusCode).to.equal(401);
     });
 
-    it.skip('GET /signedlink is secured', async () => {
+    it('GET /signedlink is secured', async () => {
         const res = await svc.get('/signedlink');
         expect(res.statusCode).to.equal(401);
     });
@@ -67,7 +67,7 @@ describe('muti-secured-svc', () => {
         expect(res.statusCode).to.equal(200);
     });
 
-    it.skip('"signedlink" strategy add "createSignedLink" utility to the service', async () => {
+    it('"signedlink" strategy add "createSignedLink" utility to the service', async () => {
         const link = atrix.services.multiSecured.createSignedLink('/signedlink');
         const res = await svc.get(link);
         expect(res.statusCode).to.equal(200);

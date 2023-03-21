@@ -27,7 +27,7 @@ pretty:
 	npm run prettify
 
 ci-lint: build
-	@docker-compose -f docker-compose.test.yml run --rm $(PACKAGE) yarn lint; \
+	@docker-compose -f docker-compose.test.yml run --rm $(PACKAGE) npm run lint; \
 		test_exit=$$?; \
 		docker-compose -f docker-compose.test.yml down; \
 		exit $$test_exit

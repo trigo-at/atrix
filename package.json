@@ -1,6 +1,6 @@
 {
   "name": "@trigo/atrix",
-  "version": "6.0.0-22",
+  "version": "7.0.0-alpha1",
   "description": "",
   "main": "index.js",
   "engines": ">=7.4.0",
@@ -25,6 +25,7 @@
     "@hapi/h2o2": "^10.0.1",
     "@hapi/hapi": "^21.2.2",
     "@hapi/inert": "^7.0.1",
+    "@trigo/hapi-auth-signedlink": "^1.3.0",
     "axios": "^1.3.4",
     "blipp": "^3.1.1",
     "bluebird": "^3.7.2",
