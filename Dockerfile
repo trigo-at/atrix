@@ -1,2 +1,2 @@
-FROM ghcr.io/trigo-at/node-base:19.7.0
+FROM ghcr.io/trigo-at/node-base:20.0.0
 

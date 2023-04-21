@@ -165,12 +165,17 @@ describe('logger-cfg', () => {
         });
 
         // TODO: This crashes my test run!
-        it.skip('request logs request & response per default', async () => {
+        it('request logs request & response per default', async () => {
+
             config.endpoints.http.requestLogger = { enabled: true };
             await startService(config);
+
+
+
             const res = await svc.post('/').send({ payload: 'ho' });
             expect(res.statusCode).to.eql(200);
             await stopService();
+
 
             // await bb.delay(100);
             const file = fs.readFileSync(logFile, { encoding: 'utf-8' });
@@ -185,7 +190,7 @@ describe('logger-cfg', () => {
             expect(file).to.contain('"json":"{\\n  \\"payload\\": \\"ho\\"\\n}"}');
         });
 
-        it.skip('can dissable full "request" log', async () => {
+        it('can dissable full "request" log', async () => {
             config.endpoints.http.requestLogger = { enabled: true, logFullRequest: false };
             await startService(config);
             const res = await svc.post('/').send({ payload: 'ho' });
@@ -205,7 +210,7 @@ describe('logger-cfg', () => {
             expect(file).not.to.contain('"json":"{\\n  \\"payload\\": \\"ho\\"\\n}"}');
         });
 
-        it.skip('can dissable full "response" log', async () => {
+        it('can dissable full "response" log', async () => {
             config.endpoints.http.requestLogger = { enabled: true, logFullResponse: false };
             await startService(config);
             const res = await svc.post('/').send({ payload: 'ho' });
@@ -225,7 +230,7 @@ describe('logger-cfg', () => {
             expect(file).to.contain('"json":"{\\n  \\"payload\\": \\"ho\\"\\n}"}');
         });
 
-        it.skip('ignores GET /alive per default', async () => {
+        it('ignores GET /alive per default', async () => {
             config.endpoints.http.requestLogger = { enabled: true, logFullResponse: false };
             await startService(config);
             const res = await svc.get('/alive');
@@ -240,7 +245,7 @@ describe('logger-cfg', () => {
             expect(file).not.to.contain('"request":{"headers"');
         });
 
-        it.skip('can override default behaviour with "ignoreRoutes" setting', async () => {
+        it('can override default behaviour with "ignoreRoutes" setting', async () => {
             config.endpoints.http.requestLogger = { enabled: true, ignoreEndpoints: ['/'] };
             await startService(config);
             const res = await svc.post('/');

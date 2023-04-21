@@ -176,7 +176,7 @@ describe('HTTP Endpoint validation settings', () => {
 
             await atrix.services.svc.start();
             const res = await svc.post('/As');
-            console.log(JSON.stringify(res.body.details[0], null, 2))
+            // console.log(JSON.stringify(res.body.details[0], null, 2))
             expect(res.body.details[0].message).to.contain('/^[a-z]{3}$/');
         });
     });

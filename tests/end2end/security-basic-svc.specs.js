@@ -17,9 +17,9 @@ describe('Security: Basic Auth', () => {
             (!username && password === 'no_username_required') ||
             (username === 'valid_user' && password === 'valid_password')
         ) {
-            return {isValid: true, credentials: {username}};
+            return { isValid: true, credentials: { username } };
         }
-        return {isValid: false};
+        return { isValid: false };
     };
 
     const startService = async (
@@ -27,7 +27,7 @@ describe('Security: Basic Auth', () => {
             validate,
         }
     ) => {
-        const port = chance.integer({min: 20000, max: 30000});
+        const port = chance.integer({ min: 20000, max: 30000 });
         service = atrix.addService({
             name: 'secured',
             endpoints: {
@@ -40,13 +40,13 @@ describe('Security: Basic Auth', () => {
                 strategies: {
                     basic: options,
                 },
-                endpoints: {basic: ['/secured.*']},
+                endpoints: { basic: ['/secured.*'] },
             },
         });
 
-        service.handlers.add('GET', '/secured', (req, reply) => reply({foo: 'bar'}));
+        service.handlers.add('GET', '/secured', (req, reply) => reply({ foo: 'bar' }));
 
-        service.handlers.add('GET', '/public', (req, reply) => reply({foo: 'bar'}));
+        service.handlers.add('GET', '/public', (req, reply) => reply({ foo: 'bar' }));
 
         await service.start();
         svc = supertest(`http://localhost:${port}`);
@@ -65,26 +65,25 @@ describe('Security: Basic Auth', () => {
     it('GET /secured fails with invalid user password', async () => {
         await startService();
         const auth = `Basic ${Buffer.from("user:password").toString("base64")}`;
-        const res = await svc.get('/secured').set({Authorization: auth});
+        const res = await svc.get('/secured').set({ Authorization: auth });
         expect(res.statusCode).to.equal(401);
     });
 
     it('GET /secured works with valid user password', async () => {
         await startService();
         const auth = `Basic ${Buffer.from("valid_user:valid_password").toString("base64")}`;
-        const res = await svc.get('/secured').set({Authorization: auth});
+        const res = await svc.get('/secured').set({ Authorization: auth });
         expect(res.statusCode).to.equal(200);
     });
 
     describe('allow empty password', () => {
-        it('can send empty username', async() => {
+        it('can send empty username', async () => {
             await startService({
                 validate,
                 allowEmptyUsername: true
             });
             const auth = `Basic ${Buffer.from(":no_username_required").toString("base64")}`;
-            const res = await svc.get('/secured').set({Authorization: auth});
-            console.log(res.text)
+            const res = await svc.get('/secured').set({ Authorization: auth });
             expect(res.statusCode).to.equal(200);
         });
     });
