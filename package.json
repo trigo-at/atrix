@@ -1,9 +1,9 @@
 {
   "name": "@trigo/atrix",
-  "version": "7.0.0-alpha3",
+  "version": "7.0.0-alpha4",
   "description": "",
   "main": "index.js",
-  "engines": ">=19.0.0",
+  "engines": ">=18.0.0",
   "scripts": {
     "test": "NODE_ENV=test mocha $(find . -name '*.specs.js' -not -path './node_modules/*')",
     "lint": "eslint lib tests",
