@@ -94,7 +94,6 @@ describe('Security: JWT', () => {
                                 algorithms: ['RS256', 'RS512'],
                             },
                             validateUser: async (token, request, h) => {
-                                //console.log(token);
                                 validateUserCalled++;
                                 return { isValid: true };
                             }
@@ -128,7 +127,7 @@ describe('Security: JWT', () => {
             expect(res.statusCode).to.equal(200);
         });
 
-        //######### Test Setup using real OIDC server
+        // ######### Test Setup using real OIDC server
         // To run the integration test using make sure to setup a reachable 
         // server and configure the following variables correctly
         //
@@ -139,7 +138,7 @@ describe('Security: JWT', () => {
         // INTERGRATION_TEST_SECURITY_JWT_GET_TEST_TOKEN_CLIENT_ID
         // INTERGRATION_TEST_SECURITY_JWT_GET_TEST_TOKEN_CLIENT_SECRET
         //
-        //###############################################
+        // ###############################################
         if (process.env.INTERGRATION_TEST_SECURITY_JWT_GET_TEST_TOKEN_CLIENT_SECRET) {
             const getToken = async () => {
                 let tokenRes;
