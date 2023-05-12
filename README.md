@@ -22,22 +22,36 @@ Atrix is an opinionated micro-service framework
 
 ### Content
 
-* [Example Server setup](#example-server-setup)
-* [Handler Definition](#handler-definition)
-* [Security](#security)
-* [Validaton](#validation)
-* [CORS](#cors)
-* [Request Logger](#request-logger)
-* [Logger](#logger)
-* [Settings](#settings)
-* [Upstream](#upstream)
-  * [Basic Upstream](#basic-upstream)
-  * [Options](#options)
-  * [Retry](#retry)
-  * [Authentication](#upstream-authentication)
-  * [Basic Authentication](#basic-authentication)
-  * [OAuth Authentication](#oauth-authentication)
-* [Overwriting config via env variables](#overwriting-config-via-env-variables)
+- [atrix](#atrix)
+  - [Description](#description)
+    - [Goals](#goals)
+    - [Content](#content)
+    - [See here for the Change Log](#see-here-for-the-change-log)
+- [Example Server Setup](#example-server-setup)
+- [Handler definition](#handler-definition)
+  - [Filename routes](#filename-routes)
+    - [handlerDir](#handlerdir)
+    - [Manually adding route handlers](#manually-adding-route-handlers)
+- [Security](#security)
+- [Validation](#validation)
+  - [Configure API validation rules](#configure-api-validation-rules)
+    - [atrix-swagger](#atrix-swagger)
+    - [When adding a handler using code](#when-adding-a-handler-using-code)
+    - [in a handlerfile](#in-a-handlerfile)
+  - [Validation options](#validation-options)
+    - [Verbose validation](#verbose-validation)
+- [CORS](#cors)
+- [Request Logger](#request-logger)
+- [Logger](#logger)
+- [Settings](#settings)
+- [Upstream](#upstream)
+  - [Basic Upstream](#basic-upstream)
+  - [Options](#options)
+  - [Retry](#retry)
+  - [Upstream Authentication](#upstream-authentication)
+    - [Basic Authentication](#basic-authentication)
+    - [OAuth Authentication](#oauth-authentication)
+- [Overwriting config via env variables](#overwriting-config-via-env-variables)
 
 ### See here for the [Change Log](changelog.md)
 
@@ -214,10 +228,42 @@ Example config:
         stragtegies: {        
             // JWT based authentication
             jwt: {
+                // Static JWT configuration
+                //
                 // the jwt secret used to sign the tokens
                 secret: 'jwt-secret-key', 
                 // the algorithm to use. Change to RS256 for priv/pubkey signing
                 algorithm: 'HS256'
+                
+                // OR better
+                // use dynamic JWKS based Key retrieval from OIDC server
+                // using auth0's "jwks-rsa" (https://github.com/auth0/node-jwks-rsa/tree/master) 
+                jwks: {
+                    // Url to fetch keys 
+                    jwksUri: 'https://sso.apps.ocp.trigo.cloud/auth/realms/atrix-test-realm/protocol/openid-connect/certs',
+                    
+                    // use key cache
+                    cache: true,
+
+                    // rate Limit
+                    rateLimit: true,
+
+                    // max jwks requests 
+                    jwksRequestsPerMinute: true,
+                },
+
+                verifyOptions: {
+                    issuer: 'https://sso.apps.ocp.trigo.cloud/auth/realms/atrix-test-realm',
+                    audience: 'account',
+                    algorithms: ['RS256'],
+                },
+
+                // optional custom user validation function    
+                validateUser: async () => (decodedToken, request, h) {
+                    // some custom logic
+                    const isValid = doYouStuff(decodedToken);
+                    return { isValid };
+                }
             },            
             // authentication baes on query param "auth" containing a vaild signatiure of the link    
             signedlink: {
