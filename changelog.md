@@ -1,10 +1,16 @@
 # Change Log
 
-## v6.x => 7.x
+## v6.x -> 7.x
+
+### Features
+
+* Implement `JWKS` key fetching for JWT security strategy using [jwks-rsa](https://github.com/auth0/node-jwks-rsa/tree/master)
+* Optional settings to validate `issuer` and `audience` with `jwt` security enabled 
 
 ### Breaking Changes
 
-* Removed signed link auth
+* Upgrade to Hapi 21: 
+Please refer to [Hapi](http://hapijs.com) documentation to check for breaking changes that may affect you by using hapi internals. 
 
 ## v5.x -> v6.0.0
 
@@ -12,9 +18,9 @@
 
 #### Upgrade to Hapi 17
 
-Atrix uses [Hapi](http://hapijs.com) under the hood for serving HTTP based services. As Hapi 17 was a major rewrite of the framwork and contained several breaking changes, this is metioned here explicitly.
+Atrix uses [Hapi](http://hapijs.com) under the hood for serving HTTP based services. As Hapi 17 was a major rewrite of the framework and contained several breaking changes, this is mentioned here explicitly.
 
-Although atrix provides abstractions for lot of the hapi specific stuff, expecially the rather complex route configurations & myriads of plugins and options several interfaces are directly used in atrix service handlers.
+Although atrix provides abstractions for lot of the hapi specific stuff, especially the rather complex route configurations & myriads of plugins and options several interfaces are directly used in atrix service handlers.
 
 `my-entity/POST.js`
 ```
